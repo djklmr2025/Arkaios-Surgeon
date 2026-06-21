@@ -57,7 +57,7 @@ tailwind.config = {
   .fill-icon {
     font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
   }
-  /* VERTICAL 9:16 ASPECT RATIO */
+  /* VERTICAL 9:16 ASPECT RATIO FOR MAIN FEED */
   .card-stage {
     position: relative;
     width: 100%;
@@ -73,6 +73,23 @@ tailwind.config = {
     height: 100%;
     pointer-events: none;
   }
+  /* PROFILE GRID 3-COLUMNS VERTICAL ASPECT */
+  .profile-grid-cell {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9/16;
+    background: #090a12;
+    border: 1px solid rgba(168, 232, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .profile-grid-cell:hover {
+    border-color: rgba(168, 232, 255, 0.3);
+    transform: scale(1.02);
+  }
+
   .modal-overlay {
     background: rgba(5, 7, 18, 0.85);
     backdrop-filter: blur(16px);
@@ -195,7 +212,7 @@ tailwind.config = {
 </div>
 
 <!-- TOP APP BAR -->
-<header id="top-bar" class="fixed top-0 left-0 w-full h-14 flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-40 border-b border-primary/10 shadow-lg">
+<header id="top-bar" class="fixed top-0 left-0 w-full h-14 flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-40 border-b border-primary/10 shadow-lg animate-fade-in">
   <div class="flex items-center gap-2 select-none cursor-pointer" onclick="handleTitleClick()">
     <span class="material-symbols-outlined text-primary text-[24px]">hub</span>
     <span class="font-extrabold text-lg tracking-tight text-primary" id="header-title">FlowNexus</span>
@@ -230,26 +247,68 @@ tailwind.config = {
 </header>
 
 <!-- MAIN CONTAINER -->
-<main class="max-w-[420px] mx-auto px-3 py-6 flex flex-col gap-8" id="feed-container">
-  <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
-    <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
-    <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
+<main class="max-w-[420px] mx-auto px-3 py-6 flex flex-col" id="feed-container">
+  
+  <!-- VIEW 1: HOME FEED (SOCIAL) -->
+  <div id="view-feed" class="flex flex-col gap-8">
+    <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
+      <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+      <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
+    </div>
   </div>
+
+  <!-- VIEW 2: PROFILE TAB (INSTAGRAM STYLE GRID) -->
+  <div id="view-profile" class="hidden flex flex-col gap-6 pt-2">
+    <!-- Profile Header Info -->
+    <div class="flex items-center gap-6 pb-6 border-b border-outline/20">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary p-[2px]">
+        <div class="w-full h-full rounded-full bg-surface overflow-hidden flex items-center justify-center">
+          <img id="profile-header-avatar" class="w-full h-full object-cover hidden" src=""/>
+          <span id="profile-header-avatar-placeholder" class="material-symbols-outlined text-on-surface-variant text-[44px]">account_circle</span>
+        </div>
+      </div>
+      <div class="flex-1 space-y-1">
+        <h3 id="profile-header-name" class="font-bold text-lg text-on-surface leading-tight">Invitado</h3>
+        <p id="profile-header-email" class="text-xs text-on-surface-variant font-mono">sin-registro@domain.com</p>
+        <div class="flex gap-4 pt-1 text-xs">
+          <p><span id="profile-posts-count" class="font-bold text-primary font-mono">0</span> publicaciones</p>
+          <p><span class="font-bold text-secondary font-mono">Rol:</span> <span id="profile-role-badge" class="capitalize">Social</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Grid Section -->
+    <div>
+      <h4 class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-3">Mis Diseños</h4>
+      <div class="grid grid-cols-3 gap-2" id="profile-posts-grid">
+        <!-- Vertical Grid Cards dynamically rendered here -->
+      </div>
+      <div id="profile-empty-message" class="hidden text-center py-16 text-xs text-on-surface-variant">
+        <span class="material-symbols-outlined text-[36px] text-primary/30 mb-2 block">collections</span>
+        Aún no has publicado ningún diagrama.
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- BOTTOM NAVIGATION -->
 <nav id="bottom-bar" class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-16 bg-background/90 backdrop-blur-lg border-t border-primary/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
-  <a href="#" class="flex flex-col items-center gap-1 text-primary">
-    <span class="material-symbols-outlined fill-icon">home</span>
+  <button id="nav-btn-feed" onclick="switchTab('feed')" class="flex flex-col items-center gap-1 text-primary">
+    <span class="material-symbols-outlined fill-icon text-[24px]">home</span>
     <span class="text-[9px] font-bold uppercase tracking-wider">Feed</span>
-  </a>
+  </button>
   <button onclick="openPublishModal()" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
     <div class="bg-primary/15 p-2.5 rounded-xl border border-primary/30 -translate-y-2 shadow-lg">
       <span class="material-symbols-outlined text-primary text-[22px]">add</span>
     </div>
   </button>
+  <button id="nav-btn-profile" onclick="switchTab('profile')" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+    <span class="material-symbols-outlined text-[24px]">person</span>
+    <span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
+  </button>
   <a href="https://flow-diagram-creator.vercel.app" target="_blank" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
-    <span class="material-symbols-outlined">edit_square</span>
+    <span class="material-symbols-outlined text-[24px]">edit_square</span>
     <span class="text-[9px] font-bold uppercase tracking-wider">Editor</span>
   </a>
 </nav>
@@ -273,7 +332,7 @@ tailwind.config = {
       
       <div>
         <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Creador / Autor</label>
-        <input type="text" id="pub-author" placeholder="Tu nombre o alias" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors" value="Invitado"/>
+        <input type="text" id="pub-author" placeholder="Tu nombre o alias" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors" value="Invitado" readonly/>
       </div>
 
       <div>
@@ -326,6 +385,7 @@ let screensaverActive = false;
 let inactivityTimer = null;
 let currentKioskIndex = 0;
 let kioskProjects = [];
+let currentActiveTab = 'feed';
 
 // Notification helper
 function showToast(msg) {
@@ -336,8 +396,13 @@ function showToast(msg) {
   t._tid = setTimeout(() => t.style.opacity = '0', 3000);
 }
 
-// God Mode activation via triple click
+// God Mode activation via triple click (RESTRICTED TO arkaios2026@gmail.com)
 function handleTitleClick() {
+  if (!currentUser || currentUser.email !== 'arkaios2026@gmail.com') {
+    // Bloquear silenciosamente
+    return;
+  }
+
   titleClickCount++;
   clearTimeout(titleClickTimeout);
   titleClickTimeout = setTimeout(() => { titleClickCount = 0; }, 1000);
@@ -370,13 +435,40 @@ window.addEventListener('click', (e) => {
   }
 });
 
+// Tab switcher (Feed vs Profile)
+function switchTab(tab) {
+  currentActiveTab = tab;
+  const feedBtn = document.getElementById('nav-btn-feed');
+  const profileBtn = document.getElementById('nav-btn-profile');
+  const viewFeed = document.getElementById('view-feed');
+  const viewProfile = document.getElementById('view-profile');
+
+  if (tab === 'profile') {
+    feedBtn.className = 'flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors';
+    profileBtn.className = 'flex flex-col items-center gap-1 text-primary';
+    viewFeed.classList.add('hidden');
+    viewProfile.classList.remove('hidden');
+    
+    // Detener animaciones del feed y renderizar el perfil
+    stopGlobalAnimation();
+    renderProfileView();
+  } else {
+    feedBtn.className = 'flex flex-col items-center gap-1 text-primary';
+    profileBtn.className = 'flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors';
+    viewFeed.classList.remove('hidden');
+    viewProfile.classList.add('hidden');
+    
+    // Recargar feed general y sus animaciones
+    loadFeed();
+  }
+}
+
 // ONBOARDING & ROLE DECISIONS
 function checkOnboarding() {
   const onboarding = document.getElementById('onboarding-screen');
   const stepAuth = document.getElementById('onboard-step-auth');
   const stepRole = document.getElementById('onboard-step-role');
 
-  // Si no está autenticado, forzar login
   if (!currentUser) {
     onboarding.classList.remove('hidden');
     stepAuth.classList.remove('hidden');
@@ -384,7 +476,6 @@ function checkOnboarding() {
     return;
   }
 
-  // Si está autenticado pero no tiene rol, mostrar selector de rol
   if (!userRole) {
     onboarding.classList.remove('hidden');
     stepAuth.classList.add('hidden');
@@ -392,10 +483,8 @@ function checkOnboarding() {
     return;
   }
 
-  // Si está autenticado y tiene rol, ocultar onboarding y cargar feed
   onboarding.classList.add('hidden');
   
-  // Sincronizar el toggle del menú
   const toggleBtnText = document.getElementById('toggle-perspective-text');
   if (userRole === 'enterprise') {
     toggleBtnText.textContent = 'Cambiar a Modo Social';
@@ -403,14 +492,18 @@ function checkOnboarding() {
     toggleBtnText.textContent = 'Cambiar a Modo Kiosko';
   }
   
-  loadFeed();
+  // Mantener la pestaña seleccionada
+  if (currentActiveTab === 'profile') {
+    renderProfileView();
+  } else {
+    loadFeed();
+  }
 }
 
 function selectUserRole(role) {
   userRole = role;
   localStorage.setItem('flownexus_role', role);
   
-  // Limpiar estilos del Kiosko si se cambia a social
   if (role === 'social') {
     exitEnterpriseView();
   }
@@ -427,7 +520,6 @@ function togglePerspectiveFromMenu() {
 }
 
 function exitEnterpriseView() {
-  // Volver a mostrar barras y resetear estilos
   document.getElementById('top-bar').style.display = 'flex';
   document.getElementById('bottom-bar').style.display = 'flex';
   document.body.style.paddingTop = '56px';
@@ -436,7 +528,7 @@ function exitEnterpriseView() {
   document.getElementById('screensaver').classList.add('hidden');
   
   const container = document.getElementById('feed-container');
-  container.className = 'max-w-[420px] mx-auto px-3 py-6 flex flex-col gap-8';
+  container.className = 'max-w-[420px] mx-auto px-3 py-6 flex flex-col';
   
   window.removeEventListener('click', resetInactivityTimer);
   window.removeEventListener('touchstart', resetInactivityTimer);
@@ -550,7 +642,7 @@ function handleFileSelect(file) {
   reader.readAsText(file);
 }
 
-// Publish payload
+// Publish payload (INCLUDES email metadata for filtering)
 async function submitProject() {
   if (!selectedProjectData) {
     showToast('⚠️ Por favor selecciona un archivo .json');
@@ -570,9 +662,11 @@ async function submitProject() {
     camera: selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }
   };
   
+  const userEmailStr = currentUser ? currentUser.email : 'invitado@domain.com';
+  
   payload.elements.push({
     type: 'text',
-    text: `Autor: ${author}`,
+    text: `Autor: ${author} | Email: ${userEmailStr}`,
     x: -99999,
     y: -99999,
     fontSize: 1,
@@ -629,9 +723,9 @@ async function deleteProject(btn, url, cardId) {
 // FETCH AND RENDER THE FEED
 async function loadFeed() {
   stopGlobalAnimation();
-  const container = document.getElementById('feed-container');
-  container.innerHTML = `
-    <div class="flex flex-col items-center justify-center py-16 gap-3">
+  const viewFeed = document.getElementById('view-feed');
+  viewFeed.innerHTML = `
+    <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
       <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
       <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
     </div>
@@ -641,13 +735,12 @@ async function loadFeed() {
     const res = await fetch(`${API_BASE}/api/library?scope=projects`);
     const data = await res.json();
     if (!data.ok || !data.blobs || !data.blobs.length) {
-      container.innerHTML = `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
+      viewFeed.innerHTML = `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
       return;
     }
 
     const sortedBlobs = data.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
     
-    // CARGAR DETALLES Y APLICAR DEDUPLICACIÓN
     const rawProjects = [];
     for (const blob of sortedBlobs.slice(0, 25)) {
       try {
@@ -655,9 +748,14 @@ async function loadFeed() {
         const project = await pRes.json();
         
         let author = 'Comunidad';
+        let email = '';
         const dummyText = project.elements?.find(e => e.type === 'text' && String(e.text).startsWith('Autor: '));
         if (dummyText) {
-          author = dummyText.text.replace('Autor: ', '');
+          const parts = dummyText.text.split('|');
+          author = parts[0].replace('Autor: ', '').trim();
+          if (parts[1]) {
+            email = parts[1].replace('Email: ', '').trim();
+          }
           project.elements = project.elements.filter(e => e !== dummyText);
         }
         
@@ -666,6 +764,7 @@ async function loadFeed() {
           url: blob.url,
           project: project,
           author: author,
+          email: email,
           nameNormalized: String(project.name || '').trim().toLowerCase()
         });
       } catch(err) {
@@ -682,10 +781,9 @@ async function loadFeed() {
       }
     });
 
-    container.innerHTML = '';
+    viewFeed.innerHTML = '';
     kioskProjects = uniqueProjects;
 
-    // Verificar si el rol es Kiosko
     isEnterprise = (userRole === 'enterprise');
     
     if (isEnterprise) {
@@ -693,15 +791,119 @@ async function loadFeed() {
       return;
     }
 
-    // Renderizar feed social normal
+    // Render feed
     uniqueProjects.forEach(item => {
-      renderProjectCard(container, item.id, item.url, item.project, item.author);
+      renderProjectCard(viewFeed, item.id, item.url, item.project, item.author);
     });
     
     startGlobalAnimation();
   } catch(e) {
-    container.innerHTML = `<div class="text-center py-12 text-error text-sm">Error cargando el feed.</div>`;
+    viewFeed.innerHTML = `<div class="text-center py-12 text-error text-sm">Error cargando el feed.</div>`;
   }
+}
+
+// RENDER INSTAGRAM PROFILE VIEW GRID
+function renderProfileView() {
+  if (!currentUser) return;
+  
+  // Set profile headers
+  document.getElementById('profile-header-avatar').src = currentUser.photoURL || '';
+  if (currentUser.photoURL) {
+    document.getElementById('profile-header-avatar').classList.remove('hidden');
+    document.getElementById('profile-header-avatar-placeholder').classList.add('hidden');
+  } else {
+    document.getElementById('profile-header-avatar').classList.add('hidden');
+    document.getElementById('profile-header-avatar-placeholder').classList.remove('hidden');
+  }
+  document.getElementById('profile-header-name').textContent = currentUser.displayName || 'Usuario de Google';
+  document.getElementById('profile-header-email').textContent = currentUser.email;
+  document.getElementById('profile-role-badge').textContent = userRole || 'Social';
+
+  const grid = document.getElementById('profile-posts-grid');
+  const emptyMsg = document.getElementById('profile-empty-message');
+  grid.innerHTML = '';
+  
+  // Filter only user's own projects
+  const myProjects = kioskProjects.filter(item => item.email === currentUser.email);
+  document.getElementById('profile-posts-count').textContent = myProjects.length;
+
+  if (myProjects.length === 0) {
+    emptyMsg.classList.remove('hidden');
+    return;
+  }
+  emptyMsg.classList.add('hidden');
+
+  animators = [];
+
+  // Render 3-column cells
+  myProjects.forEach(item => {
+    const cell = document.createElement('div');
+    cell.className = 'profile-grid-cell';
+    const viewUrl = `../flownexus_motor_visor_real_v2/code.html?id=${encodeURIComponent(item.id)}`;
+    
+    cell.innerHTML = `
+      <div class="w-full h-full relative" onclick="window.open('${viewUrl}', '_blank')">
+        <svg class="w-full h-full" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
+          <defs></defs>
+          <g class="world-group"></g>
+        </svg>
+        <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-[11px] font-bold">
+          <span class="material-symbols-outlined text-[14px] fill-icon">favorite</span> 1.2K
+        </div>
+      </div>
+    `;
+    grid.appendChild(cell);
+
+    // Render smaller preview SVG inside cell
+    const svg = document.getElementById(`svg-profile-${item.id.replace(/\//g, '-')}`);
+    if (svg) {
+      setupProfileCellEngine(svg, item.project);
+    }
+  });
+
+  startGlobalAnimation();
+}
+
+function setupProfileCellEngine(svg, project) {
+  const defs = svg.querySelector('defs');
+  const world = svg.querySelector('.world-group');
+  
+  const state = {
+    elements: project.elements || [],
+    lineNodes: [],
+    moverNodes: [],
+    flat: [],
+    byId: new Map()
+  };
+  
+  state.flat = flatten(state.elements);
+  state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
+  state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
+
+  // Small Grid Cell dimensions
+  const fitCellView = () => {
+    const flat = flatten(state.elements);
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    flat.forEach(e => {
+      if (!e) return;
+      const bounds = getBounds(e);
+      if (!bounds) return;
+      minX = Math.min(minX, bounds.x1); minY = Math.min(minY, bounds.y1);
+      maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
+    });
+    if (Number.isFinite(minX)) {
+      const cw = maxX - minX || 1, ch = maxY - minY || 1;
+      const sizeW = 120; // 3-col thumbnail width
+      const sizeH = 213; // aspect-ratio 9:16
+      const pad = 12;
+      const z = Math.max(0.01, Math.min((sizeW - pad*2)/cw, (sizeH - pad*2)/ch));
+      const px = sizeW/2 - ((minX + cw/2)*z);
+      const py = sizeH/2 - ((minY + ch/2)*z);
+      world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
+    }
+  };
+  fitCellView();
+  animators.push(state);
 }
 
 // SETUP ENTERPRISE MODE VIEW
@@ -721,8 +923,6 @@ function setupEnterpriseMode() {
   }
 
   renderKioskProject();
-  
-  // Activar protector de pantalla inicialmente
   triggerScreensaver();
 
   window.addEventListener('click', resetInactivityTimer);
@@ -745,11 +945,9 @@ function renderKioskProject() {
         </div>
         
         <div class="flex gap-2">
-          <!-- Volver a modo social -->
           <button onclick="selectUserRole('social')" title="Volver a vista social" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
             <span class="material-symbols-outlined">exit_to_app</span>
           </button>
-          <!-- Volver a protector de pantalla -->
           <button onclick="triggerScreensaver()" title="Activar screensaver" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
             <span class="material-symbols-outlined">screensaver</span>
           </button>
@@ -796,7 +994,6 @@ function renderKioskProject() {
     };
     state.flat = flatten(state.elements);
     state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
-    
     state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
 
     const fitKioskView = () => {
@@ -969,7 +1166,6 @@ function setupPreviewEngine(svg, project) {
   
   state.flat = flatten(state.elements);
   state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
-  
   state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
   
   fitCardView(svg, world, state.elements);
@@ -977,7 +1173,7 @@ function setupPreviewEngine(svg, project) {
   animators.push(state);
 }
 
-// Render SVG element
+// Render SVG element inside preview card
 function renderPreviewEl(elem, parent, defs, state) {
   if (!elem || elem.hidden === true) return;
 
