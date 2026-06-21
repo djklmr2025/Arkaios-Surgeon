@@ -140,6 +140,60 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- WELCOME & ONBOARDING / REGISTRO SCREEN -->
+<div id="onboarding-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-md px-4 hidden">
+  <div class="glass-panel w-full max-w-[420px] rounded-3xl p-8 flex flex-col gap-6 shadow-2xl relative border border-primary/20">
+    <div class="text-center space-y-2">
+      <div class="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto shadow-lg">
+        <span class="material-symbols-outlined text-primary text-[36px] holo-text">hub</span>
+      </div>
+      <h2 class="text-xl font-extrabold text-primary tracking-tight">Bienvenido a FlowNexus</h2>
+      <p class="text-xs text-on-surface-variant leading-relaxed">Gestor interactivo de diagramas y flujos animados en tiempo real para Android y Web.</p>
+    </div>
+
+    <!-- PASO 1: REGISTRO / LOGIN -->
+    <div id="onboard-step-auth" class="flex flex-col gap-4 text-center">
+      <p class="text-xs text-on-surface-variant">Por favor, regístrate o inicia sesión con tu cuenta de Google para acceder a las interfaces.</p>
+      <button onclick="handleAuthAction()" class="w-full bg-white text-black hover:bg-neutral-200 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.9h6.69c-.29 1.5-.1.14-.1.14 1.14 2.07 3 3.6 5.25 4.13l3.25-2.53c1.92-1.77 3.05-4.38 3.05-7.14z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.89-3.02c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96L1.29 17.37C3.26 21.3 7.31 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54V6.73H1.29a11.94 11.94 0 0 0 0 10.54l3.98-3z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.22 0 12 0 7.31 0 3.26 2.7 1.29 6.73l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
+        </svg>
+        Registrarse con Google
+      </button>
+    </div>
+
+    <!-- PASO 2: SELECTOR DE INTERFAZ -->
+    <div id="onboard-step-role" class="hidden flex flex-col gap-4">
+      <p class="text-xs text-on-surface-variant text-center mb-2">Selecciona la perspectiva que deseas cargar en este dispositivo:</p>
+      
+      <!-- Modo General -->
+      <button onclick="selectUserRole('social')" class="glass-panel text-left p-4 rounded-2xl hover:border-primary/40 hover:bg-primary/5 transition-all flex items-start gap-4 active:scale-[0.98]">
+        <div class="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 mt-1">
+          <span class="material-symbols-outlined text-[22px]">phone_android</span>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm text-primary">Modo Usuario General</h4>
+          <p class="text-[11px] text-on-surface-variant mt-1 leading-normal">Optimizado para celulares. Explora diagramas como una red social estilo Instagram, da me gusta y publica archivos .json.</p>
+        </div>
+      </button>
+
+      <!-- Modo Kiosko -->
+      <button onclick="selectUserRole('enterprise')" class="glass-panel text-left p-4 rounded-2xl hover:border-primary/40 hover:bg-primary/5 transition-all flex items-start gap-4 active:scale-[0.98]">
+        <div class="p-2.5 rounded-xl bg-gradient-to-tr from-primary to-secondary text-on-primary border border-primary/20 mt-1">
+          <span class="material-symbols-outlined text-[22px]">tv_kiosk</span>
+        </div>
+        <div>
+          <h4 class="font-bold text-sm text-primary">Modo Kiosko / Espectacular</h4>
+          <p class="text-[11px] text-on-surface-variant mt-1 leading-normal">Fijo para tótems o pantallas. Cuenta con protector de pantalla con video y despliega un diagrama interactivo a pantalla completa.</p>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- TOP APP BAR -->
 <header id="top-bar" class="fixed top-0 left-0 w-full h-14 flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-40 border-b border-primary/10 shadow-lg">
   <div class="flex items-center gap-2 select-none cursor-pointer" onclick="handleTitleClick()">
@@ -158,11 +212,15 @@ tailwind.config = {
       <span id="user-avatar-placeholder" class="material-symbols-outlined text-on-surface-variant text-[20px]">account_circle</span>
     </button>
 
-    <div id="user-dropdown" class="absolute right-0 top-11 bg-surface border border-outline/30 rounded-xl py-2 w-48 shadow-2xl hidden flex flex-col z-50">
+    <div id="user-dropdown" class="absolute right-0 top-11 bg-surface border border-outline/30 rounded-xl py-2 w-52 shadow-2xl hidden flex flex-col z-50">
       <div class="px-4 py-2 border-b border-outline/20 text-xs">
         <p class="font-bold truncate text-on-surface" id="dropdown-user-name">Invitado</p>
         <p class="text-on-surface-variant truncate" id="dropdown-user-email">Sin cuenta</p>
       </div>
+      <button id="btn-toggle-perspective" onclick="togglePerspectiveFromMenu()" class="w-full text-left px-4 py-2 hover:bg-primary/10 text-xs font-semibold flex items-center gap-2 transition-colors border-b border-outline/10 text-primary">
+        <span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+        <span id="toggle-perspective-text">Cambiar a Kiosko</span>
+      </button>
       <button id="btn-login-logout" onclick="handleAuthAction()" class="w-full text-left px-4 py-2 hover:bg-primary/10 text-xs font-semibold flex items-center gap-2 transition-colors">
         <span class="material-symbols-outlined text-[16px]" id="auth-action-icon">login</span>
         <span id="auth-action-text">Iniciar Sesión</span>
@@ -261,7 +319,8 @@ let godMode = false;
 let titleClickCount = 0;
 let titleClickTimeout = null;
 
-// Screensaver / Modo Kiosko
+// Perspectivas / Onboarding
+let userRole = localStorage.getItem('flownexus_role') || null;
 let isEnterprise = false;
 let screensaverActive = false;
 let inactivityTimer = null;
@@ -311,6 +370,79 @@ window.addEventListener('click', (e) => {
   }
 });
 
+// ONBOARDING & ROLE DECISIONS
+function checkOnboarding() {
+  const onboarding = document.getElementById('onboarding-screen');
+  const stepAuth = document.getElementById('onboard-step-auth');
+  const stepRole = document.getElementById('onboard-step-role');
+
+  // Si no está autenticado, forzar login
+  if (!currentUser) {
+    onboarding.classList.remove('hidden');
+    stepAuth.classList.remove('hidden');
+    stepRole.classList.add('hidden');
+    return;
+  }
+
+  // Si está autenticado pero no tiene rol, mostrar selector de rol
+  if (!userRole) {
+    onboarding.classList.remove('hidden');
+    stepAuth.classList.add('hidden');
+    stepRole.classList.remove('hidden');
+    return;
+  }
+
+  // Si está autenticado y tiene rol, ocultar onboarding y cargar feed
+  onboarding.classList.add('hidden');
+  
+  // Sincronizar el toggle del menú
+  const toggleBtnText = document.getElementById('toggle-perspective-text');
+  if (userRole === 'enterprise') {
+    toggleBtnText.textContent = 'Cambiar a Modo Social';
+  } else {
+    toggleBtnText.textContent = 'Cambiar a Modo Kiosko';
+  }
+  
+  loadFeed();
+}
+
+function selectUserRole(role) {
+  userRole = role;
+  localStorage.setItem('flownexus_role', role);
+  
+  // Limpiar estilos del Kiosko si se cambia a social
+  if (role === 'social') {
+    exitEnterpriseView();
+  }
+  
+  checkOnboarding();
+}
+
+function togglePerspectiveFromMenu() {
+  if (userRole === 'enterprise') {
+    selectUserRole('social');
+  } else {
+    selectUserRole('enterprise');
+  }
+}
+
+function exitEnterpriseView() {
+  // Volver a mostrar barras y resetear estilos
+  document.getElementById('top-bar').style.display = 'flex';
+  document.getElementById('bottom-bar').style.display = 'flex';
+  document.body.style.paddingTop = '56px';
+  document.body.style.paddingBottom = '96px';
+  document.body.style.overflow = 'auto';
+  document.getElementById('screensaver').classList.add('hidden');
+  
+  const container = document.getElementById('feed-container');
+  container.className = 'max-w-[420px] mx-auto px-3 py-6 flex flex-col gap-8';
+  
+  window.removeEventListener('click', resetInactivityTimer);
+  window.removeEventListener('touchstart', resetInactivityTimer);
+  clearTimeout(inactivityTimer);
+}
+
 // Firebase auth state monitoring
 auth.onAuthStateChanged((user) => {
   currentUser = user;
@@ -340,6 +472,8 @@ auth.onAuthStateChanged((user) => {
     authBtnText.textContent = 'Iniciar Sesión';
     authorField.value = 'Invitado';
   }
+  
+  checkOnboarding();
 });
 
 async function handleAuthAction() {
@@ -347,6 +481,8 @@ async function handleAuthAction() {
   if (currentUser) {
     try {
       await auth.signOut();
+      localStorage.removeItem('flownexus_role');
+      userRole = null;
       showToast('Sesión cerrada correctamente');
     } catch(err) {
       showToast('Error al cerrar sesión');
@@ -537,7 +673,6 @@ async function loadFeed() {
       }
     }
 
-    // Deduplicación por nombre de proyecto: mantener sólo el más reciente
     const seenNames = new Set();
     const uniqueProjects = [];
     rawProjects.forEach(item => {
@@ -548,13 +683,10 @@ async function loadFeed() {
     });
 
     container.innerHTML = '';
-
-    // Guardar para uso de Kiosko
     kioskProjects = uniqueProjects;
 
-    // Verificar si estamos en Modo Empresarial
-    const params = new URLSearchParams(window.location.search);
-    isEnterprise = params.get('mode') === 'enterprise';
+    // Verificar si el rol es Kiosko
+    isEnterprise = (userRole === 'enterprise');
     
     if (isEnterprise) {
       setupEnterpriseMode();
@@ -574,7 +706,6 @@ async function loadFeed() {
 
 // SETUP ENTERPRISE MODE VIEW
 function setupEnterpriseMode() {
-  // Ocultar cabecera superior y barra de navegación inferior normales
   document.getElementById('top-bar').style.display = 'none';
   document.getElementById('bottom-bar').style.display = 'none';
   document.body.style.paddingTop = '0px';
@@ -594,7 +725,6 @@ function setupEnterpriseMode() {
   // Activar protector de pantalla inicialmente
   triggerScreensaver();
 
-  // Resetear temporizador ante cualquier interacción táctil
   window.addEventListener('click', resetInactivityTimer);
   window.addEventListener('touchstart', resetInactivityTimer);
 }
@@ -614,10 +744,16 @@ function renderKioskProject() {
           <p class="text-[10px] text-on-surface-variant font-mono mt-0.5">PUBLICADO POR: ${item.author} · ${(item.project.elements || []).length} ELEMENTOS</p>
         </div>
         
-        <!-- Volver a protector de pantalla -->
-        <button onclick="triggerScreensaver()" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
-          <span class="material-symbols-outlined">screensaver</span>
-        </button>
+        <div class="flex gap-2">
+          <!-- Volver a modo social -->
+          <button onclick="selectUserRole('social')" title="Volver a vista social" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
+            <span class="material-symbols-outlined">exit_to_app</span>
+          </button>
+          <!-- Volver a protector de pantalla -->
+          <button onclick="triggerScreensaver()" title="Activar screensaver" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
+            <span class="material-symbols-outlined">screensaver</span>
+          </button>
+        </div>
       </div>
 
       <!-- Stage -->
@@ -646,13 +782,11 @@ function renderKioskProject() {
     </div>
   `;
 
-  // Renderizar motor SVG a pantalla completa
   const svg = document.getElementById(`svg-kiosk-${item.id.replace(/\//g, '-')}`);
   if (svg) {
     const defs = svg.querySelector('defs');
     const world = svg.querySelector('.world-group');
     
-    // Animaciones
     const state = {
       elements: item.project.elements || [],
       lineNodes: [],
@@ -665,7 +799,6 @@ function renderKioskProject() {
     
     state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
 
-    // Ajustar zoom a toda la pantalla del Kiosko
     const fitKioskView = () => {
       const W = window.innerWidth;
       const H = window.innerHeight;
@@ -701,7 +834,6 @@ function navigateKiosk(dir) {
   renderKioskProject();
 }
 
-// Screensaver control
 function triggerScreensaver() {
   screensaverActive = true;
   document.getElementById('screensaver').classList.remove('hidden');
@@ -720,7 +852,7 @@ function resetInactivityTimer() {
     if (!screensaverActive) {
       triggerScreensaver();
     }
-  }, 30000); // 30 segundos
+  }, 30000);
 }
 
 // INSTAGRAM REDESIGNED CARD (SOCIAL VIEW)
@@ -845,7 +977,7 @@ function setupPreviewEngine(svg, project) {
   animators.push(state);
 }
 
-// Render SVG element inside preview card
+// Render SVG element
 function renderPreviewEl(elem, parent, defs, state) {
   if (!elem || elem.hidden === true) return;
 
@@ -1197,8 +1329,8 @@ function getBounds(e) {
   return { x1: x, y1: y, x2: x + w, y2: y + h };
 }
 
-// INITIALIZE FEED
-loadFeed();
+// INITIALIZE FEED STATE
+checkOnboarding();
 </script>
 </body>
 </html>
