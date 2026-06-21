@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
-<!-- Firebase SDK Compat (para uso simple en navegador) -->
+<!-- Firebase SDK Compat -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script id="tailwind-config">
@@ -53,26 +53,29 @@ tailwind.config = {
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
   }
+  .fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+  /* VERTICAL 9:16 ASPECT RATIO FOR STICKERS / FLOWS */
   .card-stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 9/16;
+    max-height: 520px;
     overflow: hidden;
     background: #090a12;
-    border-top: 1px solid rgba(168, 232, 255, 0.08);
-    border-bottom: 1px solid rgba(168, 232, 255, 0.08);
+    border-top: 1px solid rgba(168, 232, 255, 0.06);
+    border-bottom: 1px solid rgba(168, 232, 255, 0.06);
   }
   .card-svg {
     width: 100%;
     height: 100%;
     pointer-events: none;
   }
-  /* Modal glassmorphism */
   .modal-overlay {
     background: rgba(5, 7, 18, 0.85);
     backdrop-filter: blur(16px);
   }
-  /* Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -123,7 +126,7 @@ tailwind.config = {
 </header>
 
 <!-- MAIN CONTAINER -->
-<main class="max-w-[500px] mx-auto px-3 py-6 flex flex-col gap-6" id="feed-container">
+<main class="max-w-[420px] mx-auto px-3 py-6 flex flex-col gap-8" id="feed-container">
   <!-- Dynamic cards injected here -->
   <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
     <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
@@ -150,7 +153,7 @@ tailwind.config = {
 
 <!-- PUBLISH MODAL -->
 <div id="publish-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden px-4">
-  <div class="bg-surface border border-primary/20 w-full max-w-[460px] rounded-2xl p-6 flex flex-col gap-4 shadow-2xl relative">
+  <div class="bg-surface border border-primary/20 w-full max-w-[400px] rounded-2xl p-6 flex flex-col gap-4 shadow-2xl relative">
     <button onclick="closePublishModal()" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface">
       <span class="material-symbols-outlined">close</span>
     </button>
@@ -269,7 +272,6 @@ auth.onAuthStateChanged((user) => {
 async function handleAuthAction() {
   document.getElementById('user-dropdown').classList.add('hidden');
   if (currentUser) {
-    // Log out
     try {
       await auth.signOut();
       showToast('Sesión cerrada correctamente');
@@ -277,7 +279,6 @@ async function handleAuthAction() {
       showToast('Error al cerrar sesión');
     }
   } else {
-    // Log in
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
       await auth.signInWithPopup(provider);
@@ -360,7 +361,6 @@ async function submitProject() {
     camera: selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }
   };
   
-  // Guardar metadatos en un elemento dummy text si quisiéramos autoría
   payload.elements.push({
     type: 'text',
     text: `Autor: ${author}`,
@@ -411,23 +411,18 @@ async function loadFeed() {
       return;
     }
 
-    // Ordenar de más recientes a más antiguos
     const sortedBlobs = data.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    
     container.innerHTML = '';
     
-    // Cargar detalles de los primeros 10 proyectos
     for (const blob of sortedBlobs.slice(0, 10)) {
       try {
         const pRes = await fetch(`${API_BASE}/api/project?id=${encodeURIComponent(blob.pathname)}`);
         const project = await pRes.json();
         
-        // Buscar metadatos de autoría si existen
         let author = 'Comunidad';
         const dummyText = project.elements?.find(e => e.type === 'text' && String(e.text).startsWith('Autor: '));
         if (dummyText) {
           author = dummyText.text.replace('Autor: ', '');
-          // Remover el dummy text del render
           project.elements = project.elements.filter(e => e !== dummyText);
         }
 
@@ -443,32 +438,38 @@ async function loadFeed() {
   }
 }
 
-// CARD RENDERER WITH LIGHTWEIGHT SVG PREVIEW ENGINE
+// INSTAGRAM REDESIGNED CARD (VERTICAL)
 function renderProjectCard(container, id, project, author) {
   const card = document.createElement('article');
-  card.className = 'glass-panel rounded-2xl overflow-hidden flex flex-col shadow-2xl cyber-glow transition-all duration-300';
+  card.className = 'glass-panel rounded-xl overflow-hidden flex flex-col shadow-xl cyber-glow transition-all duration-300';
   
-  // Header
-  const dateStr = new Date(project.date || Date.now()).toLocaleDateString('es-ES', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  const dateStr = new Date(project.date || Date.now()).toLocaleDateString('es-ES', { day:'numeric', month:'short' });
   const viewUrl = `../flownexus_motor_visor_real_v2/code.html?id=${encodeURIComponent(id)}`;
   
   card.innerHTML = `
-    <div class="p-4 flex items-center justify-between">
+    <!-- Instagram Header -->
+    <div class="p-3.5 flex items-center justify-between border-b border-primary/5 bg-background/25">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-          <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary p-[1.5px]">
+          <div class="w-full h-full rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+            <span class="material-symbols-outlined text-primary text-[16px]">account_circle</span>
+          </div>
         </div>
         <div>
-          <p class="font-bold text-sm text-on-surface leading-none">${author}</p>
-          <p class="text-[10px] text-on-surface-variant font-mono mt-1">${dateStr}</p>
+          <div class="flex items-center gap-1.5">
+            <p class="font-bold text-xs text-on-surface leading-none">${author}</p>
+            <span class="w-1 h-1 rounded-full bg-primary/40"></span>
+            <span class="text-[9px] text-on-surface-variant font-medium">${dateStr}</span>
+          </div>
+          <p class="text-[8px] text-primary/70 font-mono tracking-wider mt-0.5 uppercase">${project.meta?.folder || 'Stitch Project'}</p>
         </div>
       </div>
-      <a href="${viewUrl}" target="_blank" class="text-primary hover:text-primary-container transition-colors" title="Abrir en pantalla completa">
-        <span class="material-symbols-outlined">open_in_new</span>
-      </a>
+      <button class="text-on-surface-variant hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-[20px]">more_horiz</span>
+      </button>
     </div>
     
-    <!-- SVG Interactive Viewport -->
+    <!-- Instagram 9:16 vertical view -->
     <div class="card-stage">
       <svg class="card-svg" id="svg-card-${id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
         <defs></defs>
@@ -476,24 +477,56 @@ function renderProjectCard(container, id, project, author) {
       </svg>
     </div>
     
-    <!-- Meta and Footer -->
-    <div class="p-4 flex flex-col gap-2 bg-background/30">
-      <div class="flex items-center justify-between">
-        <h4 class="font-bold text-sm text-primary">${project.name || 'Proyecto sin Nombre'}</h4>
-        <span class="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-mono font-semibold uppercase">Real SVG</span>
+    <!-- Instagram Action Bar -->
+    <div class="px-3.5 pt-3.5 pb-2.5 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button class="text-on-surface-variant hover:text-error hover:scale-110 active:scale-95 transition-all" onclick="toggleLike(this)">
+          <span class="material-symbols-outlined text-[22px]">favorite</span>
+        </button>
+        <button class="text-on-surface-variant hover:text-primary hover:scale-110 transition-all">
+          <span class="material-symbols-outlined text-[22px]">mode_comment</span>
+        </button>
+        <a href="${viewUrl}" target="_blank" class="text-on-surface-variant hover:text-primary hover:scale-110 transition-all flex items-center">
+          <span class="material-symbols-outlined text-[22px]">fullscreen</span>
+        </a>
       </div>
+      <button class="text-on-surface-variant hover:text-primary transition-all">
+        <span class="material-symbols-outlined text-[22px]">bookmark</span>
+      </button>
+    </div>
+    
+    <!-- Caption / Likes -->
+    <div class="px-3.5 pb-4 text-xs flex flex-col gap-1">
+      <p class="font-bold text-xs text-on-surface tracking-tight" id="like-counter-${id.replace(/\//g, '-')}">1,248 Me gusta</p>
       <p class="text-xs text-on-surface-variant leading-relaxed">
-        Contiene <span class="text-primary font-bold font-mono">${(project.elements || []).length}</span> elementos vectoriales animados. Clic en el botón superior para explorar e interactuar en pantalla completa.
+        <span class="font-bold text-on-surface mr-1">${author}</span>
+        Presentando el diagrama interactivo <span class="text-primary font-semibold font-mono">${project.name || 'Proyecto'}</span>. Contiene <span class="font-bold font-mono text-secondary">${(project.elements || []).length} elementos</span> vectoriales animados.
       </p>
     </div>
   `;
   
   container.appendChild(card);
   
-  // Render del SVG
   const svg = document.getElementById(`svg-card-${id.replace(/\//g, '-')}`);
   if (svg) {
     setupPreviewEngine(svg, project);
+  }
+}
+
+function toggleLike(btn) {
+  const icon = btn.querySelector('.material-symbols-outlined');
+  const isLiked = icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1");
+  
+  if (isLiked) {
+    icon.style.fontVariationSettings = "'FILL' 0";
+    btn.classList.remove('text-error');
+    btn.classList.add('text-on-surface-variant');
+  } else {
+    icon.style.fontVariationSettings = "'FILL' 1";
+    btn.classList.add('text-error');
+    btn.classList.remove('text-on-surface-variant');
+    btn.classList.add('scale-125');
+    setTimeout(() => btn.classList.remove('scale-125'), 180);
   }
 }
 
@@ -513,10 +546,9 @@ function setupPreviewEngine(svg, project) {
   state.flat = flatten(state.elements);
   state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
   
-  // Render all elements
   state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
   
-  // Auto zoom/fit preview inside card
+  // ADJUSTED ZOOM AND POSITIONING FOR 9:16 VERTICAL STAGE
   fitCardView(svg, world, state.elements);
   
   animators.push(state);
@@ -609,7 +641,7 @@ function renderPreviewEl(elem, parent, defs, state) {
   }
 }
 
-// Helpers card viewport fitting
+// HELPER FOR 9:16 VERTICAL STAGE FITTING
 function fitCardView(svg, world, elements) {
   if (!elements.length) return;
   const flat = flatten(elements);
@@ -623,11 +655,15 @@ function fitCardView(svg, world, elements) {
   });
   if (!Number.isFinite(minX)) return;
   const cw = maxX - minX || 1, ch = maxY - minY || 1;
-  const size = 320; // Stage aspect is 1:1, viewport matches standard card width
+  
+  // Vertical viewport dimension mapping
+  const sizeW = 396; // matches card's outer width roughly
+  const sizeH = 520; // h = 520px
   const pad = 24;
-  const z = Math.max(0.01, Math.min((size - pad*2)/cw, (size - pad*2)/ch));
-  const px = size/2 - ((minX + cw/2)*z);
-  const py = size/2 - ((minY + ch/2)*z);
+  
+  const z = Math.max(0.01, Math.min((sizeW - pad*2)/cw, (sizeH - pad*2)/ch));
+  const px = sizeW/2 - ((minX + cw/2)*z);
+  const py = sizeH/2 - ((minY + ch/2)*z);
   
   world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
 }
