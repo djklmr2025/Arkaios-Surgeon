@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus - Agente Arkaios</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#00c55a",
+                    "on-error": "#690005",
+                    "surface-dim": "#121318",
+                    "primary-container": "#00d4ff",
+                    "outline": "#859398",
+                    "on-tertiary-fixed": "#40000e",
+                    "inverse-surface": "#e3e1e9",
+                    "on-surface-variant": "#bbc9cf",
+                    "surface-bright": "#38393f",
+                    "secondary": "#3ee272",
+                    "on-secondary-fixed": "#002109",
+                    "surface-container": "#1e1f25",
+                    "outline-variant": "#3c494e",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "tertiary-container": "#ffadb3",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "inverse-primary": "#00677e",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#ffdadb",
+                    "tertiary": "#ffd5d6",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-tertiary": "#67001c",
+                    "background": "#121318",
+                    "on-secondary-container": "#004a1d",
+                    "surface-container-lowest": "#0d0e13",
+                    "primary-fixed": "#b4ebff",
+                    "surface-container-high": "#292a2f",
+                    "surface-tint": "#3cd7ff",
+                    "on-primary-container": "#00586b",
+                    "on-secondary": "#003915",
+                    "on-primary": "#003642",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-low": "#1a1b21",
+                    "primary": "#a8e8ff",
+                    "error": "#ffb4ab",
+                    "surface-variant": "#34343a",
+                    "on-tertiary-container": "#a20532",
+                    "on-surface": "#e3e1e9",
+                    "secondary-fixed": "#66ff8e",
+                    "on-background": "#e3e1e9",
+                    "surface-container-highest": "#34343a",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-primary-fixed": "#001f27",
+                    "inverse-on-surface": "#2f3036",
+                    "surface": "#121318",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "on-tertiary-fixed-variant": "#91002b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "12px",
+                    "sidebar-width": "280px",
+                    "topbar-height": "52px",
+                    "margin-desktop": "24px",
+                    "gutter": "16px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0, 212, 255, 0.05) 50%, transparent);
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+        .terminal-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 2px;
+        }
+        @keyframes pulse-cyan {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        .animate-pulse-cyan {
+            animation: pulse-cyan 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased selection:bg-primary/30 min-h-screen overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="fixed top-0 w-full bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(0,212,255,0.1)] flex justify-between items-center px-margin-mobile h-topbar-height z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">hub</span>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary tracking-tighter">AI CORE OPS</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary animate-pulse">sensors</span>
+</div>
+</header>
+<main class="pt-[64px] pb-[100px] px-margin-mobile flex flex-col gap-gutter">
+<!-- Header Section -->
+<section class="mt-2">
+<h2 class="font-display-lg text-[24px] text-on-surface tracking-tight leading-tight">FlowNexus — <span class="text-primary">Agente Arkaios</span></h2>
+<p class="font-technical-sm text-outline uppercase tracking-widest mt-1">(Presencia Viva &amp; Sincronizada)</p>
+</section>
+<!-- Sensory Sync Panel (Bento-style Grid) -->
+<section class="grid grid-cols-3 gap-2">
+<div class="glass-panel p-3 rounded-lg flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-primary text-[20px]">visibility</span>
+<span class="font-label-caps text-on-surface">VISION</span>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-1">
+<div class="h-full bg-primary transition-all duration-500" id="vision-meter" style="width: 85%;"></div>
+</div>
+</div>
+<div class="glass-panel p-3 rounded-lg flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[20px]">graphic_eq</span>
+<span class="font-label-caps text-on-surface">AUDIO</span>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-1">
+<div class="h-full bg-secondary transition-all duration-500" id="audio-meter" style="width: 42%;"></div>
+</div>
+</div>
+<div class="glass-panel p-3 rounded-lg flex flex-col items-center justify-center gap-1">
+<span class="material-symbols-outlined text-tertiary-container text-[20px]">back_hand</span>
+<span class="font-label-caps text-on-surface">HAPTICS</span>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden mt-1">
+<div class="h-full bg-tertiary-container transition-all duration-500" id="haptic-meter" style="width: 67%;"></div>
+</div>
+</div>
+</section>
+<!-- Central Visualization (The AI Priestess) -->
+<section class="relative aspect-[9/16] max-h-[450px] w-full rounded-xl overflow-hidden glass-panel border-primary/20 shadow-[0_0_40px_rgba(0,212,255,0.1)] scanline-effect">
+<img alt="Arkaios UI" class="w-full h-full object-cover opacity-80 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEwzeglLOAfBm9EpTMxwgK26gUb9G36ZbyeS9zCjh1Qv9N3ZnSHrf82IPeZ7iv-CQtYfZAtkoA-dJhSPKqqeHz6TReLh5_scSeanaHm2-9X_YjDyTYVIvGqgEHNVnsshejOdEKcx_uc7P3vkfbQRwQz7FZmrJc-3dMWAatavgTb8a8IXsBS_b_kmjzuwXSXMFsuQYAY4H0G3xq-nPKV2gVB-V_gYnaivZgftT_Zyu3kSZ2kCU0D_BgllED9vU1qsj-9_NzHsFda2w"/>
+<!-- Overlay Interface Elements -->
+<div class="absolute inset-0 p-4 flex flex-col justify-between pointer-events-none">
+<div class="flex justify-between items-start">
+<div class="glass-panel bg-primary/10 border-primary/30 px-2 py-1 rounded text-primary font-technical-sm">
+                        LIFESIGN: ACTIVE
+                    </div>
+<div class="glass-panel bg-white/5 px-2 py-1 rounded text-white/60 font-technical-sm">
+                        SYNC: 0.94ms
+                    </div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="glass-panel p-2 rounded bg-black/40 border-primary/20">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-caps text-primary text-[9px]">NEURAL LOAD</span>
+<span class="font-technical-sm text-primary text-[9px]">14.2 TFLOPS</span>
+</div>
+<div class="h-0.5 bg-white/10 w-full">
+<div class="h-full bg-primary/60 w-3/4 animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Decorative UI Corners -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary/40 rounded-tl-xl pointer-events-none"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary/40 rounded-tr-xl pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary/40 rounded-bl-xl pointer-events-none"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/40 rounded-br-xl pointer-events-none"></div>
+</section>
+<!-- Real-Time Interaction Log -->
+<section class="glass-panel rounded-lg p-4 border-white/5">
+<div class="flex items-center justify-between mb-3 border-b border-white/5 pb-2">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<h3 class="font-label-caps text-on-surface-variant">REAL-TIME INTERACTION LOG</h3>
+</div>
+<span class="material-symbols-outlined text-outline text-[16px]">terminal</span>
+</div>
+<div class="font-technical-sm text-primary/80 h-32 overflow-y-auto terminal-scrollbar space-y-1" id="terminal-log">
+<p><span class="text-outline-variant">[09:12:45]</span> <span class="text-secondary">SYSTEM</span> User presence detected in proximity</p>
+<p><span class="text-outline-variant">[09:12:47]</span> <span class="text-secondary">VISION</span> Iris scan complete - Authenticated</p>
+<p><span class="text-outline-variant">[09:12:50]</span> <span class="text-secondary">HAPTICS</span> Surface feedback engaged at contact pt 7</p>
+<p><span class="text-outline-variant">[09:13:02]</span> <span class="text-secondary">NEURAL</span> Contextual prediction engine initialized</p>
+<p><span class="text-outline-variant">[09:13:05]</span> <span class="text-secondary">SYSTEM</span> Arkaios ready for query...</p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8">
+<div class="bg-surface-container/90 backdrop-blur-2xl border border-white/5 rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-around items-center w-full max-w-md h-16">
+<button class="flex items-center justify-center bg-primary/20 text-primary rounded-full p-unit shadow-[0_0_15px_rgba(0,212,255,0.3)] w-10 h-10 transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">smart_toy</span>
+</button>
+<button class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 w-10 h-10">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 w-10 h-10">
+<span class="material-symbols-outlined">analytics</span>
+</button>
+<button class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 w-10 h-10">
+<span class="material-symbols-outlined">settings_input_component</span>
+</button>
+<button class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 w-10 h-10">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+</nav>
+<script>
+        // Micro-interactions for terminal and meters
+        const terminalLog = document.getElementById('terminal-log');
+        const visionMeter = document.getElementById('vision-meter');
+        const audioMeter = document.getElementById('audio-meter');
+        const hapticMeter = document.getElementById('haptic-meter');
+
+        function addLog() {
+            const now = new Date();
+            const time = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
+            const actions = [
+                { source: 'VISION', msg: 'Refining ocular focus on peripheral motion' },
+                { source: 'AUDIO', msg: 'Filtering ambient sub-sonics (+3db)' },
+                { source: 'HAPTICS', msg: 'Re-calibrating pressure sensitivity' },
+                { source: 'SYSTEM', msg: 'Arkaios consciousness sync optimal' },
+                { source: 'NEURAL', msg: 'Mapping user intent vectors' }
+            ];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            
+            const p = document.createElement('p');
+            p.innerHTML = `<span class="text-outline-variant">${time}</span> <span class="text-secondary">${action.source}</span> ${action.msg}`;
+            terminalLog.appendChild(p);
+            terminalLog.scrollTop = terminalLog.scrollHeight;
+            
+            if (terminalLog.children.length > 20) {
+                terminalLog.removeChild(terminalLog.firstChild);
+            }
+        }
+
+        function updateMeters() {
+            visionMeter.style.width = `${Math.floor(Math.random() * 40) + 60}%`;
+            audioMeter.style.width = `${Math.floor(Math.random() * 60) + 20}%`;
+            hapticMeter.style.width = `${Math.floor(Math.random() * 50) + 40}%`;
+        }
+
+        setInterval(addLog, 4000);
+        setInterval(updateMeters, 2500);
+    </script>
+</body></html>

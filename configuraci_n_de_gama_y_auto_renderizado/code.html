@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Hardware Optimization</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .neon-accent-bottom::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #a8e8ff, transparent);
+            box-shadow: 0 4px 12px rgba(168, 232, 255, 0.3);
+        }
+        .animate-pulse-slow {
+            animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); border-color: rgba(60, 215, 255, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.5); border-color: rgba(168, 232, 255, 1); }
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        .technical-label {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 10px;
+            opacity: 0.6;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#1e1f25",
+                      "inverse-primary": "#00677e",
+                      "on-primary-fixed": "#001f27",
+                      "primary-fixed-dim": "#3cd7ff",
+                      "on-primary": "#003642",
+                      "on-tertiary-fixed": "#40000e",
+                      "error": "#ffb4ab",
+                      "primary-container": "#00d4ff",
+                      "on-error-container": "#ffdad6",
+                      "surface-variant": "#34343a",
+                      "surface-bright": "#38393f",
+                      "on-tertiary-container": "#a20532",
+                      "on-error": "#690005",
+                      "primary-fixed": "#b4ebff",
+                      "on-tertiary": "#67001c",
+                      "surface-dim": "#121318",
+                      "surface-container-highest": "#34343a",
+                      "on-secondary-fixed": "#002109",
+                      "on-secondary": "#003915",
+                      "error-container": "#93000a",
+                      "tertiary": "#ffd5d6",
+                      "on-secondary-fixed-variant": "#005321",
+                      "on-primary-container": "#00586b",
+                      "on-background": "#e3e1e9",
+                      "on-tertiary-fixed-variant": "#91002b",
+                      "outline-variant": "#3c494e",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "surface": "#121318",
+                      "secondary-fixed": "#66ff8e",
+                      "on-secondary-container": "#004a1d",
+                      "surface-tint": "#3cd7ff",
+                      "surface-container-low": "#1a1b21",
+                      "on-surface-variant": "#bbc9cf",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "surface-container-high": "#292a2f",
+                      "tertiary-fixed": "#ffdadb",
+                      "secondary-container": "#00c55a",
+                      "background": "#121318",
+                      "inverse-surface": "#e3e1e9",
+                      "tertiary-container": "#ffadb3",
+                      "surface-container-lowest": "#0d0e13",
+                      "secondary": "#3ee272",
+                      "inverse-on-surface": "#2f3036",
+                      "outline": "#859398",
+                      "primary": "#a8e8ff",
+                      "on-surface": "#e3e1e9",
+                      "secondary-fixed-dim": "#3ee272"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "topbar-height": "52px",
+                      "sidebar-width": "280px",
+                      "margin-mobile": "12px",
+                      "margin-desktop": "24px",
+                      "unit": "4px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "body-base": ["Inter"],
+                      "headline-md-mobile": ["Inter"],
+                      "body-bold": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "technical-sm": ["JetBrains Mono"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top Navigation Ribbon -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl border-b border-white/10 z-50 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] leading-tight tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)] uppercase">FlowNexus</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-4">
+<a class="text-primary font-label-caps text-label-caps tracking-widest" href="#">OPTIMIZATION</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps tracking-widest hover:text-primary transition-colors" href="#">DIAGNOSTICS</a>
+</nav>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="settings_input_antenna">settings_input_antenna</button>
+</div>
+</header>
+<main class="flex-1 mt-[52px] p-margin-mobile md:p-margin-desktop max-w-7xl mx-auto w-full">
+<!-- Section: Hardware Detection -->
+<section class="mb-10">
+<div class="glass-panel neon-accent-bottom p-6 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6 overflow-hidden">
+<div class="relative z-10">
+<p class="font-technical-sm text-technical-sm text-primary uppercase mb-1">Hardware Detection Status</p>
+<h2 class="font-headline-md text-headline-md text-on-surface">Alta Gama / Ecosistema Pro</h2>
+<div class="flex items-center gap-2 mt-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<p class="font-body-base text-body-base text-secondary">Active Touch System: Precision Multi-Point Holographic</p>
+</div>
+</div>
+<div class="flex gap-4 z-10">
+<div class="flex flex-col items-center px-4 py-2 bg-white/5 rounded border border-white/10">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">NODE_01</span>
+<span class="font-body-bold text-body-bold text-primary">STABLE</span>
+</div>
+<div class="flex flex-col items-center px-4 py-2 bg-white/5 rounded border border-white/10">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">TEMP</span>
+<span class="font-body-bold text-body-bold text-tertiary">32.4°C</span>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="absolute -right-10 -bottom-20 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[180px]" data-icon="memory">memory</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Core Settings -->
+<div class="bento-grid">
+<!-- Auto-Render Engine -->
+<div class="col-span-12 md:col-span-4 glass-panel p-6 rounded-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="bolt">bolt</span>
+<h3 class="font-body-bold text-body-bold uppercase tracking-wider">Auto-Render Engine</h3>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant mb-6">Utilize local GPU resources for ultra-low latency interactive sessions and neural-denoising.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+<span class="ms-3 font-label-caps text-label-caps text-on-surface uppercase">Native Resource Utilization</span>
+</label>
+</div>
+<!-- Visualización y Gama Selection -->
+<div class="col-span-12 md:col-span-8 glass-panel p-6 rounded-lg">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="vibration">vibration</span>
+<h3 class="font-body-bold text-body-bold uppercase tracking-wider">Visualización y Gama</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Mode: Auto -->
+<button class="flex flex-col gap-3 p-4 bg-primary-container/20 border border-primary/40 rounded-lg text-left transition-all hover:bg-primary-container/30">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" data-icon="settings_suggest">settings_suggest</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#a8e8ff]"></span>
+</div>
+<div>
+<p class="font-body-bold text-body-bold">Ajuste Automático</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mt-1">Sensor-based intelligent mapping.</p>
+</div>
+</button>
+<!-- Mode: Natural -->
+<button class="flex flex-col gap-3 p-4 bg-white/5 border border-white/10 rounded-lg text-left transition-all hover:bg-white/10">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="aspect_ratio">aspect_ratio</span>
+<div>
+<p class="font-body-bold text-body-bold">Modo Natural</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mt-1">1:1 Aspect ratio preservation.</p>
+</div>
+</button>
+<!-- Mode: Manual -->
+<button class="flex flex-col gap-3 p-4 bg-white/5 border border-white/10 rounded-lg text-left transition-all hover:bg-white/10">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="tune">tune</span>
+<div>
+<p class="font-body-bold text-body-bold">Ajuste Manual</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mt-1">Granular projection controls.</p>
+</div>
+</button>
+</div>
+<!-- Manual Sliders (Contextual) -->
+<div class="mt-6 pt-6 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-8 opacity-40">
+<div class="space-y-4">
+<div class="flex justify-between font-technical-sm text-technical-sm">
+<span>VERTICAL STRETCH</span>
+<span class="text-primary">1.00x</span>
+</div>
+<input class="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-not-allowed" disabled="" type="range"/>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between font-technical-sm text-technical-sm">
+<span>GLOBAL SCALING</span>
+<span class="text-primary">100%</span>
+</div>
+<input class="w-full h-1 bg-surface-variant rounded-lg appearance-none cursor-not-allowed" disabled="" type="range"/>
+</div>
+</div>
+</div>
+<!-- Technical Specs Display -->
+<div class="col-span-12 md:col-span-7 glass-panel p-6 rounded-lg relative overflow-hidden">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" data-icon="monitoring">monitoring</span>
+<h3 class="font-body-bold text-body-bold uppercase tracking-wider">Live Technical Metrics</h3>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-6 relative z-10">
+<div class="space-y-1">
+<p class="technical-label">Resolution</p>
+<p class="font-headline-md text-headline-md text-on-surface">7680 × 4320</p>
+<p class="font-technical-sm text-technical-sm text-primary">8K ULTRA-HD</p>
+</div>
+<div class="space-y-1">
+<p class="technical-label">Pixel Density</p>
+<p class="font-headline-md text-headline-md text-on-surface">458 DPI</p>
+<p class="font-technical-sm text-technical-sm text-primary">RETAIN_LEVEL_MAX</p>
+</div>
+<div class="space-y-1">
+<p class="technical-label">Touch Polling</p>
+<p class="font-headline-md text-headline-md text-on-surface">1000 Hz</p>
+<p class="font-technical-sm text-technical-sm text-secondary">LATENCY: 1.2ms</p>
+</div>
+</div>
+<!-- Graphic Element -->
+<div class="absolute right-0 bottom-0 top-0 w-1/3 bg-gradient-to-l from-primary/10 to-transparent pointer-events-none"></div>
+<div class="absolute right-4 bottom-4 flex gap-1 items-end h-12">
+<div class="w-1 bg-primary/40 h-4"></div>
+<div class="w-1 bg-primary/60 h-8"></div>
+<div class="w-1 bg-primary h-6"></div>
+<div class="w-1 bg-primary/50 h-10"></div>
+<div class="w-1 bg-primary h-12"></div>
+</div>
+</div>
+<!-- Hardware Sync Button -->
+<div class="col-span-12 md:col-span-5 flex flex-col items-center justify-center p-6 bg-surface-container-highest/20 rounded-lg border border-white/5">
+<button class="group relative w-32 h-32 rounded-full flex items-center justify-center bg-surface border-2 border-primary/20 animate-pulse-slow transition-all hover:scale-105 active:scale-95" id="sync-btn">
+<div class="absolute inset-0 rounded-full bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
+<span class="material-symbols-outlined text-[48px] text-primary" data-icon="sync">sync</span>
+</button>
+<div class="text-center mt-6">
+<h4 class="font-body-bold text-body-bold text-on-surface">Initialize Hardware Sync</h4>
+<p class="font-body-base text-body-base text-on-surface-variant">Calibrate display alignment and touch nodes</p>
+</div>
+</div>
+</div>
+<!-- Visual Content Card (Bento Style) -->
+<section class="mt-10 mb-20">
+<div class="glass-panel rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
+<div class="p-8 flex flex-col justify-center">
+<span class="font-label-caps text-label-caps text-tertiary mb-2">SYSTEM PREVIEW</span>
+<h3 class="font-display-lg text-display-lg text-on-surface mb-4">Neural Canvas Engine</h3>
+<p class="font-body-base text-body-base text-on-surface-variant mb-6">Experience the pinnacle of display fidelity with FlowNexus. Our holographic rendering pipeline ensures that every photon is directed with mathematical precision for absolute clarity in any environment.</p>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary font-body-bold text-body-bold px-6 py-2 rounded-lg hover:brightness-110 transition-all">Launch Sandbox</button>
+<button class="border border-primary text-primary font-body-bold text-body-bold px-6 py-2 rounded-lg hover:bg-primary/10 transition-all">View Logs</button>
+</div>
+</div>
+<div class="relative h-64 md:h-auto min-h-[300px]">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A futuristic holographic user interface floating in a dark laboratory setting. Glowing neon cyan and deep violet light trails trace complex neural networks across a glass-like surface. The scene is high-performance, professional, and visually dense, with blurred depth of field emphasizing the sharp data-driven graphics in the foreground. Professional cinematic lighting with volumetric atmospheric fog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDISkw76YIb1QePXjdA_rtMH5dR4envvFJ2zGb1g_3VZtIX-dB1cA1GAj-JFZ99ekJYN_4_KIEuN4UmOCdxA5E-0iGszPYlk2bNYH6uk9oTR9MpLcCnnFLba38_Sew6KG1nI6eZIRaKmHR1VFiRmOWiJvsXkBsigrzmzQErHSilsbYMxqr6gg9O9KHwzKxOpm7iZFB9uX3-tinq7FxA7Cp1p41ANRy8tKq4dBJ6UucGM5Oyvv67FBT9NLajaDY5t2vxsZM_Qcy6RtM"/>
+<div class="absolute inset-0 bg-gradient-to-r from-[#16213e] via-transparent to-transparent"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="mt-auto w-full border-t border-white/5 py-8 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest/50 backdrop-blur-sm">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="auto_awesome">auto_awesome</span>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant tracking-wider">Ecosistema Inteligente firmado por Stitch AI Assistant</p>
+</div>
+<div class="flex gap-8">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">ENCR_TYPE: AES-256</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">REGION: HOLO_WEST_04</span>
+</div>
+</div>
+</footer>
+<!-- Interactive Logic -->
+<script>
+        const syncBtn = document.getElementById('sync-btn');
+        syncBtn.addEventListener('click', () => {
+            const icon = syncBtn.querySelector('span');
+            icon.classList.add('animate-spin');
+            
+            // Simulating a sync process
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-20 right-10 bg-secondary-container text-on-secondary-container p-4 rounded-lg shadow-2xl flex items-center gap-3 animate-bounce z-[100]';
+                notification.innerHTML = `
+                    <span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                    <span class="font-body-bold text-body-bold">HARDWARE SYNC COMPLETE</span>
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }, 2000);
+        });
+    </script>
+</body></html>

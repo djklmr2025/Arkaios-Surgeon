@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-bottom {
+            box-shadow: 0 4px 15px -3px rgba(168, 232, 255, 0.2);
+            border-bottom: 1px solid #a8e8ff;
+        }
+        .cyber-grid {
+            background-image: radial-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(168, 232, 255, 0.1);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            from { top: 0%; }
+            to { top: 100%; }
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 232, 255, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00c55a",
+                        "on-secondary-container": "#004a1d",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#005321",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container": "#1e1f25",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-highest": "#34343a",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-secondary": "#003915",
+                        "on-surface": "#e3e1e9",
+                        "secondary": "#3ee272",
+                        "primary-container": "#00d4ff",
+                        "inverse-surface": "#e3e1e9",
+                        "inverse-primary": "#00677e",
+                        "on-primary-container": "#00586b",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "secondary-fixed": "#66ff8e",
+                        "on-tertiary-fixed": "#40000e",
+                        "background": "#121318",
+                        "tertiary": "#ffd5d6",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#002109",
+                        "inverse-on-surface": "#2f3036",
+                        "surface": "#121318",
+                        "on-primary": "#003642",
+                        "surface-dim": "#121318",
+                        "outline": "#859398",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-background": "#e3e1e9",
+                        "outline-variant": "#3c494e",
+                        "surface-tint": "#3cd7ff",
+                        "on-surface-variant": "#bbc9cf",
+                        "surface-bright": "#38393f",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-tertiary": "#67001c",
+                        "surface-variant": "#34343a",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-container": "#a20532",
+                        "primary-fixed": "#b4ebff",
+                        "on-primary-fixed": "#001f27",
+                        "surface-container-high": "#292a2f",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#ffadb3",
+                        "surface-container-low": "#1a1b21"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "unit": "4px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base selection:bg-primary-container selection:text-on-primary-container overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">waves</span>
+<h1 class="font-display-lg text-[20px] leading-none tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded active:scale-95 duration-300">settings_input_antenna</span>
+</div>
+</header>
+<main class="flex-1 mt-[52px] mb-16 overflow-hidden relative cyber-grid">
+<!-- Floating Scanline Effect -->
+<div class="scanline pointer-events-none"></div>
+<!-- Mode Toggle Section -->
+<div class="px-margin-mobile pt-gutter flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-caps text-secondary uppercase tracking-widest text-[10px]">System State</span>
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-primary">Bridge Inspector</h2>
+</div>
+<!-- Hybrid Toggle Button -->
+<div class="glass-panel p-1 rounded-lg flex relative cursor-pointer select-none" id="modeToggle" onclick="toggleSystemMode()">
+<div class="absolute inset-y-1 left-1 w-[48%] bg-primary-container rounded transition-all duration-300 ease-out" id="toggleBg"></div>
+<div class="relative z-10 px-3 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" id="restIcon">videocam</span>
+<span class="font-label-caps text-on-surface text-[10px]">REST</span>
+</div>
+<div class="relative z-10 px-3 py-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" id="engineIcon">terminal</span>
+<span class="font-label-caps text-on-surface text-[10px]">ENGINE</span>
+</div>
+</div>
+</div>
+<!-- Split View Container -->
+<div class="flex h-[calc(100%-80px)] mt-4 p-margin-mobile gap-3">
+<!-- Left Side: Terminal Inspector -->
+<div class="flex-[1.4] flex flex-col h-full gap-3">
+<div class="glass-panel rounded-xl flex-1 flex flex-col overflow-hidden neon-glow-bottom">
+<div class="bg-surface-container-highest/50 px-3 py-2 border-b border-white/5 flex items-center justify-between">
+<span class="font-technical-sm text-on-surface-variant">LOGIC_SCHEMA.JSON</span>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-error-container"></div>
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-3 font-technical-sm text-[12px] leading-relaxed">
+<div class="text-secondary/60">/* Root Architecture */</div>
+<div class="text-primary-container">{</div>
+<div class="pl-4">
+<span class="text-tertiary">"bridge_version":</span> <span class="text-on-surface">"2.4.0-HOLO"</span>,
+                            <br/>
+<span class="text-tertiary">"nested_logic":</span> <span class="text-primary-container">[</span>
+<div class="pl-4">
+<span class="text-primary-container">{</span>
+<div class="pl-4">
+<span class="text-tertiary">"id":</span> <span class="text-secondary">"sys_01"</span>,
+                                    <br/><span class="text-tertiary">"type":</span> <span class="text-on-surface">"CoreProcess"</span>,
+                                    <br/><span class="text-tertiary">"actions":</span> <span class="text-secondary">["render", "sync"]</span>
+</div>
+<span class="text-primary-container">}</span>,
+                                <br/>
+<span class="text-primary-container">{</span>
+<div class="pl-4 text-on-surface-variant/40 italic">// Awaiting Stream...</div>
+<span class="text-primary-container">}</span>
+</div>
+<span class="text-primary-container">]</span>,
+                            <br/>
+<span class="text-tertiary">"status":</span> <span class="text-secondary-container bg-on-secondary-container/20 px-1 rounded">"READY"</span>
+</div>
+<div class="text-primary-container">}</div>
+<div class="mt-4 border-t border-white/10 pt-2 text-on-surface-variant/60">
+<div class="flex items-center gap-2">
+<span class="text-secondary">&gt;</span>
+<span class="animate-pulse">_ system initialized</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-secondary">&gt;</span>
+<span>WebView handshake: OK</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Logs / Meta -->
+<div class="glass-panel h-20 rounded-xl flex items-center px-4 gap-4">
+<div class="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center animate-spin-slow">
+<span class="material-symbols-outlined text-primary text-[18px]">sync</span>
+</div>
+<div>
+<div class="font-label-caps text-on-surface-variant text-[9px]">Uptime</div>
+<div class="font-technical-sm text-primary text-[14px]">102:44:12:09</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Live Minimap -->
+<div class="flex-1 flex flex-col h-full">
+<div class="glass-panel rounded-xl flex-1 relative overflow-hidden flex flex-col border-l-2 border-primary/50">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-30 grayscale brightness-50" data-alt="A macro photography shot of an glowing circuit board in the dark, with blue and green luminescent neon paths representing data flow. The style is highly futuristic and technical, using a shallow depth of field to focus on a central processor unit. The lighting is cold and atmospheric, emphasizing precision engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrvKAmoVme6gzqTXRFFdcizRjFzu18eWFX5z6UvWcLecHPxOIANGakquUcZAF16mqGsBwM2bk0n14IidRXV0k7usuKIKI-ni8siujGtelm9FtdmTj_wDbRinRwH9bh6Q1i1WFHd5IhrsV5Jo6r4nejM0WcEC7DD94w-7ckEF5dqefL6iOQHCF_mACQ8-f-VsouiwCOye8L99zrem_RF18vpEcBFkM0f11gkJy6tB0sr3FNuQJuC6VwQcF_7tTV9UB4bY6FiUKxiJE"/>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background"></div>
+</div>
+<div class="relative z-10 p-3 h-full flex flex-col">
+<span class="font-label-caps text-primary text-[9px] mb-2">LIVE_MAP</span>
+<!-- Map Visual Nodes -->
+<div class="flex-1 flex flex-col items-center justify-center gap-6">
+<div class="relative group">
+<div class="w-12 h-12 rounded bg-primary/20 border border-primary flex items-center justify-center shadow-[0_0_15px_rgba(168,232,255,0.4)]">
+<span class="material-symbols-outlined text-primary">hub</span>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-secondary rounded-full animate-ping"></div>
+</div>
+<div class="h-8 w-[1px] bg-primary/40 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_#a8e8ff] animate-bounce"></div>
+</div>
+<div class="w-12 h-12 rounded bg-surface-container border border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant opacity-50">memory</span>
+</div>
+<div class="h-8 w-[1px] bg-primary/40"></div>
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 border border-secondary flex items-center justify-center shadow-[0_0_10px_rgba(0,197,90,0.2)]">
+<span class="material-symbols-outlined text-secondary">token</span>
+</div>
+</div>
+<div class="mt-2 p-2 bg-black/40 rounded font-technical-sm text-[8px] text-primary/80">
+                            COORD: 34.009 / 118.23<br/>
+                            NODE_LOAD: 42%
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Contextual) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 rounded-t-full shadow-[0_-10px_40px_rgba(0,197,90,0.15)]">
+<button class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">motion_photos_on</span>
+<span class="font-label-caps text-[10px]">Live Feed</span>
+</button>
+<button class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] animate-pulse-slow">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="font-label-caps text-[10px]">Interactive Mode</span>
+</button>
+<button class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">replay</span>
+<span class="font-label-caps text-[10px]">Demo Loop</span>
+</button>
+</nav>
+<script>
+        let currentMode = 'engine';
+
+        function toggleSystemMode() {
+            const toggleBg = document.getElementById('toggleBg');
+            if (currentMode === 'engine') {
+                currentMode = 'rest';
+                toggleBg.style.left = '4px';
+                toggleBg.style.width = '48%';
+                // Mock behavior: reduce animation frequency
+                document.querySelector('.scanline').style.animationDuration = '10s';
+                console.log("System Status: REST MODE (MP4 VIDEO)");
+            } else {
+                currentMode = 'engine';
+                toggleBg.style.left = 'calc(50% - 2px)';
+                toggleBg.style.width = '48%';
+                document.querySelector('.scanline').style.animationDuration = '4s';
+                console.log("System Status: PROJECT MODE (JSON ENGINE)");
+            }
+        }
+
+        // Initialize state
+        window.onload = () => {
+            const toggleBg = document.getElementById('toggleBg');
+            toggleBg.style.left = 'calc(50% - 2px)';
+        }
+    </script>
+</body></html>

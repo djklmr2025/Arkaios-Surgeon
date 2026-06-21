@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Cloud Infrastructure</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.8);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-cyan {
+            border-bottom: 1px solid #00d4ff;
+            box-shadow: 0 4px 12px -2px rgba(0, 212, 255, 0.3);
+        }
+        .cyber-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .cyber-scroll::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .cyber-scroll::-webkit-scrollbar-thumb {
+            background: #3cd7ff;
+            border-radius: 10px;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#004a1d",
+                      "surface-container-low": "#1a1b21",
+                      "surface-bright": "#38393f",
+                      "background": "#121318",
+                      "surface-container-highest": "#34343a",
+                      "outline": "#859398",
+                      "on-secondary": "#003915",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#ffadb3",
+                      "on-primary": "#003642",
+                      "surface-container-lowest": "#0d0e13",
+                      "error": "#ffb4ab",
+                      "surface-variant": "#34343a",
+                      "primary-container": "#00d4ff",
+                      "on-tertiary-fixed": "#40000e",
+                      "secondary-fixed": "#66ff8e",
+                      "on-secondary-fixed": "#002109",
+                      "on-tertiary-container": "#a20532",
+                      "on-surface": "#e3e1e9",
+                      "on-error": "#690005",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "inverse-on-surface": "#2f3036",
+                      "primary": "#a8e8ff",
+                      "inverse-surface": "#e3e1e9",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "tertiary-fixed": "#ffdadb",
+                      "on-background": "#e3e1e9",
+                      "primary-fixed-dim": "#3cd7ff",
+                      "secondary-container": "#00c55a",
+                      "surface-dim": "#121318",
+                      "outline-variant": "#3c494e",
+                      "secondary-fixed-dim": "#3ee272",
+                      "on-tertiary": "#67001c",
+                      "on-surface-variant": "#bbc9cf",
+                      "on-tertiary-fixed-variant": "#91002b",
+                      "surface-container": "#1e1f25",
+                      "on-primary-fixed": "#001f27",
+                      "primary-fixed": "#b4ebff",
+                      "inverse-primary": "#00677e",
+                      "tertiary": "#ffd5d6",
+                      "surface": "#121318",
+                      "surface-container-high": "#292a2f",
+                      "secondary": "#3ee272",
+                      "on-primary-container": "#00586b",
+                      "on-secondary-fixed-variant": "#005321",
+                      "surface-tint": "#3cd7ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "24px",
+                      "unit": "4px",
+                      "margin-mobile": "12px",
+                      "topbar-height": "52px",
+                      "sidebar-width": "280px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "body-bold": ["Inter"],
+                      "technical-sm": ["JetBrains Mono"],
+                      "headline-md": ["Inter"],
+                      "headline-md-mobile": ["Inter"],
+                      "body-base": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-base text-body-base pb-24 pt-16">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-primary/10 flex justify-between items-center px-margin-mobile h-topbar-height md:px-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary active:scale-95 transition-transform cursor-pointer">menu</span>
+<h1 class="font-display-lg text-headline-md-mobile md:text-display-lg font-black tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(0,212,255,0.4)]">FlowNexus</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 mr-8">
+<span class="font-label-caps text-label-caps text-outline hover:text-primary transition-colors cursor-pointer">PROJECTS</span>
+<span class="font-label-caps text-label-caps text-primary cursor-pointer border-b-2 border-primary">CLOUD</span>
+<span class="font-label-caps text-label-caps text-outline hover:text-primary transition-colors cursor-pointer">ANALYTICS</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container/20 border border-primary/30 flex items-center justify-center overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A professional user profile avatar in a futuristic circular frame, featuring a high-tech digital aesthetic with soft neon blue backlighting and sharp geometric details. The style is minimalist and clean, matching a sophisticated dark-mode command center interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtfYpFxUFWn4K9BhzbuLdxryWaZQfcHEmBknRc4XzDVViQmSvHobRkZCAQH3DN_MBXCb1_IgYOCSfm7iGTExeKImYBi-eLQm6krSlkvcycAXQRUjZDoJPGmzaqx4PhVJjVma3pt7brT9tetKuVgjOfFPSWg6bcaT3DOrnQxSLVHccWuflbcK_-6Zju84HPt8_j0TEmHKBZhpkLNcBGQYxHwGn-bCB7NWV9BKs14ERxMDqYxRVmQjflH4Eh0GsQ-6T9Tj7Y-LXjHs0"/>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop space-y-gutter">
+<!-- Cloud Status Hero -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<div class="lg:col-span-2 glass-panel p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-9xl text-primary" style="font-variation-settings: 'FILL' 1;">cloud_done</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h2 class="font-label-caps text-label-caps text-primary">CLOUD INFRASTRUCTURE STATUS</h2>
+</div>
+<div class="flex items-baseline gap-4 mb-6">
+<span class="font-display-lg text-display-lg text-on-surface">3.8 / 5.0 TB</span>
+<span class="font-technical-sm text-technical-sm text-secondary">76% CAPACITY UTILIZED</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden mb-6 border border-white/5">
+<div class="h-full bg-primary shadow-[0_0_15px_rgba(0,212,255,0.6)] w-3/4 transition-all duration-1000 ease-out"></div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col">
+<span class="font-technical-sm text-technical-sm text-outline">UPLINK SPEED</span>
+<span class="font-body-bold text-body-bold text-secondary">450 MB/s</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-technical-sm text-outline">LATENCY</span>
+<span class="font-body-bold text-body-bold text-primary">12ms</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-technical-sm text-outline">PACKET LOSS</span>
+<span class="font-body-bold text-body-bold text-error">0.002%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-technical-sm text-outline">ENCRYPTION</span>
+<span class="font-body-bold text-body-bold text-on-surface">AES-256</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent"></div>
+</div>
+<!-- AI Insights Widget -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between border-l-4 border-l-tertiary">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary">psychology</span>
+<h2 class="font-label-caps text-label-caps text-tertiary">AI NODE ADVISORY</h2>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant leading-relaxed">
+                        Redundant clusters in US-West detected. Recommending auto-sync for "Project_Exodus_Final" to optimize local cache availability.
+                    </p>
+</div>
+<button class="mt-4 w-full py-2 bg-tertiary-container/10 border border-tertiary text-tertiary font-body-bold text-body-bold rounded-lg hover:bg-tertiary/20 transition-all active:scale-95">
+                    OPTIMIZE STORAGE
+                </button>
+</div>
+</section>
+<!-- Bento Grid: Projects & Assets -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Available Projects -->
+<div class="glass-panel rounded-xl flex flex-col h-[500px]">
+<div class="p-4 border-b border-white/10 flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Available Projects</h3>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">filter_list</span>
+</div>
+<div class="flex-1 overflow-y-auto cyber-scroll p-4 space-y-4">
+<!-- Project Item -->
+<div class="p-4 bg-surface-container-low rounded-lg border border-white/5 hover:border-primary/40 transition-all group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">folder_special</span>
+</div>
+<div>
+<h4 class="font-body-bold text-body-bold text-on-surface">Neon Horizon - VR Experience</h4>
+<p class="font-technical-sm text-technical-sm text-outline">Modified: 2h ago • 42.5 GB</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-secondary/10 text-secondary text-[10px] font-bold rounded">CLOUD SYNCED</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 bg-primary text-on-primary font-body-bold text-body-bold rounded hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span> IMPORT
+                            </button>
+<button class="px-3 py-1.5 border border-outline-variant text-outline font-body-bold text-body-bold rounded hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-sm">settings</span>
+</button>
+</div>
+</div>
+<!-- Project Item (Syncing) -->
+<div class="p-4 bg-surface-container-low rounded-lg border border-primary/30 relative">
+<div class="flex justify-between items-start mb-3">
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary animate-pulse-glow">
+<span class="material-symbols-outlined">sync</span>
+</div>
+<div>
+<h4 class="font-body-bold text-body-bold text-on-surface">Project_Exodus_Final</h4>
+<p class="font-technical-sm text-technical-sm text-primary">Syncing assets... 4.2 GB remaining</p>
+</div>
+</div>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary animate-pulse w-3/4"></div>
+</div>
+</div>
+<!-- Project Item 3 -->
+<div class="p-4 bg-surface-container-low rounded-lg border border-white/5 hover:border-primary/40 transition-all group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex gap-3">
+<div class="w-10 h-10 rounded bg-surface-variant flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">archive</span>
+</div>
+<div>
+<h4 class="font-body-bold text-body-bold text-on-surface">Legacy_Archive_2023</h4>
+<p class="font-technical-sm text-technical-sm text-outline">Modified: 14d ago • 850 GB</p>
+</div>
+</div>
+</div>
+<button class="w-full py-1.5 border border-primary text-primary font-body-bold text-body-bold rounded hover:bg-primary/10 transition-all">
+                            RESTORE FROM DEEP COLD
+                        </button>
+</div>
+</div>
+</div>
+<!-- Remote Assets Explorer -->
+<div class="glass-panel rounded-xl flex flex-col h-[500px]">
+<div class="p-4 border-b border-white/10 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">database</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Remote Assets</h3>
+</div>
+<div class="flex bg-surface-container-highest rounded p-1">
+<button class="p-1 px-2 bg-surface-variant text-on-surface rounded text-xs">LIST</button>
+<button class="p-1 px-2 text-outline rounded text-xs hover:text-on-surface">GRID</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto cyber-scroll p-4">
+<table class="w-full text-left">
+<thead class="sticky top-0 bg-surface-container-low z-10">
+<tr class="font-label-caps text-[10px] text-outline border-b border-white/5">
+<th class="pb-2 font-bold">ASSET NAME</th>
+<th class="pb-2 font-bold">TYPE</th>
+<th class="pb-2 font-bold text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">movie</span>
+<span class="font-technical-sm text-technical-sm">render_comp_v2.exr</span>
+</div>
+</td>
+<td class="py-3 font-technical-sm text-outline">EXR Sequence</td>
+<td class="py-3 text-right">
+<button class="text-primary hover:underline font-technical-sm">PULL</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">image</span>
+<span class="font-technical-sm text-technical-sm">texture_bark_8k.png</span>
+</div>
+</td>
+<td class="py-3 font-technical-sm text-outline">PNG Image</td>
+<td class="py-3 text-right">
+<button class="text-primary hover:underline font-technical-sm">PULL</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm">audio_file</span>
+<span class="font-technical-sm text-technical-sm">ambience_city.wav</span>
+</div>
+</td>
+<td class="py-3 font-technical-sm text-outline">Audio/WAV</td>
+<td class="py-3 text-right">
+<button class="text-primary hover:underline font-technical-sm">PULL</button>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface text-sm">model_training</span>
+<span class="font-technical-sm text-technical-sm">hero_character.fbx</span>
+</div>
+</td>
+<td class="py-3 font-technical-sm text-outline">3D Model</td>
+<td class="py-3 text-right">
+<button class="text-primary hover:underline font-technical-sm">PULL</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Recent Transfers Table -->
+<section class="glass-panel rounded-xl overflow-hidden border-t-2 border-t-primary">
+<div class="p-6 bg-surface-container-lowest/50 flex justify-between items-center border-b border-white/5">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Recent Transfers</h3>
+<p class="font-technical-sm text-technical-sm text-outline">Global node synchronization history</p>
+</div>
+<button class="text-primary font-label-caps text-label-caps flex items-center gap-2">
+                    EXPORT LOGS <span class="material-symbols-outlined text-sm">ios_share</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left min-w-[800px]">
+<thead class="bg-surface-container-high/30">
+<tr class="font-label-caps text-label-caps text-outline border-b border-white/5">
+<th class="p-4">FILE PATH</th>
+<th class="p-4">NODE SOURCE</th>
+<th class="p-4">STATUS</th>
+<th class="p-4">SIZE</th>
+<th class="p-4 text-right">TIMESTAMP</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="p-4 font-technical-sm text-on-surface">/Assets_HD/Visuals/render_final.mp4</td>
+<td class="p-4">
+<span class="flex items-center gap-1 font-technical-sm text-outline">
+<span class="material-symbols-outlined text-[10px]">dns</span> US-EAST-1
+                                </span>
+</td>
+<td class="p-4">
+<span class="px-2 py-1 bg-on-secondary-container/20 text-secondary text-[10px] font-bold rounded flex items-center w-fit gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> COMPLETED
+                                </span>
+</td>
+<td class="p-4 font-technical-sm">2.4 GB</td>
+<td class="p-4 text-right font-technical-sm text-outline">14:22:05</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="p-4 font-technical-sm text-on-surface">/Dev/Source/Kernel_v2.zip</td>
+<td class="p-4">
+<span class="flex items-center gap-1 font-technical-sm text-outline">
+<span class="material-symbols-outlined text-[10px]">dns</span> EU-WEST-2
+                                </span>
+</td>
+<td class="p-4">
+<span class="px-2 py-1 bg-on-secondary-container/20 text-secondary text-[10px] font-bold rounded flex items-center w-fit gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> COMPLETED
+                                </span>
+</td>
+<td class="p-4 font-technical-sm">450 MB</td>
+<td class="p-4 text-right font-technical-sm text-outline">13:45:12</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="p-4 font-technical-sm text-on-surface">/Cache/Global/lookup_table_32.cube</td>
+<td class="p-4">
+<span class="flex items-center gap-1 font-technical-sm text-outline">
+<span class="material-symbols-outlined text-[10px]">dns</span> AP-SOUTH-1
+                                </span>
+</td>
+<td class="p-4">
+<span class="px-2 py-1 bg-error-container/20 text-error text-[10px] font-bold rounded flex items-center w-fit gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> FAILED
+                                </span>
+</td>
+<td class="p-4 font-technical-sm">12 KB</td>
+<td class="p-4 text-right font-technical-sm text-outline">12:10:55</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/80 dark:bg-surface-container/80 backdrop-blur-2xl border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex justify-around items-center h-[64px] pb-safe md:hidden">
+<a class="flex flex-col items-center justify-center text-outline-variant pt-2 hover:text-primary/80 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary filter drop-shadow-[0_0_5px_rgba(0,212,255,0.6)] border-t-2 border-tertiary-container pt-2 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud</span>
+<span class="font-label-caps text-label-caps">Cloud</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline-variant pt-2 hover:text-primary/80 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">add_box</span>
+<span class="font-label-caps text-label-caps">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline-variant pt-2 hover:text-primary/80 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-caps text-label-caps">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline-variant pt-2 hover:text-primary/80 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+<!-- Desktop Sidebar Suggestion (Responsive) -->
+<div class="hidden md:flex fixed right-8 top-1/2 -translate-y-1/2 flex-col gap-4 z-40">
+<div class="glass-panel p-3 rounded-full flex flex-col items-center gap-6 shadow-xl border border-white/10">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:scale-110 transition-transform">bolt</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary hover:scale-110 transition-transform">layers</span>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary hover:scale-110 transition-transform">grid_view</span>
+<div class="w-8 h-[1px] bg-white/10"></div>
+<span class="material-symbols-outlined text-secondary cursor-pointer hover:scale-110 transition-transform">emergency_home</span>
+</div>
+</div>
+<script>
+        // Micro-interactions: random speed fluctuation for UI realism
+        setInterval(() => {
+            const speeds = [448, 450, 452, 449, 451, 455];
+            const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            const speedElement = document.querySelector('.text-secondary');
+            if (speedElement && speedElement.innerText.includes('MB/s')) {
+                speedElement.innerText = `${randomSpeed} MB/s`;
+            }
+        }, 3000);
+    </script>
+</body></html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Artist | ASCII-STUDIO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ascii-canvas {
+            line-height: 8px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 212, 255, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        @keyframes pulse-cyan {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(0, 212, 255, 0.8); }
+            50% { opacity: 0.5; text-shadow: 0 0 2px rgba(0, 212, 255, 0.2); }
+        }
+        .animate-pulse-cyan { animation: pulse-cyan 2s infinite; }
+        
+        @keyframes drift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+        .ascii-scroll { animation: drift 10s linear infinite; }
+
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-dim text-on-surface font-body-base selection:bg-primary/30 overflow-hidden">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#e3e1e9",
+                        "surface-container-high": "#292a2f",
+                        "on-surface": "#e3e1e9",
+                        "primary": "#a8e8ff",
+                        "on-secondary-fixed": "#002109",
+                        "secondary-fixed-dim": "#3ee272",
+                        "inverse-primary": "#00677e",
+                        "secondary-fixed": "#66ff8e",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-secondary": "#003915",
+                        "surface-tint": "#3cd7ff",
+                        "inverse-on-surface": "#2f3036",
+                        "error": "#ffb4ab",
+                        "background": "#121318",
+                        "primary-container": "#00d4ff",
+                        "outline": "#859398",
+                        "surface-bright": "#38393f",
+                        "surface-container-highest": "#34343a",
+                        "on-error": "#690005",
+                        "tertiary-container": "#ffadb3",
+                        "on-tertiary-fixed": "#40000e",
+                        "surface": "#121318",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-background": "#e3e1e9",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "secondary-container": "#00c55a",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary-container": "#a20532",
+                        "surface-variant": "#34343a",
+                        "primary-fixed": "#b4ebff",
+                        "outline-variant": "#3c494e",
+                        "on-tertiary": "#67001c",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-primary": "#003642",
+                        "on-secondary-container": "#004a1d",
+                        "surface-container": "#1e1f25",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-dim": "#121318",
+                        "tertiary": "#ffd5d6",
+                        "secondary": "#3ee272",
+                        "on-primary-fixed": "#001f27",
+                        "on-primary-container": "#00586b",
+                        "on-secondary-fixed-variant": "#005321"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "unit": "4px",
+                        "margin-desktop": "24px",
+                        "sidebar-width": "280px",
+                        "topbar-height": "52px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-margin-desktop h-topbar-height shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="gesture">gesture</span>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter">FlowNexus Artist</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/10">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="cloud_done">cloud_done</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase">ASCII-STUDIO ENGINE ACTIVE</span>
+</div>
+<div class="hidden md:flex gap-4">
+<button class="transition-all duration-300 ease-out text-on-surface-variant hover:bg-white/5 px-3 py-1 rounded">Project</button>
+<button class="transition-all duration-300 ease-out text-tertiary hover:bg-white/5 px-3 py-1 rounded">Live Stream</button>
+<button class="transition-all duration-300 ease-out text-on-surface-variant hover:bg-white/5 px-3 py-1 rounded">Archive</button>
+</div>
+</div>
+</header>
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width z-40 bg-surface-container-low/95 backdrop-blur-2xl border-r border-white/5 shadow-2xl pt-topbar-height flex flex-col gap-unit p-gutter">
+<div class="flex flex-col gap-1 py-4 px-2 border-b border-white/5 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary/20 flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+</div>
+<div>
+<p class="font-body-bold text-body-bold">Lead Animator</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">Project: Arkaios Alpha</p>
+</div>
+</div>
+<p class="text-right font-technical-sm text-technical-sm text-outline opacity-50">V.2.4.0</p>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 text-on-surface-variant hover:bg-white/5 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+<span class="font-body-base text-body-base">Layers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 text-on-surface-variant hover:bg-white/5 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="timeline">timeline</span>
+<span class="font-body-base text-body-base">Timeline</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 text-on-surface-variant hover:bg-white/5 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+<span class="font-body-base text-body-base">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 transition-all duration-500 bg-secondary/10 text-secondary border-l-4 border-secondary rounded-r" href="#">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+<span class="font-body-base text-body-base">Brushes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 text-on-surface-variant hover:bg-white/5 rounded" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-base text-body-base">Arkaios Sync</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<div class="glass-panel p-4 rounded-xl border border-primary/20">
+<p class="font-label-caps text-label-caps text-primary mb-2">CONVERSION METRICS</p>
+<div class="space-y-2 font-technical-sm text-technical-sm">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Chars/s</span>
+<span class="text-secondary tabular-nums" id="chars-sec">12,402</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Resolution</span>
+<span class="text-on-surface">1920x1080</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Contrast</span>
+<span class="text-on-surface">88%</span>
+</div>
+<div class="w-full bg-white/10 h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[72%] shadow-[0_0_8px_rgba(168,232,255,0.6)]"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-sidebar-width pt-topbar-height h-screen relative flex flex-col p-6 gap-6">
+<!-- Live ASCII Stream Section -->
+<section class="flex-1 glass-panel rounded-2xl relative overflow-hidden flex flex-col shadow-2xl">
+<!-- Header for Section -->
+<div class="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#a8e8ff]"></div>
+<span class="font-label-caps text-label-caps tracking-widest text-primary">LIVE ASCII STREAM // INDUSTRIAL_DIAGRAM_04</span>
+</div>
+<div class="flex gap-2">
+<span class="text-technical-sm font-technical-sm text-outline px-2 py-0.5 border border-white/10 rounded">KERN: AUTO</span>
+<span class="text-technical-sm font-technical-sm text-outline px-2 py-0.5 border border-white/10 rounded">GLYPH: BLOCK_SET_A</span>
+</div>
+</div>
+<!-- ASCII Canvas -->
+<div class="flex-1 relative overflow-hidden bg-surface-container-lowest flex items-center justify-center">
+<div class="scanline absolute inset-0 pointer-events-none z-10 opacity-30"></div>
+<div class="ascii-canvas font-technical-sm text-[8px] text-primary/80 select-none ascii-scroll p-12">
+<pre>                        ..................................................................................................................
+                        ..................................................................................................................
+                        ...........@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@...........
+                        ..........@@.....................................................................................@@..........
+                        .........@@...███████████████████████████████████████████████████████████████████████████████████...@@.........
+                        ........@@....██.............................................................................██....@@........
+                        .......@@.....██..../////////////////////////////////////////////////////////////////////....██.....@@.......
+                        ......@@......██..../////////////////////////////////////////////////////////////////////....██......@@......
+                        .....@@.......██..../////////////////////////////////////////////////////////////////////....██.......@@.....
+                        ....@@........██..../////////////////////////////////////////////////////////////////////....██........@@....
+                        ...@@.........██..../////////////////////////////////////////////////////////////////////....██.........@@...
+                        ..@@..........██..../////////////////////////////////////////////////////////////////////....██..........@@..
+                        .@@...........██..../////////////////////////////////////////////////////////////////////....██...........@@.
+                        @@............██..../////////////////////////////////////////////////////////////////////....██............@@
+                        @@............██..../////////////////////////////////////////////////////////////////////....██............@@
+                        @@............██....////////////////////////   FLOW_CORE   //////////////////////////////....██............@@
+                        @@............██..../////////////////////////////////////////////////////////////////////....██............@@
+                        @@............██..../////////////////////////////////////////////////////////////////////....██............@@
+                        @@............██..../////////////////////////////////////////////////////////////////////....██............@@
+                        .@@...........██..../////////////////////////////////////////////////////////////////////....██...........@@.
+                        ..@@..........██..../////////////////////////////////////////////////////////////////////....██..........@@..
+                        ...@@.........██..../////////////////////////////////////////////////////////////////////....██.........@@...
+                        ....@@........██..../////////////////////////////////////////////////////////////////////....██........@@....
+                        .....@@.......██..../////////////////////////////////////////////////////////////////////....██.......@@.....
+                        ......@@......██..../////////////////////////////////////////////////////////////////////....██......@@......
+                        .......@@.....██..../////////////////////////////////////////////////////////////////////....██.....@@.......
+                        ........@@....██.............................................................................██....@@........
+                        .........@@...███████████████████████████████████████████████████████████████████████████████████...@@.........
+                        ..........@@.....................................................................................@@..........
+                        ...........@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@...........
+                        ..................................................................................................................
+                    </pre>
+<pre class="opacity-50">                        // INITIALIZING SECONDARY_LAYER_SCAN...
+                        // DETECTING COMPONENT_ID: NEXUS_R1
+                        // CONVERTING VECTOR TO GLYPH_MATRIX...
+                        ..................................................................................................................
+                        ..................................................................................................................
+                        ..................................................................................................................
+                        ..................................................................................................................
+                    </pre>
+</div>
+<!-- Overlay UI elements -->
+<div class="absolute inset-0 p-8 flex flex-col justify-between pointer-events-none">
+<div class="flex justify-between">
+<div class="border-l border-t border-primary/40 w-16 h-16"></div>
+<div class="border-r border-t border-primary/40 w-16 h-16"></div>
+</div>
+<div class="flex justify-center">
+<div class="px-4 py-1 bg-primary text-on-primary font-label-caps text-[9px] rounded-sm shadow-lg">TARGETING_ACTIVE</div>
+</div>
+<div class="flex justify-between">
+<div class="border-l border-b border-primary/40 w-16 h-16"></div>
+<div class="border-r border-b border-primary/40 w-16 h-16"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Controls and Status -->
+<section class="h-40 grid grid-cols-12 gap-6 mb-16">
+<!-- Injection Controls -->
+<div class="col-span-8 glass-panel rounded-2xl p-6 flex items-center justify-between">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-error rounded-full animate-pulse-cyan"></div>
+<h3 class="font-headline-md text-headline-md text-primary tracking-tight">INJECTION READY</h3>
+</div>
+<p class="text-on-surface-variant font-technical-sm text-technical-sm max-w-md">System is primed for real-time ASCII stream injection into the core Arkaios render engine. Ensure all metrics are within nominal ranges before deployment.</p>
+</div>
+<button class="group relative flex flex-col items-center gap-3 p-4 bg-error-container/20 border border-error/30 rounded-xl hover:bg-error-container/40 transition-all duration-300 active:scale-95" id="injection-switch">
+<div class="w-16 h-20 bg-surface-container-highest rounded border-2 border-outline/30 flex items-center justify-center p-2">
+<div class="w-full h-1/2 bg-error rounded shadow-[0_0_15px_rgba(147,0,10,0.5)] transition-all duration-500 origin-bottom" id="switch-lever"></div>
+</div>
+<span class="font-label-caps text-label-caps text-error group-hover:text-white transition-colors">LIVE INJECTION</span>
+</button>
+</div>
+<!-- Quick Actions / Meta -->
+<div class="col-span-4 glass-panel rounded-2xl p-6 flex flex-col justify-center gap-4">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant font-technical-sm text-technical-sm">BUFFER STATE</span>
+<span class="text-secondary font-technical-sm text-technical-sm">OPTIMIZED</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 bg-primary text-on-primary font-body-bold text-body-bold rounded flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                        EXPORT
+                    </button>
+<button class="flex-1 py-2 bg-white/5 border border-white/10 text-on-surface font-body-bold text-body-bold rounded flex items-center justify-center gap-2 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+                        CONFIG
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Floating Mobile style translated to Desktop) -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full w-auto min-w-[320px] bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-center items-center gap-6 px-6 py-2 z-50">
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] hover:scale-110 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+</button>
+</nav>
+<!-- Contextual FAB (Hidden on this high-tech detail screen per mandate) -->
+<script>
+        // Micro-interactions for the high-tech terminal
+        const charMetric = document.getElementById('chars-sec');
+        const injectionBtn = document.getElementById('injection-switch');
+        const lever = document.getElementById('switch-lever');
+
+        // Randomized metric fluctuations
+        setInterval(() => {
+            const base = 12402;
+            const variance = Math.floor(Math.random() * 500) - 250;
+            charMetric.innerText = (base + variance).toLocaleString();
+        }, 1500);
+
+        // Security Switch Interaction
+        injectionBtn.addEventListener('click', () => {
+            const isArmed = lever.style.transform === 'rotateX(-180deg)';
+            if (isArmed) {
+                lever.style.transform = 'rotateX(0deg)';
+                lever.classList.replace('bg-secondary', 'bg-error');
+                lever.style.boxShadow = "0 0 15px rgba(147,0,10,0.5)";
+                console.log("INJECTION ABORTED");
+            } else {
+                lever.style.transform = 'rotateX(-180deg)';
+                lever.classList.replace('bg-error', 'bg-secondary');
+                lever.style.boxShadow = "0 0 15px rgba(0,197,90,0.5)";
+                
+                // Visual feedback on the canvas
+                const canvas = document.querySelector('.ascii-canvas');
+                canvas.style.color = "#3ee272";
+                canvas.style.textShadow = "0 0 15px rgba(62,226,114,0.6)";
+                
+                setTimeout(() => {
+                    alert("INJECTION SEQUENCE COMMENCED: FLOW_CORE STABILIZED");
+                }, 400);
+            }
+        });
+
+        // Background atmosphere: drifting ASCII noise
+        const canvas = document.querySelector('.ascii-canvas');
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            canvas.style.maskImage = `radial-gradient(circle at ${x}px ${y}px, black 0%, transparent 70%)`;
+            canvas.style.webkitMaskImage = `radial-gradient(circle at ${x}px ${y}px, black 0%, transparent 70%)`;
+        });
+    </script>
+</body></html>

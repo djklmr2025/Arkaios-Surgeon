@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Model Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-bottom {
+            border-bottom: 1px solid #a8e8ff;
+            box-shadow: 0 4px 12px -2px rgba(168, 232, 255, 0.3);
+        }
+        .cyber-void {
+            background-color: #050712;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0e13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #34343a;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#1a1b21",
+                      "inverse-surface": "#e3e1e9",
+                      "surface-bright": "#38393f",
+                      "on-secondary-fixed-variant": "#005321",
+                      "inverse-on-surface": "#2f3036",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "surface-tint": "#3cd7ff",
+                      "surface-container-lowest": "#0d0e13",
+                      "on-surface": "#e3e1e9",
+                      "on-tertiary-container": "#a20532",
+                      "on-error-container": "#ffdad6",
+                      "on-primary-fixed": "#001f27",
+                      "primary-fixed-dim": "#3cd7ff",
+                      "primary-container": "#00d4ff",
+                      "inverse-primary": "#00677e",
+                      "error": "#ffb4ab",
+                      "on-secondary-container": "#004a1d",
+                      "primary-fixed": "#b4ebff",
+                      "on-surface-variant": "#bbc9cf",
+                      "outline-variant": "#3c494e",
+                      "on-tertiary": "#67001c",
+                      "on-secondary": "#003915",
+                      "on-primary": "#003642",
+                      "surface-container-highest": "#34343a",
+                      "background": "#121318",
+                      "on-error": "#690005",
+                      "surface-container-high": "#292a2f",
+                      "surface": "#121318",
+                      "on-background": "#e3e1e9",
+                      "secondary-fixed-dim": "#3ee272",
+                      "secondary-fixed": "#66ff8e",
+                      "outline": "#859398",
+                      "on-tertiary-fixed": "#40000e",
+                      "primary": "#a8e8ff",
+                      "tertiary-fixed": "#ffdadb",
+                      "tertiary": "#ffd5d6",
+                      "error-container": "#93000a",
+                      "tertiary-container": "#ffadb3",
+                      "on-tertiary-fixed-variant": "#91002b",
+                      "on-primary-container": "#00586b",
+                      "surface-dim": "#121318",
+                      "secondary-container": "#00c55a",
+                      "surface-container": "#1e1f25",
+                      "surface-variant": "#34343a",
+                      "tertiary-fixed-dim": "#ffb2b7",
+                      "on-secondary-fixed": "#002109",
+                      "secondary": "#3ee272"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "24px",
+                      "gutter": "16px",
+                      "sidebar-width": "280px",
+                      "margin-mobile": "12px",
+                      "unit": "4px",
+                      "topbar-height": "52px"
+              },
+              "fontFamily": {
+                      "body-base": ["Inter"],
+                      "technical-sm": ["JetBrains Mono"],
+                      "headline-md-mobile": ["Inter"],
+                      "body-bold": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-caps": ["Inter"]
+              },
+              "fontSize": {
+                      "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="cyber-void text-on-surface font-body-base overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full h-[52px] flex items-center justify-between px-margin-mobile md:px-margin-desktop bg-surface/90 backdrop-blur-md z-50 border-b border-white/10">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-display-lg text-headline-md-mobile md:text-headline-md tracking-tighter text-primary">FlowNexus</h1>
+</div>
+<div class="flex items-center gap-2 mr-4 bg-primary-container/10 border border-primary-container/30 px-3 py-1 rounded-full animate-pulse">
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_#00d4ff]"></span>
+<span class="text-primary-container font-technical-sm text-[10px] uppercase tracking-[0.2em] font-bold">Live Sync Active</span>
+</div><div class="flex items-center gap-3">
+<div class="hidden md:flex items-center gap-6 mr-6">
+<span class="text-primary font-bold font-label-caps text-label-caps cursor-pointer">VIEWER</span>
+<span class="text-on-surface-variant font-label-caps text-label-caps cursor-pointer hover:text-primary transition-colors">HISTORY</span>
+<span class="text-on-surface-variant font-label-caps text-label-caps cursor-pointer hover:text-primary transition-colors">FORK</span>
+</div>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-body-bold text-body-base hover:opacity-90 transition-all">
+                Publicar
+            </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqTISfgz2629xgFpfOAs48UcITEF0-fug2rtsrVmCye-rH8aoUnN9olouyzAQ6oprPyetcvX4UTYG3APUyPaoSGMpX8NzJYDjaLS0tmvgD1FiReAwdE67XFnO_X21ibVwnwod7owxrPDNDgSLneySC7xdGFTzy2RBdSEtWsZqCATicJLQ-ydJ8FjZKxYVBejCoVxQiPPiC0fRNMuht23znLq1Xat70V8MrvErs4Vcdy7_IreyIJmuM51jgcntrM3oR66ALjUdEsn0"/>
+</div>
+</div>
+</header>
+<!-- Main Immersive Canvas -->
+<main class="relative w-full h-screen pt-[52px] flex flex-col items-center justify-center overflow-y-auto">
+<!-- Background Grid Effect -->
+<div class="absolute inset-0 z-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#3cd7ff 1px, transparent 1px); background-size: 32px 32px;">
+</div>
+<!-- The Content Stage (Interactive Diagram Viewer) -->
+<div class="relative z-10 w-full h-full flex items-center justify-center transition-transform duration-500 ease-out perspective-1000" id="viewer-stage">
+<div class="relative max-w-5xl w-full aspect-video rounded-xl overflow-hidden glass-panel shadow-2xl group" style="transform-style: preserve-3d; transition: transform 0.1s ease-out;">
+<img class="w-full h-full object-cover transition-transform duration-300" data-alt="A complex, futuristic industrial network diagram rendered with glowing cyan lines and translucent holographic nodes on a deep navy background. The visual style is high-performance technical engineering with subtle lens flares and a shallow depth of field. High-contrast labels in monospaced font detail data flow pathways between mechanical infrastructure icons. The mood is sophisticated, cinematic, and professional, characteristic of a top-tier cybernetic command center interface." id="main-diagram" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8-HoYYoGlXDb5zkkVLiyup-ysmCOIXGC65S3ub5OaXVmyw2HFmFK2AfjCsxWj3BGINTXMyjoTMtYqQF9SB8Xk66rRJktFc21uqbLtbcecn_LOTXcAPteoqdAshz2aP16pwgsYTljCENUgeKqxbtcQ9pFxNr5UCnSUPLK4dcwTF3kCqjp7voRMHL0gKA1Aexe61h3JLrxmMzDSNuwI9aC8Wnw3XqpBGFUpzJU8nkKXeKhfHDGYxHof2joT5lYININhOGymcY8hQS0"/>
+<!-- Media Indicator Overlay -->
+<div class="absolute top-4 right-4 px-4 py-1.5 bg-black/70 backdrop-blur-xl border border-primary-container/40 rounded-full flex items-center gap-2 shadow-[0_0_15px_rgba(0,212,255,0.2)]">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+<span class="font-technical-sm text-technical-sm text-secondary font-bold uppercase tracking-widest">Live JSON Feed</span>
+</div>
+</div>
+</div><div class="fixed right-margin-mobile md:right-margin-desktop top-1/2 -translate-y-1/2 z-50 flex flex-col gap-6 items-center"><div class="flex flex-col items-center gap-1 group relative"><button class="w-12 h-12 rounded-full bg-surface-container-highest/80 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-primary/20 transition-all text-on-surface"><span class="material-symbols-outlined">thumb_up</span></button><span class="text-label-caps text-on-surface-variant">4.2k</span><div class="absolute right-full mr-4 bg-error-container text-on-error-container px-3 py-1 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Login Required</div></div><div class="flex flex-col items-center gap-1 group relative"><button class="w-12 h-12 rounded-full bg-surface-container-highest/80 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-error/20 transition-all text-on-surface"><span class="material-symbols-outlined">thumb_down</span></button><span class="text-label-caps text-on-surface-variant">12</span><div class="absolute right-full mr-4 bg-error-container text-on-error-container px-3 py-1 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Login Required</div></div><button class="w-12 h-12 rounded-full bg-[#25D366]/20 backdrop-blur-md border border-[#25D366]/40 flex items-center justify-center hover:bg-[#25D366]/40 transition-all text-[#25D366]" onclick="document.getElementById('whatsapp-modal').classList.remove('hidden')"><span class="material-symbols-outlined">share</span></button></div>
+<!-- Floating Control Overlay -->
+<div class="absolute bottom-24 md:bottom-32 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 p-2 glass-panel rounded-full shadow-xl">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 text-on-surface transition-colors active:scale-90" onclick="adjustZoom(0.1)">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 text-on-surface transition-colors active:scale-90" onclick="adjustZoom(-0.1)">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<div class="w-px h-6 bg-white/10 mx-1"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 text-on-surface transition-colors active:scale-90" onclick="document.documentElement.requestFullscreen()" title="Full Screen"><span class="material-symbols-outlined">fullscreen</span></button><div class="w-px h-6 bg-white/10 mx-1"></div><button class="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary hover:opacity-90 transition-all shadow-lg active:scale-90" id="play-pause" onclick="togglePlay()">
+<span class="material-symbols-outlined fill-current" id="play-icon">pause</span>
+</button>
+<div class="w-px h-6 bg-white/10 mx-1"></div>
+<button class="px-4 h-10 flex items-center gap-2 rounded-full hover:bg-white/10 text-primary transition-colors font-body-bold text-body-base active:scale-95">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+<span class="hidden md:inline">Open in Editor</span>
+</button>
+</div>
+<!-- Info Panel (Bottom Sheet Style) -->
+<div class="absolute bottom-0 left-0 w-full z-40 bg-surface-container-lowest/80 backdrop-blur-2xl border-t border-white/5 px-margin-mobile py-4 md:px-margin-desktop md:py-6 max-h-[300px] overflow-y-auto">
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Title & Description -->
+<div class="md:col-span-7 flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-md text-headline-md text-primary">Nexus-7 Core Architecture</h2>
+<span class="font-technical-sm text-technical-sm px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 uppercase tracking-widest">v2.4.0</span>
+</div>
+<p class="text-on-surface-variant font-body-base text-body-base leading-relaxed">
+                        An interactive mapping of the primary cooling and data distribution arrays for the Nexus-7 industrial cluster. This diagram tracks real-time thermal fluctuations and packet delivery efficiency across the primary localized grid. Optimized for high-throughput monitoring systems.
+                    </p>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="font-label-caps text-label-caps px-3 py-1 rounded-lg bg-surface-variant text-on-surface-variant border border-white/5">Industrial</span>
+<span class="font-label-caps text-label-caps px-3 py-1 rounded-lg bg-surface-variant text-on-surface-variant border border-white/5">Map</span>
+<span class="font-label-caps text-label-caps px-3 py-1 rounded-lg bg-surface-variant text-on-surface-variant border border-white/5">Workflow</span>
+</div>
+</div>
+<!-- Technical Specs -->
+<div class="md:col-span-5 grid grid-cols-2 gap-4 border-l border-white/10 pl-6">
+<div class="flex flex-col">
+<span class="text-outline font-label-caps text-[10px] uppercase tracking-tighter">Resolution</span>
+<span class="font-technical-sm text-on-surface text-body-base">8192 x 4608</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline font-label-caps text-[10px] uppercase tracking-tighter">Format</span>
+<span class="font-technical-sm text-on-surface text-body-base">Interactive JSON</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline font-label-caps text-[10px] uppercase tracking-tighter">Last Update</span>
+<span class="font-technical-sm text-on-surface text-body-base">2 mins ago</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline font-label-caps text-[10px] uppercase tracking-tighter">Author</span>
+<span class="font-technical-sm text-primary text-body-base flex items-center gap-1">
+                            @quantum_dev
+                            <span class="material-symbols-outlined text-[14px]">verified</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-28 left-margin-mobile md:left-margin-desktop z-50 flex items-center gap-3 px-4 py-3 bg-surface-container-highest/90 backdrop-blur-md border border-primary/20 rounded-xl shadow-2xl animate-bounce">
+<div class="flex flex-col">
+<p class="text-primary font-body-bold text-[12px] flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">sync_alt</span>
+            Waiting for Agent injection...
+        </p>
+<p class="text-on-surface-variant font-technical-sm text-[10px] uppercase opacity-70 mt-0.5">Live session: flow-nexus-alpha</p>
+</div>
+</div></main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[64px] px-margin-mobile pb-safe bg-surface-container-low/80 backdrop-blur-2xl rounded-t-xl border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-secondary scale-110 transition-transform">
+<span class="material-symbols-outlined active-icon">add_box</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">person</span>
+</div>
+</nav>
+<script>
+        let zoom = 1;
+        const stage = document.getElementById('viewer-stage');
+        const img = document.getElementById('main-diagram');
+        const playIcon = document.getElementById('play-icon');
+        let isPlaying = true;
+
+        function adjustZoom(delta) {
+            zoom = Math.min(Math.max(zoom + delta, 0.5), 3);
+            img.style.transform = `scale(${zoom})`;
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playIcon.innerText = 'pause';
+                img.classList.remove('opacity-80');
+            } else {
+                playIcon.innerText = 'play_arrow';
+                img.classList.add('opacity-80');
+            }
+        }
+
+        // Initialize state
+        window.onload = () => {
+            playIcon.innerText = 'pause';
+        };
+
+        // Micro-interaction: Mouse tracking depth effect
+        stage.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+            img.parentElement.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        stage.addEventListener('mouseleave', () => {
+            img.parentElement.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+    </script>
+<div class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm" id="whatsapp-modal"><div class="glass-panel w-full max-w-sm p-6 rounded-2xl mx-4"><h3 class="text-headline-md-mobile text-primary mb-4">Share via WhatsApp</h3><p class="text-body-base text-on-surface-variant mb-4">Enter phone number to send the project link.</p><div class="flex flex-col gap-4"><input class="bg-surface-container-highest border border-white/10 rounded-lg px-4 py-2 text-on-surface focus:ring-1 focus:ring-primary outline-none" placeholder="+1 (555) 000-0000" type="tel"/><div class="flex gap-2"><button class="flex-1 py-2 rounded-lg bg-surface-variant text-on-surface-variant font-body-bold hover:bg-surface-bright" onclick="document.getElementById('whatsapp-modal').classList.add('hidden')">Cancel</button><button class="flex-1 py-2 rounded-lg bg-[#25D366] text-black font-body-bold hover:opacity-90">Send Link</button></div></div></div></div></body></html>

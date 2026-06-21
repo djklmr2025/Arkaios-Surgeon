@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Metro Holographic - Modo Descanso</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Circular Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple-animation 1.2s cubic-bezier(0, 0.2, 0.4, 1);
+            background: radial-gradient(circle, rgba(168, 232, 255, 0.4) 0%, rgba(168, 232, 255, 0.1) 40%, transparent 70%);
+            border: 1px solid rgba(168, 232, 255, 0.3);
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        @keyframes ripple-animation {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Neon Breathing Effect */
+        @keyframes neon-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(168, 232, 255, 0.5), 0 0 20px rgba(168, 232, 255, 0.2);
+                opacity: 0.7;
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 25px rgba(168, 232, 255, 0.9), 0 0 40px rgba(168, 232, 255, 0.5);
+                opacity: 1;
+                transform: scale(1.02);
+            }
+        }
+
+        .animate-neon-pulse {
+            animation: neon-pulse 3s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        .cyber-void-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 24, 0.8) 100%);
+        }
+
+        body {
+            background-color: #050712;
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism Slider */
+        .mode-switch {
+            background: rgba(30, 31, 37, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00c55a",
+                        "on-secondary": "#003915",
+                        "on-surface": "#e3e1e9",
+                        "on-secondary-container": "#004a1d",
+                        "surface-container": "#1e1f25",
+                        "on-primary": "#003642",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-highest": "#34343a",
+                        "surface-container-low": "#1a1b21",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "inverse-primary": "#00677e",
+                        "surface-bright": "#38393f",
+                        "surface-dim": "#121318",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-secondary-fixed": "#002109",
+                        "surface-variant": "#34343a",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface": "#121318",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2f3036",
+                        "error-container": "#93000a",
+                        "background": "#121318",
+                        "on-tertiary-container": "#a20532",
+                        "tertiary": "#ffd5d6",
+                        "surface-container-high": "#292a2f",
+                        "outline": "#859398",
+                        "secondary-fixed": "#66ff8e",
+                        "primary-container": "#00d4ff",
+                        "tertiary-container": "#ffadb3",
+                        "on-primary-container": "#00586b",
+                        "primary-fixed": "#b4ebff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-tint": "#3cd7ff",
+                        "on-tertiary-fixed": "#40000e",
+                        "secondary": "#3ee272",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-primary-fixed": "#001f27",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary": "#67001c",
+                        "secondary-fixed-dim": "#3ee272",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-background": "#e3e1e9",
+                        "outline-variant": "#3c494e",
+                        "inverse-surface": "#e3e1e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-base": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex flex-col h-screen w-screen relative overflow-hidden" onclick="handleScreenTouch(event)">
+<!-- Background Video Simulation -->
+<div class="fixed inset-0 z-0">
+<img alt="Fondo futurista CyberFlow" class="w-full h-full object-cover opacity-60 scale-105" src="https://lh3.googleusercontent.com/aida/ADBb0ugGYcLBWbbiWGXKcvs_jdMtgpfCGYFI1DJwd2ZUqn_UgGiI-1_tZCvEWxN7DIyxfrjel_WaJxPH-gWGllpAvdJpEn_5InXT0AW6Je4QEwvTJv_wwGF9R-cKY4VfQDzujCmkU7YBxpyIaCzZFW_wmXVR7v9tdyh9-lZ5_WLeMx5WQvfkpK_PoQ8mXiHltN61i1llCYSBiTiaOfTRK0jTTbhCnE-YSnjopGwsQB6yBDq2nK6fiiBiOHRPf0s" style="filter: saturate(1.2) brightness(0.6) contrast(1.1) blur(4px);"/>
+<div class="absolute inset-0 cyber-void-overlay backdrop-blur-[2px]"></div>
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">waves</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<!-- Selector de Modo (Discreto) -->
+<div class="flex items-center gap-2">
+<div class="mode-switch rounded-full p-1 flex items-center gap-1">
+<button class="px-3 py-1 rounded-full text-[10px] font-label-caps transition-all bg-primary text-on-primary" id="btn-libre" onclick="setSystemMode('libre', event)">LIBRE</button>
+<button class="px-3 py-1 rounded-full text-[10px] font-label-caps transition-all text-on-surface-variant hover:text-primary" id="btn-corp" onclick="setSystemMode('corp', event)">CORP</button>
+</div>
+<span class="material-symbols-outlined text-primary text-xl ml-2 opacity-60">shield_with_heart</span>
+</div>
+</header>
+<!-- Main Content: Central Attract State -->
+<main class="relative z-10 flex-grow flex flex-col items-center justify-center pointer-events-none transition-opacity duration-700" id="main-attract">
+<div class="text-center space-y-8">
+<div class="mb-12 relative">
+<div class="absolute -inset-16 border border-primary/20 rounded-full animate-[spin_12s_linear_infinite] pointer-events-none"></div>
+<div class="absolute -inset-24 border border-secondary/10 rounded-full animate-[spin_20s_linear_infinite_reverse] pointer-events-none"></div>
+<span class="material-symbols-outlined text-7xl text-primary drop-shadow-[0_0_20px_rgba(168,232,255,0.6)]" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+</div>
+<h2 class="font-headline-md text-on-surface tracking-[0.2em] animate-neon-pulse uppercase" id="welcome-text">
+            Toca para Interactuar
+        </h2>
+<div class="flex justify-center gap-2 items-center">
+<div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-primary"></div>
+<span class="font-technical-sm text-on-surface-variant text-[10px] tracking-widest uppercase" id="status-tag">System Core Active</span>
+<div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-primary"></div>
+</div>
+</div>
+</main>
+<!-- Simulated Business Persistence Layer (Mock UI) -->
+<div class="fixed inset-0 z-30 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-1000 scale-95" id="business-layer">
+<div class="w-[90%] max-w-md bg-surface-container/60 backdrop-blur-2xl border border-primary/30 rounded-2xl p-6 shadow-2xl">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label-caps text-secondary text-[10px]">VISOR EMPRESARIAL</span>
+<h3 class="font-headline-md text-on-surface">Proyecto Alpha v4</h3>
+</div>
+<span class="material-symbols-outlined text-primary">bookmark_manager</span>
+</div>
+<div class="aspect-video bg-black/40 rounded-lg mb-6 border border-white/5 flex items-center justify-center overflow-hidden">
+<div class="animate-pulse flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-4xl text-primary/40">query_stats</span>
+<span class="text-[9px] font-technical-sm text-on-surface-variant">RECUPERANDO ESTADO...</span>
+</div>
+</div>
+<p class="font-body-base text-on-surface-variant mb-4">El sistema ha recordado su posición anterior. Modo de persistencia empresarial activo para optimización de flujo.</p>
+<div class="grid grid-cols-2 gap-3">
+<div class="h-1 bg-primary/20 rounded-full overflow-hidden"><div class="h-full bg-primary w-2/3"></div></div>
+<div class="h-1 bg-primary/20 rounded-full overflow-hidden"><div class="h-full bg-secondary w-1/3"></div></div>
+</div>
+</div>
+</div>
+<!-- Author Signature Overlay -->
+<div class="fixed top-20 right-6 z-20 pointer-events-none">
+<div class="bg-surface-container-low/60 backdrop-blur-md border border-primary/20 p-4 rounded-lg flex flex-col items-end gap-1">
+<span class="font-label-caps text-secondary text-[9px] tracking-widest">ECOSISTEMA INTELIGENTE</span>
+<span class="font-body-bold text-on-surface text-xs italic opacity-80">firmado por Stitch AI Assistant</span>
+</div>
+</div>
+<!-- Bottom Interface -->
+<div class="fixed bottom-12 left-0 w-full flex justify-center z-50 opacity-0 transform translate-y-8 transition-all duration-1000 pointer-events-none" id="interaction-ui">
+<button class="pointer-events-auto flex items-center gap-3 px-8 py-4 bg-surface-container-highest/80 backdrop-blur-2xl border border-white/10 rounded-full text-primary hover:bg-primary/10 hover:border-primary/40 transition-all active:scale-95 group shadow-[0_20px_60px_rgba(0,0,0,0.55)]" onclick="resetUI(event)">
+<span class="material-symbols-outlined text-xl group-hover:rotate-180 transition-transform duration-500">replay</span>
+<span class="font-label-caps tracking-[0.15em]">Regresar a Modo Demo</span>
+</button>
+</div>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30">
+<div class="flex flex-col items-center text-on-surface-variant opacity-40">
+<span class="material-symbols-outlined text-2xl">motion_photos_on</span>
+<span class="font-label-caps text-[9px]">Live Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="font-label-caps text-[9px]">Interactive Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-40">
+<span class="material-symbols-outlined text-2xl">replay</span>
+<span class="font-label-caps text-[9px]">Demo Loop</span>
+</div>
+</nav>
+<script>
+    let firstTouch = false;
+    let systemMode = 'libre'; // 'libre' or 'corp'
+    let businessStatePersisted = false;
+
+    // Simulation of Futuristic Welcome Voice via Web Audio API
+    function playWelcomeVoice() {
+        if (!window.AudioContext && !window.webkitAudioContext) return;
+        
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Simple synth voice simulation
+        const playTone = (freq, startTime, duration) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.1, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        };
+
+        // Futuristic chime instead of actual text-to-speech for weight/reliability
+        playTone(440, audioCtx.currentTime, 0.5);
+        playTone(660, audioCtx.currentTime + 0.1, 0.5);
+        playTone(880, audioCtx.currentTime + 0.2, 0.8);
+        
+        console.log("Audio Log: 'Bienvenido al visor del futuro'");
+    }
+
+    function createRipple(x, y) {
+        const body = document.body;
+        const ripple = document.createElement("div");
+        ripple.classList.add("ripple");
+        
+        // Circular ripple sizing
+        const size = 150;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        
+        body.appendChild(ripple);
+        
+        ripple.addEventListener("animationend", () => {
+            ripple.remove();
+        });
+    }
+
+    function handleScreenTouch(event) {
+        // Only trigger ripple if not clicking UI elements
+        if (event.target.closest('button') || event.target.closest('nav')) return;
+
+        createRipple(event.clientX, event.clientY);
+        
+        if (!firstTouch) {
+            playWelcomeVoice();
+            
+            // Interaction Logic
+            const ui = document.getElementById('interaction-ui');
+            ui.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+            ui.classList.add('opacity-100', 'translate-y-0');
+            
+            // Content Transition
+            document.getElementById('main-attract').classList.add('opacity-0');
+            
+            // Persistence Logic (Modo Empresarial)
+            if (systemMode === 'corp') {
+                const layer = document.getElementById('business-layer');
+                layer.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                layer.classList.add('opacity-100', 'scale-100');
+                businessStatePersisted = true;
+            }
+
+            firstTouch = true;
+        }
+    }
+
+    function setSystemMode(mode, event) {
+        event.stopPropagation();
+        systemMode = mode;
+        
+        const btnLibre = document.getElementById('btn-libre');
+        const btnCorp = document.getElementById('btn-corp');
+        const statusTag = document.getElementById('status-tag');
+
+        if (mode === 'libre') {
+            btnLibre.classList.add('bg-primary', 'text-on-primary');
+            btnLibre.classList.remove('text-on-surface-variant');
+            btnCorp.classList.remove('bg-primary', 'text-on-primary');
+            btnCorp.classList.add('text-on-surface-variant');
+            statusTag.innerText = "System Core Active";
+        } else {
+            btnCorp.classList.add('bg-primary', 'text-on-primary');
+            btnCorp.classList.remove('text-on-surface-variant');
+            btnLibre.classList.remove('bg-primary', 'text-on-primary');
+            btnLibre.classList.add('text-on-surface-variant');
+            statusTag.innerText = "Enterprise Mode: Locked to Project";
+        }
+    }
+
+    function resetUI(event) {
+        event.stopPropagation();
+        const ui = document.getElementById('interaction-ui');
+        ui.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+        ui.classList.remove('opacity-100', 'translate-y-0');
+        
+        document.getElementById('main-attract').classList.remove('opacity-0');
+        
+        const layer = document.getElementById('business-layer');
+        layer.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+        layer.classList.remove('opacity-100', 'scale-100');
+        
+        firstTouch = false;
+        businessStatePersisted = false;
+    }
+</script>
+</body></html>

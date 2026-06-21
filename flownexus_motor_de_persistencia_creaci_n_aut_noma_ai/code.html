@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus - Motor de Persistencia &amp; Creación Autónoma AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#1e1f25",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-primary-fixed": "#001f27",
+                    "surface-container-high": "#292a2f",
+                    "primary-fixed": "#b4ebff",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "on-surface": "#e3e1e9",
+                    "on-error": "#690005",
+                    "inverse-primary": "#00677e",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "on-primary": "#003642",
+                    "surface-container-low": "#1a1b21",
+                    "on-secondary-fixed": "#002109",
+                    "secondary-fixed": "#66ff8e",
+                    "secondary": "#3ee272",
+                    "inverse-on-surface": "#2f3036",
+                    "secondary-container": "#00c55a",
+                    "on-tertiary": "#67001c",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "tertiary": "#ffd5d6",
+                    "on-surface-variant": "#bbc9cf",
+                    "background": "#121318",
+                    "outline-variant": "#3c494e",
+                    "secondary-fixed-dim": "#3ee272",
+                    "primary": "#a8e8ff",
+                    "surface-variant": "#34343a",
+                    "outline": "#859398",
+                    "on-secondary": "#003915",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "tertiary-container": "#ffadb3",
+                    "surface-bright": "#38393f",
+                    "on-background": "#e3e1e9",
+                    "surface-container-lowest": "#0d0e13",
+                    "surface-dim": "#121318",
+                    "error-container": "#93000a",
+                    "on-secondary-container": "#004a1d",
+                    "tertiary-fixed": "#ffdadb",
+                    "surface-container-highest": "#34343a",
+                    "surface": "#121318",
+                    "on-tertiary-fixed": "#40000e",
+                    "primary-container": "#00d4ff",
+                    "surface-tint": "#3cd7ff",
+                    "on-error-container": "#ffdad6",
+                    "inverse-surface": "#e3e1e9",
+                    "on-primary-container": "#00586b",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#a20532"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px",
+                    "sidebar-width": "280px",
+                    "margin-mobile": "12px",
+                    "unit": "4px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-bold": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .cyber-grid {
+            background-image: linear-gradient(to right, rgba(168, 232, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(168, 232, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(168, 232, 255, 0.4);
+        }
+        .node-animate {
+            animation: pulse-node 3s infinite ease-in-out;
+        }
+        @keyframes pulse-node {
+            0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 5px #a8e8ff); }
+            50% { opacity: 0.8; transform: scale(1.1); filter: drop-shadow(0 0 12px #00d4ff); }
+        }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base overflow-hidden h-screen flex flex-col">
+<!-- Nuke/Server Status Bar -->
+<header class="h-[24px] bg-surface-container-lowest border-b border-white/5 flex items-center justify-between px-margin-desktop z-50">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-technical-sm text-technical-sm text-secondary uppercase">ELEMIA Sync: Active</span>
+</div>
+<div class="h-3 w-px bg-outline-variant"></div>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">LATENCY: 12ms</span>
+</div>
+<div class="font-technical-sm text-technical-sm text-primary/60 tracking-widest uppercase">
+            System Entropy: 0.0004%
+        </div>
+</header>
+<!-- Top AppBar (JSON Content) -->
+<nav class="fixed top-[24px] w-full bg-surface/80 backdrop-blur-xl flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop border-b border-white/10 z-40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-display-lg tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-primary-container/10 border border-primary/20 px-3 py-1 rounded-lg">
+<span class="font-technical-sm text-technical-sm text-primary">FLOWNEXUS_CORE_V1</span>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-white/5 p-2 rounded transition-colors active:scale-95" data-icon="settings_input_antenna">settings_input_antenna</button>
+</div>
+</nav>
+<!-- Main Content Layout -->
+<main class="flex-1 flex flex-col pt-[76px] pb-16 overflow-hidden">
+<!-- Live Canvas Workspace (60%) -->
+<section class="flex-[6] relative border-b border-white/5 cyber-grid overflow-hidden group">
+<!-- AI Drawing Canvas Simulation -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="canvas-container">
+<svg class="w-full h-full" viewbox="0 0 1000 600">
+<!-- Flow Lines -->
+<path class="opacity-40 animate-[dash_20s_linear_infinite]" d="M100,300 Q300,100 500,300 T900,300" fill="none" stroke="url(#cyan-grad)" stroke-dasharray="10,5" stroke-width="2"></path>
+<defs>
+<lineargradient id="cyan-grad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#a8e8ff"></stop>
+<stop offset="100%" stop-color="#00d4ff"></stop>
+</lineargradient>
+</defs>
+<!-- Nodes -->
+<circle class="node-animate" cx="100" cy="300" fill="#a8e8ff" r="8"></circle>
+<circle class="node-animate" cx="300" cy="180" fill="#a8e8ff" r="6" style="animation-delay: 0.5s;"></circle>
+<circle class="node-animate" cx="500" cy="300" fill="#00d4ff" r="10" style="animation-delay: 1.2s;"></circle>
+<circle class="node-animate" cx="700" cy="420" fill="#a8e8ff" r="6" style="animation-delay: 0.8s;"></circle>
+<circle class="node-animate" cx="900" cy="300" fill="#a8e8ff" r="8" style="animation-delay: 2s;"></circle>
+</svg>
+</div>
+<!-- Floating Interface Elements -->
+<div class="absolute top-gutter left-gutter flex flex-col gap-2">
+<div class="bg-surface-container/80 backdrop-blur-md border border-white/10 p-3 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-primary animate-spin" style="font-size: 20px;">sync</span>
+<div>
+<p class="font-label-caps text-label-caps text-primary">Syncing to Cloud</p>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">Uploading chunk_482.hex</p>
+</div>
+</div>
+</div>
+<div class="absolute bottom-gutter right-gutter">
+<div class="bg-surface-container-lowest/90 backdrop-blur-xl border border-primary/20 p-4 rounded-xl max-w-[280px]">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Active Agent</span>
+<span class="px-2 py-0.5 bg-primary/20 text-primary text-[10px] font-bold rounded">LEVEL 4</span>
+</div>
+<p class="font-headline-md text-headline-md text-white mb-1">AETHER CORE</p>
+<p class="font-body-base text-body-base text-on-surface-variant mb-4">Generating neural path for Motor de Persistencia...</p>
+<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-2/3 shadow-[0_0_8px_rgba(168,232,255,0.8)]"></div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-40 pointer-events-none"></div>
+</section>
+<!-- Cloud Repository Panel (30%) -->
+<section class="flex-[3] bg-surface-container-low/50 backdrop-blur-sm p-gutter flex flex-col overflow-hidden">
+<div class="flex items-center justify-between mb-gutter">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="cloud_done">cloud_done</span>
+<h2 class="font-headline-md text-headline-md text-white">Cloud Repository</h2>
+</div>
+<button class="font-label-caps text-label-caps text-primary flex items-center gap-1 hover:underline">
+                    VIEW ALL <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<!-- Grid of Saved Mini-Canvases -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter overflow-y-auto scroll-hide">
+<!-- Repo Item 1 -->
+<div class="group relative bg-surface-container-high rounded-lg border border-white/5 p-unit overflow-hidden transition-all hover:border-primary/40 hover:shadow-[0_0_20px_rgba(168,232,255,0.1)]">
+<div class="h-24 bg-surface-container-lowest rounded-md cyber-grid flex items-center justify-center overflow-hidden">
+<img alt="AI Flow Preview" class="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-500" data-alt="A macro screenshot of a futuristic digital interface showing a complex neon cyan circuit diagram. Glowing nodes and lines are organized in a clean, geometric bento grid style against a dark obsidian background. The image has a professional cybernetic aesthetic with high technical fidelity and soft atmospheric bokeh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxk9YZwXau7ZjVESFpe8pvrqIFASRTYRpxT_KKK1xrS3cpz2o6WzHPBfOy2fJKwe86R3SZr1HmpJc8D9mdrMhqHjZhW5s1p8HZJo371FdItuNbnmeZLlHnYSilDQhrYp5wNe9TeVb-fBX9mGIixDJP90h3eWjQ7sOc29tluFUFtpUc7wDvmCm8ZGMDPdGX-xMBHpNOroyvl1-GZj0X6ktvbtdRn_Bhb5ToNv_UoGz4SY1TBOWk73PLXTqmjFvmw_jBYy9m5_-G2hc"/>
+</div>
+<div class="p-2">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-bold text-body-bold text-white truncate">Auth_Module_Final</span>
+<span class="font-technical-sm text-[10px] text-secondary">85% SAVED</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-[10px] text-on-surface-variant uppercase">
+<span>Last edited: 2m ago</span>
+</div>
+</div>
+</div>
+<!-- Repo Item 2 -->
+<div class="group relative bg-surface-container-high rounded-lg border border-white/5 p-unit overflow-hidden transition-all hover:border-primary/40 hover:shadow-[0_0_20px_rgba(168,232,255,0.1)]">
+<div class="h-24 bg-surface-container-lowest rounded-md cyber-grid flex items-center justify-center overflow-hidden">
+<img alt="Neural Network Preview" class="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-500" data-alt="Close-up of a digital holographic neural network visualization. Interconnected nodes pulse with soft blue and cyan light. The layout is asymmetric and complex, suggesting a deep learning architecture. The atmosphere is immersive and high-tech, with subtle lens flares and a deep dark-mode palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnHNVLGbBF7ittBnE_nVRO5GqPryN7-vG1DkTLfk_uW9JXJyc22_VYdpQqhHJOm_EhV2vyFi5OMKgFGBRLkG9pMyZb8HXnNYcKNFzG44WEsJfh3jil64emLBpMzPOdwZC3oVhoHl2sR1gmDSQPdMhdw83WMYoB4HscC8i0pNl94bt3L1svrKY7AQbZXNP7eG64ey1OaBcwdoJewqZ8NVklnuR4Qh-j-VhcZKrA4Lp1pZcW2BFRMYSKwdEYvchpwCt9MPZcmvT9xzw"/>
+</div>
+<div class="p-2">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-bold text-body-bold text-white truncate">Neural_Persistence</span>
+<span class="font-technical-sm text-[10px] text-secondary">92% SAVED</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-[10px] text-on-surface-variant uppercase">
+<span>Last edited: 14h ago</span>
+</div>
+</div>
+</div>
+<!-- Repo Item 3 -->
+<div class="group relative bg-surface-container-high rounded-lg border border-white/5 p-unit overflow-hidden transition-all hover:border-primary/40 hover:shadow-[0_0_20px_rgba(168,232,255,0.1)]">
+<div class="h-24 bg-surface-container-lowest rounded-md cyber-grid flex items-center justify-center overflow-hidden">
+<img alt="Logic Tree Preview" class="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-500" data-alt="A futuristic schematic of a logic tree processor rendered in glowing neon lines. The background is a translucent navy glassmorphic surface with high backdrop blur. Sharp intentional geometry and monospaced technical metadata are scattered across the composition, creating a sense of precision engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWhrikcUHD2B9GMjkhDyf6gFLZk6Uo5vQesNxPOJQPwfHddEzhCPxsYbFk9WP8W0gRcj3-cOLaGvZLYahRFhHEAOG8SoBZx1VFTOgLXB_i1M-GV2hDZvj0OglmxvE4T1O_wpQ_3wib9nR0phIuWrtdeXUaClWAAO4MOhiPyqzptndI5_C06u-DEJtmpjoA4-QQ8LouOSmkXxkQg3gFMKRRutmC9NYO7Tx6JCyv4lOHjmRyfBOSbt6jhlRDzxaW0EELfsN4-Dlz2cQ"/>
+</div>
+<div class="p-2">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-bold text-body-bold text-white truncate">Logic_Tree_Beta</span>
+<span class="font-technical-sm text-[10px] text-secondary">64% SAVED</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-[10px] text-on-surface-variant uppercase">
+<span>Last edited: 2d ago</span>
+</div>
+</div>
+</div>
+<!-- Repo Item 4 -->
+<div class="group relative bg-surface-container-high rounded-lg border border-white/5 p-unit overflow-hidden transition-all hover:border-primary/40 hover:shadow-[0_0_20px_rgba(168,232,255,0.1)]">
+<div class="h-24 bg-surface-container-lowest rounded-md cyber-grid flex items-center justify-center overflow-hidden">
+<img alt="Aether Flow Preview" class="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-500" data-alt="A wide-angle view of a digital nebula representing large-scale data flow. Vibrant cyan and indigo filaments weave through an obsidian void. The visual style is a hybrid of glassmorphism and corporate modernism, with high-density backdrop blurs and luminous neon-tinted borders." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUhZu09ugix6obEgRVJJ89prubzUfBW7AEtCccdq4dD2E1Tz29FYBA_NNbVfaAzmfodZHvqezJbvrXb2rpEkeOd_8gCMpzGyhzeW11q6sGkpcVGtUGhwF3JCw12Ii54miFLhpyxhAv3AII2RXX7JguTzEFptbujQ9ENOtj1AiBRHO-6MlyAjU9DP0Gr1bsO8BwtGMqa0qTb3gaXjoDbUI27E-wS3_QasMhztYl13FePIIeFYyytxRVAEnGxUaYcTcU8KCl8-bH6mg"/>
+</div>
+<div class="p-2">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-bold text-body-bold text-white truncate">Global_Sync_Holo</span>
+<span class="font-technical-sm text-[10px] text-secondary">78% SAVED</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-[10px] text-on-surface-variant uppercase">
+<span>Last edited: 5d ago</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Global Navigation (10%) - BottomNavBar JSON -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 rounded-t-full shadow-[0_-10px_40px_rgba(0,197,90,0.15)] animate-pulse-slow">
+<!-- Interactive Mode (Active) -->
+<button class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] group">
+<span class="material-symbols-outlined" data-icon="touch_app">touch_app</span>
+<span class="font-label-caps text-label-caps">Interactive Mode</span>
+</button>
+<!-- Live Feed -->
+<button class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity group">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="font-label-caps text-label-caps">Live Feed</span>
+</button>
+<!-- Demo Loop -->
+<button class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity group">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="font-label-caps text-label-caps">Demo Loop</span>
+</button>
+</nav>
+<!-- Side Drawer Toggle (NavigationDrawer logic) -->
+<div class="fixed left-4 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-4 bg-surface-container/95 backdrop-blur-2xl p-gutter border-r border-primary/20 rounded-xl shadow-[20px_0_60px_rgba(0,0,0,0.55)]">
+<div class="flex flex-col items-center gap-6">
+<button class="group p-2 rounded-lg bg-primary-container text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+</button>
+<button class="group p-2 rounded-lg text-on-surface-variant hover:text-primary transition-all hover:bg-primary/10">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="group p-2 rounded-lg text-on-surface-variant hover:text-primary transition-all hover:bg-primary/10">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</button>
+<button class="group p-2 rounded-lg text-on-surface-variant hover:text-primary transition-all hover:bg-primary/10">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+</button>
+</div>
+</div>
+<script>
+        // Simple interactive effect for the canvas mouse tracking
+        const canvas = document.querySelector('section:first-of-type');
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Create a temporary "glow" at mouse position
+            const flare = document.createElement('div');
+            flare.className = 'absolute w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none transition-opacity duration-500';
+            flare.style.left = `${x - 64}px`;
+            flare.style.top = `${y - 64}px`;
+            canvas.appendChild(flare);
+            
+            setTimeout(() => flare.style.opacity = '0', 100);
+            setTimeout(() => flare.remove(), 1000);
+        });
+
+        // Toggle Active State simulation
+        const navButtons = document.querySelectorAll('nav.fixed.bottom-0 button');
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                navButtons.forEach(b => {
+                    b.classList.remove('text-tertiary', 'drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]');
+                    b.classList.add('text-on-surface-variant', 'opacity-60');
+                });
+                btn.classList.add('text-tertiary', 'drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]');
+                btn.classList.remove('text-on-surface-variant', 'opacity-60');
+            });
+        });
+    </script>
+</body></html>

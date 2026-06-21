@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Artist | Arkaios Orchestrator Node</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-primary": "#00363a",
+                        "on-primary-container": "#006970",
+                        "on-secondary-fixed-variant": "#7b0091",
+                        "background": "#13121c",
+                        "on-tertiary-container": "#be003d",
+                        "on-surface-variant": "#b9cacb",
+                        "tertiary-fixed-dim": "#ffb2b8",
+                        "on-error": "#690005",
+                        "tertiary-container": "#ffcdd0",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-secondary-fixed": "#350040",
+                        "on-background": "#e4e1ee",
+                        "secondary-fixed": "#ffd5ff",
+                        "outline": "#849495",
+                        "inverse-on-surface": "#302f3a",
+                        "on-tertiary-fixed": "#40000f",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#34343e",
+                        "surface-dim": "#13121c",
+                        "tertiary": "#fff3f3",
+                        "secondary-container": "#bc02dd",
+                        "secondary-fixed-dim": "#f8acff",
+                        "surface-bright": "#393843",
+                        "surface-container-high": "#292933",
+                        "primary": "#dbfcff",
+                        "on-tertiary-fixed-variant": "#91002d",
+                        "secondary": "#f8acff",
+                        "surface-tint": "#00dbe9",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3b494b",
+                        "surface-container-lowest": "#0d0d16",
+                        "on-surface": "#e4e1ee",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1b1b24",
+                        "surface": "#13121c",
+                        "on-tertiary": "#67001d",
+                        "on-secondary": "#570067",
+                        "inverse-primary": "#006970",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-secondary-container": "#fff0fb",
+                        "surface-container": "#1f1f28",
+                        "surface-variant": "#34343e",
+                        "inverse-surface": "#e4e1ee",
+                        "primary-container": "#00f0ff",
+                        "primary-fixed": "#7df4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "sidebar-width": "320px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "topbar-height": "64px"
+                    },
+                    "fontFamily": {
+                        "technical-meta": ["JetBrains Mono"],
+                        "headline-md-mobile": ["Orbitron"],
+                        "display-lg": ["Orbitron"],
+                        "headline-md": ["Orbitron"],
+                        "label-caps": ["Orbitron"],
+                        "body-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .canvas-grid {
+            background-image: 
+                linear-gradient(to right, rgba(65, 65, 102, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(65, 65, 102, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .neon-cyan-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            border-color: #00f0ff;
+        }
+        .neon-magenta-glow {
+            box-shadow: 0 0 15px rgba(188, 2, 221, 0.4);
+            border-color: #bc02dd;
+        }
+        .glass-panel {
+            background: rgba(13, 13, 22, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(65, 65, 102, 0.5);
+        }
+        @keyframes stroke-draw {
+            to { stroke-dashoffset: 0; }
+        }
+        .animate-draw {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: stroke-draw 4s linear infinite alternate;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dim/95 backdrop-blur-xl text-primary font-headline-md text-headline-md border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex justify-between items-center px-margin-desktop h-topbar-height">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-3xl">gesture</span>
+<h1 class="font-display-lg text-[24px] text-primary tracking-tighter">FlowNexus Artist</h1>
+</div>
+<div class="flex items-center gap-xl">
+<div class="hidden md:flex items-center gap-lg">
+<nav class="flex items-center gap-md">
+<button class="text-tertiary transition-all duration-300 ease-out hover:bg-white/5 px-3 py-1 rounded">Orchestrator</button>
+<button class="text-on-surface-variant transition-all duration-300 ease-out hover:bg-white/5 px-3 py-1 rounded">Nodes</button>
+<button class="text-on-surface-variant transition-all duration-300 ease-out hover:bg-white/5 px-3 py-1 rounded">Documentation</button>
+</nav>
+</div>
+<span class="material-symbols-outlined text-primary-container">cloud_done</span>
+</div>
+</header>
+<div class="flex h-screen pt-topbar-height">
+<!-- Navigation Drawer (Sidebar) -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width z-40 bg-surface-container-low/95 backdrop-blur-2xl text-secondary border-r border-white/5 shadow-2xl transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex flex-col gap-unit p-gutter pt-24">
+<!-- Profile Header -->
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-secondary shadow-[0_0_10px_rgba(248,172,255,0.3)]">
+<img alt="User Artist Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2bgcsqIzVfXmgV-OvJcB0BGux6J_qcCJwrrbtxjLjQO7GK6ku7lIwuMYB_hqGdWELYrpDan5gHOzTPXH42ire2wrQRqsNSgtqmXY1FGgc5w48265BLUALFSradrRNomQ4fcK-uASBqp6hn4igof8NOsPGALPeAPMyPQe1YwlKZN1sMowhaay1WLAfp_5rJelBuPvS0OGGsLvd1rfVvHlgFwn53xUGCDe78cx2JRiiVD3J1Jx4SEOec5Ijs74ucl0nammlMwDmVqU"/>
+</div>
+<div>
+<h2 class="font-body-bold text-body-bold text-on-surface">Lead Animator</h2>
+<p class="text-[11px] text-on-surface-variant font-technical-meta uppercase tracking-wider">Project: Arkaios Alpha</p>
+</div>
+</div>
+<!-- Nav Links -->
+<nav class="space-y-sm">
+<button class="w-full flex items-center gap-md p-3 bg-secondary/10 text-secondary border-l-4 border-secondary transition-all hover:bg-white/5">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-body-base">Layers</span>
+</button>
+<button class="w-full flex items-center gap-md p-3 text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">timeline</span>
+<span class="font-body-base">Timeline</span>
+</button>
+<button class="w-full flex items-center gap-md p-3 text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">auto_awesome_motion</span>
+<span class="font-body-base">Assets</span>
+</button>
+<button class="w-full flex items-center gap-md p-3 text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">brush</span>
+<span class="font-body-base">Brushes</span>
+</button>
+<button class="w-full flex items-center gap-md p-3 text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all">
+<span class="material-symbols-outlined">cloud_sync</span>
+<span class="font-body-base">Arkaios Sync</span>
+</button>
+</nav>
+<!-- Metrics Panel -->
+<div class="mt-auto glass-panel p-md rounded-xl">
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-technical-meta text-xs text-on-surface-variant">Stroke Entropy</span>
+<span class="font-technical-meta text-xs text-primary-fixed-dim">0.82λ</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[82%] neon-cyan-glow"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-technical-meta text-xs text-on-surface-variant">Neural Timing</span>
+<span class="font-technical-meta text-xs text-secondary">42ms</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[42%] neon-magenta-glow"></div>
+</div>
+</div>
+</div>
+<div class="mt-sm font-technical-meta text-[10px] text-on-surface-variant opacity-50 text-right">V.2.4.0</div>
+</aside>
+<!-- Main Content (Canvas) -->
+<main class="flex-1 ml-0 md:ml-sidebar-width relative overflow-hidden bg-surface-container-lowest canvas-grid">
+<!-- HUD Telemetry -->
+<div class="absolute top-md right-md z-10 flex flex-col items-end gap-xs pointer-events-none">
+<div class="font-technical-meta text-technical-meta text-primary flex gap-md bg-surface-dim/50 backdrop-blur-md p-2 rounded">
+<span>FPS: 144</span>
+<span>LATENCY: 2.4ms</span>
+<span>COORDS: 482, 911</span>
+</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-technical-meta">Core Engine: Tegaki.v3.2</div>
+</div>
+<!-- Central Canvas Viewport -->
+<div class="w-full h-full flex items-center justify-center p-xl relative">
+<!-- SVG Neural Stroke Animation -->
+<svg class="w-3/4 max-w-4xl h-auto drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]" fill="none" viewbox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+<path class="animate-draw" d="M50 150C150 50 250 250 350 150C450 50 550 250 650 150C750 50 850 150 850 150" stroke="#00f0ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="filter: drop-shadow(0 0 8px #00f0ff);"></path>
+<path class="animate-draw" d="M50 170C180 200 220 100 380 150C500 200 600 100 750 170" stroke="#bc02dd" stroke-dasharray="10 20" stroke-linecap="round" stroke-width="1" style="filter: drop-shadow(0 0 5px #bc02dd);"></path>
+<text class="opacity-30" fill="transparent" font-family="Orbitron" font-size="64" font-weight="800" stroke="#00f0ff" stroke-width="0.5" text-anchor="middle" x="50%" y="60%">ARKAIOS</text>
+</svg>
+<!-- Floating Parameter Glass Box -->
+<div class="absolute bottom-xl right-xl glass-panel p-lg rounded-xl w-[280px] space-y-md">
+<h3 class="font-label-caps text-label-caps text-secondary">Skeleton Solver</h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<label class="font-technical-meta text-[11px] text-on-surface-variant">Smoothness</label>
+<span class="text-primary text-[11px] font-technical-meta">0.95</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-container" type="range"/>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-2 bg-primary-container text-on-primary-container font-label-caps text-[10px] rounded border border-primary-container hover:shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all">
+                            Zhang-Suen
+                        </button>
+<button class="flex-1 py-2 bg-transparent border border-outline-variant text-on-surface-variant font-label-caps text-[10px] rounded hover:border-primary-container transition-all">
+                            Hybrid
+                        </button>
+</div>
+</div>
+</div>
+<!-- Bottom Floating Toolbar -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 rounded-full w-auto min-w-[320px] shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-center items-center gap-6 px-6 py-2">
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] transition-transform duration-200 hover:scale-110 active:scale-90" title="Brush">
+<span class="material-symbols-outlined">brush</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90" title="Eraser">
+<span class="material-symbols-outlined">ink_eraser</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90" title="Layers">
+<span class="material-symbols-outlined">layers</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90" title="Play">
+<span class="material-symbols-outlined">play_circle</span>
+</button>
+</nav>
+</main>
+</div>
+<!-- Background Elements -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary/10 blur-[120px] rounded-full"></div>
+</div>
+<script>
+        // Micro-interactions for HUD coords
+        const main = document.querySelector('main');
+        const coordDisplay = document.querySelector('span:nth-child(3)');
+        
+        main.addEventListener('mousemove', (e) => {
+            const x = Math.round(e.clientX - main.getBoundingClientRect().left);
+            const y = Math.round(e.clientY - main.getBoundingClientRect().top);
+            if (coordDisplay) coordDisplay.textContent = `COORDS: ${x}, ${y}`;
+        });
+
+        // Toggle Active State logic for Bottom Nav
+        const navButtons = document.querySelectorAll('nav.fixed button');
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                navButtons.forEach(b => {
+                    b.className = "text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90";
+                });
+                btn.className = "bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] transition-transform duration-200 hover:scale-110 active:scale-90";
+            });
+        });
+    </script>
+</body></html>

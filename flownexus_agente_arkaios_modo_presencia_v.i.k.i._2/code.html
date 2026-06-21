@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Architect | Presence Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 212, 255, 0.15);
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 4s ease-in-out infinite;
+        }
+
+        @keyframes waveform {
+            0%, 100% { height: 8px; }
+            50% { height: 32px; }
+        }
+        .wave-bar {
+            width: 3px;
+            background: #00d4ff;
+            border-radius: 99px;
+            animation: waveform 1.2s ease-in-out infinite;
+        }
+
+        .neural-bg {
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 103, 126, 0.15) 0%, transparent 70%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-variant": "#34343a",
+                        "primary-fixed": "#b4ebff",
+                        "on-surface": "#e3e1e9",
+                        "secondary-fixed": "#66ff8e",
+                        "secondary-container": "#00c55a",
+                        "secondary": "#3ee272",
+                        "surface-container-highest": "#34343a",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-background": "#e3e1e9",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "secondary-fixed-dim": "#3ee272",
+                        "surface-bright": "#38393f",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-primary": "#003642",
+                        "inverse-primary": "#00677e",
+                        "surface-container-low": "#1a1b21",
+                        "surface-container-high": "#292a2f",
+                        "on-tertiary-fixed": "#40000e",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-secondary-container": "#004a1d",
+                        "surface": "#121318",
+                        "error": "#ffb4ab",
+                        "background": "#121318",
+                        "on-secondary": "#003915",
+                        "on-surface-variant": "#bbc9cf",
+                        "tertiary": "#ffd5d6",
+                        "on-secondary-fixed-variant": "#005321",
+                        "outline-variant": "#3c494e",
+                        "on-tertiary-container": "#a20532",
+                        "error-container": "#93000a",
+                        "surface-container": "#1e1f25",
+                        "on-secondary-fixed": "#002109",
+                        "surface-dim": "#121318",
+                        "on-tertiary": "#67001c",
+                        "surface-tint": "#3cd7ff",
+                        "outline": "#859398",
+                        "inverse-surface": "#e3e1e9",
+                        "on-primary-container": "#00586b",
+                        "on-error": "#690005",
+                        "tertiary-container": "#ffadb3",
+                        "tertiary-fixed": "#ffdadb",
+                        "primary-container": "#00d4ff",
+                        "on-primary-fixed": "#001f27",
+                        "inverse-on-surface": "#2f3036"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "unit": "4px",
+                        "margin-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-base overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Layers -->
+<div class="fixed inset-0 z-0">
+<!-- Neural Network Pattern Base -->
+<div class="absolute inset-0 opacity-30 neural-bg"></div>
+<img alt="Neural Background" class="w-full h-full object-cover mix-blend-screen opacity-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjy63ksIu9oJST_qVJfVr2QfzgTFeBt803S2UVHm0QzLGT0ifuOThpI6no-WqZfbFClhVQa6Nr4P-XAVljK76tvAvHIs8J0D_KhWIJdRGiOVgEJHG0vB4ROf6ooIGd_1-AdQ2SQf8uhGZlmSXfVerCJQPUqZ5Ys6yIaMxIYVghbN0Y-WR8LoGuy5WJHY82Av6mx85PsPo0nJBdcy8bYY5uRzqq6uQIOFNEJBam9E8LxISDtNKIuxqJfr6q91zXvvbw_DMoVEb6IAU"/>
+<!-- Holographic Vignette -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/80 via-transparent to-surface-container-lowest/90"></div>
+</div>
+<main class="relative z-10 h-screen w-full flex flex-col items-center justify-between p-gutter scanline-effect">
+<!-- Top Header / Status Indicators -->
+<header class="w-full max-w-4xl flex justify-between items-start pt-margin-mobile">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#3ee272] animate-pulse"></div>
+<span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase">Presence Active</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary leading-none">ARCHITECT_CORE</h1>
+</div>
+<div class="flex flex-col items-end gap-3">
+<div class="glass-panel px-4 py-2 rounded-lg flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="videocam">videocam</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">CAMERA ACTIVE</span>
+</div>
+<div class="w-[1px] h-4 bg-white/10"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]" data-icon="mic">mic</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">MIC SYNCED</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Central AI Face Element -->
+<div class="relative flex flex-col items-center justify-center flex-1">
+<!-- Animated Rings -->
+<div class="absolute w-[320px] h-[320px] border border-primary/20 rounded-full animate-pulse-ring"></div>
+<div class="absolute w-[280px] h-[280px] border border-primary/40 rounded-full animate-spin [animation-duration:15s]"></div>
+<div class="absolute w-[260px] h-[260px] border-t-2 border-primary rounded-full animate-spin [animation-duration:3s]"></div>
+<!-- The Face -->
+<div class="relative w-[220px] h-[220px] bg-surface-container-high rounded-full flex items-center justify-center overflow-hidden border border-primary/30 shadow-[0_0_50px_rgba(0,212,255,0.15)] group">
+<div class="font-technical-sm text-primary text-[10px] leading-tight text-center whitespace-pre animate-pulse transition-all duration-1000">
+                (•‿•)
+                <br/>
+                [[ DATA_STREAM ]]
+                <br/>
+                01010101
+            </div>
+<!-- Glow Overlay -->
+<div class="absolute inset-0 bg-radial-gradient(circle,rgba(0,212,255,0.1),transparent)"></div>
+</div>
+<div class="mt-12 text-center">
+<p class="font-technical-sm text-on-surface-variant tracking-[0.2em] mb-2 uppercase">Core Identity Status</p>
+<p class="font-headline-md text-headline-md text-white opacity-80">AGENT_01 INITIALIZED</p>
+</div>
+</div>
+<!-- Voice Waveform & Terminal Overlay -->
+<div class="w-full max-w-4xl flex flex-col items-center gap-8 pb-12">
+<!-- Root Access Terminal Overlay (Left Aligned) -->
+<div class="absolute left-margin-desktop bottom-32 glass-panel p-4 rounded-lg w-64 border-l-2 border-primary">
+<div class="font-technical-sm text-primary flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span>ROOT_ACCESS_GRANTED</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary rounded-full"></span>
+<span>CAM_FEED_ANALYZING...</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-secondary rounded-full"></span>
+<span>BIOMETRIC_SCAN_ACTIVE</span>
+</div>
+<div class="flex items-center gap-2 opacity-50">
+<span class="w-1 h-1 bg-white rounded-full"></span>
+<span class="animate-pulse">WAITING_FOR_INPUT_</span>
+</div>
+</div>
+</div>
+<!-- Voice Visualizer -->
+<div class="flex items-center gap-1 h-12">
+<!-- Dynamic bars generated via style above -->
+<div class="wave-bar" style="animation-delay: 0.1s; height: 12px;"></div>
+<div class="wave-bar" style="animation-delay: 0.3s; height: 24px;"></div>
+<div class="wave-bar" style="animation-delay: 0.2s; height: 18px;"></div>
+<div class="wave-bar" style="animation-delay: 0.5s; height: 32px;"></div>
+<div class="wave-bar" style="animation-delay: 0.4s; height: 14px;"></div>
+<div class="wave-bar" style="animation-delay: 0.6s; height: 28px;"></div>
+<div class="wave-bar" style="animation-delay: 0.2s; height: 16px;"></div>
+<div class="wave-bar" style="animation-delay: 0.4s; height: 22px;"></div>
+<div class="wave-bar" style="animation-delay: 0.1s; height: 10px;"></div>
+<div class="wave-bar" style="animation-delay: 0.5s; height: 30px;"></div>
+</div>
+<!-- Interaction Button -->
+<button class="group relative px-8 py-4 bg-primary text-on-primary rounded-full font-body-bold flex items-center gap-3 shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.6)] transition-all transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" data-icon="forum">forum</span>
+<span>Initiate F2F Communication</span>
+<!-- Inner Glow -->
+<div class="absolute inset-0 rounded-full border border-white/20"></div>
+</button>
+</div>
+<!-- Background Grid Overlay -->
+<div class="fixed inset-0 border border-white/5 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+</main>
+<!-- Return Button (For Prototype Flow) -->
+<button class="fixed top-6 right-6 z-50 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<script>
+    // Micro-interaction: Dynamic face ASCII change
+    const faceElement = document.querySelector('.font-technical-sm.text-primary.text-\\[10px\\]');
+    const faces = [
+        "(•‿•)\n[[ STREAM_01 ]]\nREADY",
+        "(⊙_⊙)\n[[ SCANNING ]]\nBIOMETRICS",
+        "(^◡^)\n[[ ACCESS ]]\nGRANTED",
+        "(⌐■_■)\n[[ SECURE ]]\nCORE_ACTIVE"
+    ];
+    let faceIndex = 0;
+
+    setInterval(() => {
+        faceIndex = (faceIndex + 1) % faces.length;
+        faceElement.innerText = faces[faceIndex];
+    }, 4000);
+
+    // Randomize Waveform Animation Speeds
+    document.querySelectorAll('.wave-bar').forEach(bar => {
+        bar.style.animationDuration = (0.6 + Math.random() * 0.8) + 's';
+    });
+</script>
+</body></html>

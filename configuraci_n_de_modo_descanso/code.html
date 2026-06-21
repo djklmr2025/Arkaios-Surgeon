@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-cyan {
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            border-bottom: 2px solid #00d4ff;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            background-color: #121318;
+            -webkit-font-smoothing: antialiased;
+        }
+        .enterprise-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nip-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#859398",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "error": "#ffb4ab",
+                    "surface": "#121318",
+                    "on-tertiary-container": "#a20532",
+                    "on-tertiary": "#67001c",
+                    "on-error": "#690005",
+                    "inverse-surface": "#e3e1e9",
+                    "surface-variant": "#34343a",
+                    "on-surface-variant": "#bbc9cf",
+                    "inverse-on-surface": "#2f3036",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "surface-container": "#1e1f25",
+                    "surface-tint": "#3cd7ff",
+                    "surface-container-lowest": "#0d0e13",
+                    "secondary-fixed": "#66ff8e",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-surface": "#e3e1e9",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-tertiary-fixed": "#40000e",
+                    "primary-fixed": "#b4ebff",
+                    "on-secondary": "#003915",
+                    "surface-container-low": "#1a1b21",
+                    "secondary-container": "#00c55a",
+                    "on-primary": "#003642",
+                    "primary": "#a8e8ff",
+                    "on-secondary-container": "#004a1d",
+                    "background": "#121318",
+                    "tertiary-container": "#ffadb3",
+                    "tertiary": "#ffd5d6",
+                    "on-primary-fixed": "#001f27",
+                    "surface-dim": "#121318",
+                    "on-secondary-fixed": "#002109",
+                    "primary-container": "#00d4ff",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "on-primary-container": "#00586b",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "inverse-primary": "#00677e",
+                    "surface-container-highest": "#34343a",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "outline-variant": "#3c494e",
+                    "on-background": "#e3e1e9",
+                    "secondary": "#3ee272",
+                    "surface-bright": "#38393f",
+                    "tertiary-fixed": "#ffdadb",
+                    "surface-container-high": "#292a2f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "280px",
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-mobile": "12px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px"
+            },
+            "fontFamily": {
+                    "body-bold": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface overflow-x-hidden pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-50 flex justify-between items-center h-[52px] px-margin-mobile">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] leading-tight tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant active:scale-95 duration-300" data-icon="settings_input_antenna">settings_input_antenna</button>
+</header>
+<main class="mt-[52px] px-margin-mobile pt-6 space-y-8">
+<!-- Screen Title -->
+<div class="space-y-1">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-primary">Configuración de Fondo Holográfico</h2>
+<p class="font-body-base text-body-base text-on-surface-variant opacity-70">Personaliza la interfaz de proyección</p>
+</div>
+<!-- Mode Selector -->
+<section class="space-y-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Control de Acceso</span>
+<div class="grid grid-cols-2 p-1 bg-surface-container rounded-lg border border-white/5">
+<button class="py-2.5 rounded font-body-bold text-body-bold transition-all duration-300 bg-primary-container text-on-primary-container" id="btn-public" onclick="toggleMode('public')">
+                    Modo Público
+                </button>
+<button class="py-2.5 rounded font-body-bold text-body-bold transition-all duration-300 text-on-surface-variant hover:text-on-surface" id="btn-enterprise" onclick="toggleMode('enterprise')">
+                    Modo Empresarial
+                </button>
+</div>
+</section>
+<!-- Video Background Selector -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Catálogo de Fondos</span>
+<span class="font-technical-sm text-technical-sm text-primary opacity-60">12 DISPONIBLES</span>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 -mx-margin-mobile px-margin-mobile snap-x">
+<!-- Custom Upload Card -->
+<div class="flex-shrink-0 w-36 h-64 glass-panel rounded-xl flex flex-col items-center justify-center text-center p-3 border-dashed border-primary/30 border-2 snap-start relative group active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary mb-3 text-3xl" data-icon="upload_file">upload_file</span>
+<p class="font-body-bold text-[12px] text-primary mb-2">Subir Personalizado</p>
+<div class="space-y-1">
+<p class="font-technical-sm text-[9px] text-on-surface-variant uppercase">9:16 Ratio</p>
+<p class="font-technical-sm text-[9px] text-on-surface-variant uppercase">1080x1920px</p>
+<p class="font-technical-sm text-[9px] text-on-surface-variant uppercase">MP4/WebM</p>
+</div>
+</div>
+<!-- Video Thumbnail 1 (Selected) -->
+<div class="flex-shrink-0 w-44 h-64 rounded-xl overflow-hidden snap-start relative border-2 border-primary shadow-[0_0_15px_rgba(0,212,255,0.3)]">
+<img class="w-full h-full object-cover grayscale-[0.2]" data-alt="A vertical abstract visualization of flowing cyan digital particles and liquid light structures against a deep black void. The composition is futuristic and minimalist, featuring a sharp holographic aesthetic with high-density backdrop blurs. The lighting is cold and atmospheric, emphasizing the fluid motion of cybernetic energy waves in a high-tech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGr5CcH8QZ3cn0tqjejar3VDz5W4e4K0GZYgvbMfNQLEjopHMX_PSsQ2KJi9ParAYyxzaGBbQzhtpOZEkfeUdXUY41xmvaKOXp2d5kB8C_x5iFsCWEwsxYdE9HvmqMdv4BxjtP-GASSjOlfDeYlpK8_h9apErrFT_J-ulfgCqZJhdZjy4Cvz8p9bmpPHURfHlgOCvQDcGAMggPk2_ASv7x4RXCLe4x1fxVts7kHHFIjIDlpOERXhD0c8KL3SQeFOySdlMpPZrIZ8M"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle" data-weight="fill">check_circle</span>
+<span class="font-label-caps text-[10px] text-white">NEON FLOW</span>
+</div>
+</div>
+<!-- Video Thumbnail 2 -->
+<div class="flex-shrink-0 w-44 h-64 rounded-xl overflow-hidden snap-start relative border border-white/10 grayscale hover:grayscale-0 transition-all duration-500 opacity-60 hover:opacity-100">
+<img class="w-full h-full object-cover" data-alt="A high-performance vertical digital background featuring complex grid patterns and geometric data clusters in a deep indigo and electric blue color scheme. The visual style is reminiscent of a holographic command center interface with sharp engineering lines and translucent glass layers. The mood is professional and cutting-edge, depicting a sophisticated cybernetic environment with soft glowing accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1tqtNDCrnVpkydOCaWjAtEDf9MyHXwbMKdjX_yWfNxVDBBSTyVWza3SDAntBq-nSDGfhWkeBnSEbp8f51xWI4YUi-LxoRWXCW9_y4WXMRCUI4a4dX0AaB0N63kk5_l0x2QwCozJ7rtTZ-uw6-_uhuoxgbVbFUPGDEkNnmI3zWY0qGomnhLZ9b1Cf2MLYtpL49bN_54ZkktefZJzLxffE14gfxKiAwV4of6SuRM_h26KCcIAyRh5XnGtcqwANSvDoq42Z9DUge4r4"/>
+<div class="absolute bottom-3 left-3">
+<span class="font-label-caps text-[10px] text-white/70">DATA GRID</span>
+</div>
+</div>
+<!-- Video Thumbnail 3 -->
+<div class="flex-shrink-0 w-44 h-64 rounded-xl overflow-hidden snap-start relative border border-white/10 grayscale hover:grayscale-0 transition-all duration-500 opacity-60 hover:opacity-100">
+<img class="w-full h-full object-cover" data-alt="A vertical cosmic visualization showing a futuristic nebula of deep purples and vibrant pinks intersecting with sharp technical telemetry lines. The scene has an immersive 2.5D depth effect with glassmorphic layers and high-contrast dark mode aesthetics. Neon-tinted borders and subtle outer glows simulate a holographic projection in a sleek, modern aerospace control room setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYKPnXVVmYMff64jb28KzeE-RxHpp-9BrIz3TYCE2UVGCMKZNGOnFccIi8zFylpCP4kKkGAiu_dzb2SpTepSDXox-AEc0Ztjfi4Zzc5XBvBH_z-lZe08a2mNitw1LJZWfLCSNhIKJq4Pa2519zmL4n4yx3yk76Ut_P6WJ-a4HVWfdd5myYj85uGa9Pn3gsrifftZxm0uezQathcHR4kIxyG3Eo685Y8kC4WBWIcg-eU40fCacIybLBlP3aIOs9RSFnnJfuqI7-VWI"/>
+<div class="absolute bottom-3 left-3">
+<span class="font-label-caps text-[10px] text-white/70">AETHER CORE</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Panel (Enterprise Only) -->
+<section class="enterprise-transition hidden opacity-0 scale-95 space-y-4" id="security-panel">
+<span class="font-label-caps text-label-caps text-tertiary-container uppercase tracking-widest">Seguridad Empresarial</span>
+<div class="glass-panel p-5 rounded-xl border-l-4 border-l-primary shadow-2xl">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h4 class="font-body-bold text-body-bold text-white">Bloqueo de Terminal</h4>
+<p class="font-technical-sm text-on-surface-variant mt-1">Requiere autenticación para cambios</p>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="lock_open">lock_open</span>
+</div>
+<button class="w-full py-4 rounded-lg bg-surface-container-high border border-primary/20 text-primary font-body-bold flex items-center justify-center gap-2 active:scale-95 transition-transform" onclick="showNipPad()">
+<span class="material-symbols-outlined text-[18px]" data-icon="pin">pin</span>
+                    Fijar con NIP
+                </button>
+<!-- Numeric Keypad (Hidden initially) -->
+<div class="hidden mt-8 space-y-6 animate-in slide-in-from-bottom-4 duration-500" id="nip-keypad">
+<div class="flex justify-center gap-4">
+<div class="w-3 h-3 rounded-full border border-primary" id="dot-1"></div>
+<div class="w-3 h-3 rounded-full border border-primary" id="dot-2"></div>
+<div class="w-3 h-3 rounded-full border border-primary" id="dot-3"></div>
+<div class="w-3 h-3 rounded-full border border-primary" id="dot-4"></div>
+</div>
+<div class="nip-grid">
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">1</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">2</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">3</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">4</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">5</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">6</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">7</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">8</button>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">9</button>
+<div class="h-14"></div>
+<button class="h-14 rounded-lg bg-white/5 font-display-lg text-lg flex items-center justify-center active:bg-primary/20 transition-colors">0</button>
+<button class="h-14 rounded-lg flex items-center justify-center text-error active:bg-error/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="backspace">backspace</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Performance Note -->
+<footer class="pt-4 flex flex-col items-center gap-3">
+<div class="flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-full border border-primary/10">
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="speed">speed</span>
+<p class="font-technical-sm text-[10px] text-primary/80 uppercase tracking-tighter">Optimizado para previsualización HD sin comprometer la velocidad del sistema</p>
+</div>
+<p class="font-technical-sm text-[9px] text-on-surface-variant opacity-40">METRO CORE v2.4.0-HOLO • ENCRYPTED SESSION</p>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 shadow-[0_-10px_40px_rgba(0,197,90,0.15)] rounded-t-full">
+<div class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="font-label-caps text-label-caps">Live Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] animate-pulse-slow">
+<span class="material-symbols-outlined" data-icon="touch_app" data-weight="fill">touch_app</span>
+<span class="font-label-caps text-label-caps">Interactive Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="font-label-caps text-label-caps">Demo Loop</span>
+</div>
+</nav>
+<script>
+        function toggleMode(mode) {
+            const btnPublic = document.getElementById('btn-public');
+            const btnEnterprise = document.getElementById('btn-enterprise');
+            const securityPanel = document.getElementById('security-panel');
+            const nipPad = document.getElementById('nip-keypad');
+
+            if (mode === 'enterprise') {
+                btnEnterprise.classList.add('bg-primary-container', 'text-on-primary-container');
+                btnEnterprise.classList.remove('text-on-surface-variant');
+                btnPublic.classList.remove('bg-primary-container', 'text-on-primary-container');
+                btnPublic.classList.add('text-on-surface-variant');
+                
+                securityPanel.classList.remove('hidden');
+                setTimeout(() => {
+                    securityPanel.classList.remove('opacity-0', 'scale-95');
+                }, 10);
+            } else {
+                btnPublic.classList.add('bg-primary-container', 'text-on-primary-container');
+                btnPublic.classList.remove('text-on-surface-variant');
+                btnEnterprise.classList.remove('bg-primary-container', 'text-on-primary-container');
+                btnEnterprise.classList.add('text-on-surface-variant');
+                
+                securityPanel.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    securityPanel.classList.add('hidden');
+                    nipPad.classList.add('hidden');
+                }, 400);
+            }
+        }
+
+        function showNipPad() {
+            const nipPad = document.getElementById('nip-keypad');
+            nipPad.classList.toggle('hidden');
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body></html>

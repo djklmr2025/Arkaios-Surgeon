@@ -1,0 +1,240 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FlowNexus | Detección de Orientación</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#3cd7ff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container-high": "#292a2f",
+                        "secondary": "#3ee272",
+                        "on-primary-container": "#00586b",
+                        "tertiary": "#ffd5d6",
+                        "surface": "#121318",
+                        "inverse-primary": "#00677e",
+                        "primary-fixed": "#b4ebff",
+                        "on-primary-fixed": "#001f27",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "surface-container": "#1e1f25",
+                        "on-tertiary": "#67001c",
+                        "on-surface-variant": "#bbc9cf",
+                        "secondary-fixed-dim": "#3ee272",
+                        "secondary-container": "#00c55a",
+                        "surface-dim": "#121318",
+                        "outline-variant": "#3c494e",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-background": "#e3e1e9",
+                        "tertiary-fixed": "#ffdadb",
+                        "inverse-surface": "#e3e1e9",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "primary": "#a8e8ff",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "inverse-on-surface": "#2f3036",
+                        "on-tertiary-container": "#a20532",
+                        "on-surface": "#e3e1e9",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#002109",
+                        "on-tertiary-fixed": "#40000e",
+                        "secondary-fixed": "#66ff8e",
+                        "surface-variant": "#34343a",
+                        "primary-container": "#00d4ff",
+                        "tertiary-container": "#ffadb3",
+                        "on-primary": "#003642",
+                        "surface-container-lowest": "#0d0e13",
+                        "error": "#ffb4ab",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#34343a",
+                        "outline": "#859398",
+                        "on-secondary": "#003915",
+                        "surface-bright": "#38393f",
+                        "background": "#121318",
+                        "on-secondary-container": "#004a1d",
+                        "surface-container-low": "#1a1b21"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "margin-desktop": "24px",
+                        "margin-mobile": "12px",
+                        "gutter": "16px",
+                        "topbar-height": "52px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "body-base": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "body-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes rotate-device {
+            0% { transform: rotate(0deg); }
+            30% { transform: rotate(-90deg); }
+            70% { transform: rotate(-90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .animate-rotate-device {
+            animation: rotate-device 3s ease-in-out infinite;
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(40px);
+            background: rgba(22, 33, 62, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-border-bottom {
+            box-shadow: 0 4px 20px -5px rgba(0, 212, 255, 0.4);
+        }
+
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="font-body-base text-body-base">
+<!-- Background Content (Blurred Project Preview) -->
+<div class="fixed inset-0 z-0 overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-background via-surface-container-low/40 to-primary/10 mix-blend-overlay z-10"></div>
+<img class="w-full h-full object-cover scale-110 blur-2xl opacity-60" data-alt="A cinematic wide-angle shot of a futuristic cyberpunk architectural interior with glowing blue and cyan neon accents. The scene is dominated by sleek obsidian surfaces reflecting vibrant digital interfaces. High-contrast lighting creates a moody, immersive atmosphere consistent with a dark-mode tech aesthetic. The composition feels grand and technologically sophisticated, as if viewing a high-end visual showcase in a digital void." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvEiZpcoh_SOgreUdZzKB4vbrYrUdBbwWr3ZevEyIHD2JpZvXM9W9NWZvxIbyZjiBq7Be78gPHoKFNmczuQHZPu72emN98k6HWFkyHs2p50MXKyaSMK86MjE-82fzfr2pzceTPDnRB7CxMuRO0rcmnirFbWrxS3Bvpb4ObRDFbwDtyrfCZ4eGWzlTUFYlf3Ye_HipvsWynL3feHUwhFi8jbpPit12ZpreWFJDHgubRmyjBMDXsUoEXlqN1uZlvS7HlbAsDdayJOQ0">
+</div>
+<!-- Top App Bar (Shared Component) -->
+<header class="fixed top-0 left-0 w-full h-[52px] flex items-center justify-between px-margin-mobile bg-surface/90 backdrop-blur-md border-b border-white/10 z-50">
+<div class="flex items-center gap-3">
+<span class="font-display-lg text-headline-md-mobile tracking-tighter text-primary dark:text-primary-fixed-dim">FlowNexus</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary font-body-bold hover:opacity-80 transition-opacity">Publicar</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="User" class="w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs6rZg4-uY3fYYWq3W3rAyFsaYroMYEJQoyOtQ28Pe9Tt_g9h_brIi0jq9H1pBKLLUNNmKYPwaW18HHkfL6BDBXyStcDMNMQG7Y5u0GdvTigDtc9YGGpZtn6RYFh24ulklaMUKkjpMZXZTt4-j_Ih0SoRQF7waRPfNHin0Y79STW7wX8R_GM33QpN1HlGG6Ntzk0Y1wMSbgP5SL84DWv0NLrRUPFAZx2RGL7LAGk7I234GUnu9zsdPI_FSoP3xEkqKVlpXjjOMQrI">
+</div>
+</div>
+</header>
+<!-- Main Overlay Container -->
+<main class="relative z-20 h-screen w-full flex flex-col items-center justify-center px-margin-desktop">
+<!-- Orientation Alert Widget -->
+<div class="glass-panel max-w-sm w-full p-8 rounded-xl flex flex-col items-center text-center space-y-8 shadow-2xl relative overflow-hidden">
+<!-- Neon Accent Line -->
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary-container neon-border-bottom"></div>
+<!-- Animated Icon Section -->
+<div class="relative w-32 h-32 flex items-center justify-center">
+<!-- Background Pulse Rings -->
+<div class="absolute inset-0 rounded-full bg-primary/10 animate-ping opacity-20"></div>
+<div class="absolute inset-0 rounded-full border border-primary/20 scale-125 opacity-30"></div>
+<!-- Rotating Device Icon -->
+<div class="animate-rotate-device">
+<span class="material-symbols-outlined text-primary text-[80px]" style="font-variation-settings: 'FILL' 1, 'wght' 200;">
+                        screen_rotation
+                    </span>
+</div>
+</div>
+<!-- Text Content -->
+<div class="space-y-4">
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-on-surface tracking-tight">Experiencia Horizontal Requerida</h1>
+<p class="font-body-base text-on-surface-variant leading-relaxed">Este proyecto ha sido diseñado para una visualización cinematográfica en modo horizontal. Gira tu dispositivo para una experiencia inmersiva completa.</p>
+</div>
+<!-- Technical Metadata Footer -->
+<div class="pt-2">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest border border-outline-variant">
+<span class="material-symbols-outlined text-[14px] text-primary">aspect_ratio</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest">Ratio 21:9 Detectado</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons (Secondary/Optional) -->
+<div class="mt-12 flex flex-col items-center gap-6">
+<button class="group flex items-center gap-3 px-6 py-3 bg-transparent border border-primary/30 rounded-lg hover:bg-primary/5 transition-all duration-300 active:scale-95" onclick="forcePortrait()">
+<span class="material-symbols-outlined text-primary group-hover:rotate-180 transition-transform duration-500">expand_content</span>
+<span class="font-label-caps text-label-caps text-primary uppercase">FORZAR VISTA HORIZONTAL</span>
+</button>
+<p class="font-technical-sm text-technical-sm text-outline/60 text-center max-w-[240px]">La visualización vertical puede comprometer la calidad de los detalles técnicos; se recomienda el modo horizontal.</p>
+</div>
+</main>
+<!-- Bottom Nav Bar (Shared Component - Filtered/Subtle for this context) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[64px] px-margin-mobile pb-safe bg-surface-container-low/80 backdrop-blur-2xl border-t border-white/5">
+<div class="flex flex-col items-center justify-center text-outline transition-transform hover:text-primary-container">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline transition-transform hover:text-primary-container">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline transition-transform hover:text-primary-container">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline transition-transform hover:text-primary-container">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</div>
+<div class="flex flex-col items-center justify-center text-outline transition-transform hover:text-primary-container">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+</nav>
+<!-- Interactive script for demo purposes -->
+<script>
+        function forcePortrait() {
+            // Animation for dismissal or force entry
+            const main = document.querySelector('main');
+            main.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            main.style.opacity = '0';
+            main.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                alert("Entrando en modo de compatibilidad vertical...");
+                // In a real app, this would route to the vertical fallback view
+                main.style.opacity = '1';
+                main.style.transform = 'translateY(0)';
+            }, 600);
+        }
+
+        // Simulating detection logic
+        window.addEventListener('orientationchange', function() {
+            if (window.orientation === 90 || window.orientation === -90) {
+                // Device is now horizontal
+                document.body.innerHTML = `
+                    <div class="h-[884px] w-screen flex items-center justify-center bg-black" data-stitch-vh="h-[884px]===h-screen">
+                        <p class="text-primary font-display-lg animate-pulse">Cargando Proyecto Inmersivo...</p>
+                    </div>
+                `;
+                setTimeout(() => location.reload(), 1500);
+            }
+        });
+    </script>
+
+
+</body></html>

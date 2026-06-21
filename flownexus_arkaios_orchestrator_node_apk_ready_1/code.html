@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#67001c",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "secondary-fixed-dim": "#3ee272",
+                    "inverse-surface": "#e3e1e9",
+                    "background": "#121318",
+                    "surface-container": "#1e1f25",
+                    "surface": "#121318",
+                    "on-primary-fixed": "#001f27",
+                    "primary-fixed": "#b4ebff",
+                    "on-primary": "#003642",
+                    "secondary": "#3ee272",
+                    "on-secondary-fixed": "#002109",
+                    "primary-container": "#00d4ff",
+                    "tertiary": "#ffd5d6",
+                    "surface-tint": "#3cd7ff",
+                    "error-container": "#93000a",
+                    "secondary-container": "#00c55a",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "inverse-primary": "#00677e",
+                    "on-surface": "#e3e1e9",
+                    "tertiary-container": "#ffadb3",
+                    "surface-dim": "#121318",
+                    "outline-variant": "#3c494e",
+                    "outline": "#859398",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-primary-container": "#00586b",
+                    "on-tertiary-container": "#a20532",
+                    "on-secondary": "#003915",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-container": "#004a1d",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-background": "#e3e1e9",
+                    "on-error": "#690005",
+                    "surface-bright": "#38393f",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "surface-container-high": "#292a2f",
+                    "primary": "#a8e8ff",
+                    "surface-container-lowest": "#0d0e13",
+                    "surface-container-highest": "#34343a",
+                    "on-tertiary-fixed": "#40000e",
+                    "surface-variant": "#34343a",
+                    "inverse-on-surface": "#2f3036",
+                    "surface-container-low": "#1a1b21",
+                    "secondary-fixed": "#66ff8e",
+                    "tertiary-fixed": "#ffdadb",
+                    "on-surface-variant": "#bbc9cf",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "280px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px",
+                    "margin-mobile": "12px",
+                    "gutter": "16px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "body-base": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes pulse-cyan {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+            50% { box-shadow: 0 0 25px 8px rgba(0, 212, 255, 0.6); }
+        }
+        .pulse-effect { animation: pulse-cyan 2s infinite; }
+        .glass-panel { backdrop-filter: blur(20px); background: rgba(22, 33, 62, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .data-stream { background: linear-gradient(to bottom, transparent, #3ee272 50%, transparent); width: 1px; height: 100px; position: absolute; animation: stream 4s linear infinite; }
+        @keyframes stream {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(1000%); opacity: 0; }
+        }
+        .circular-progress {
+            background: conic-gradient(from 0deg, #00d4ff 99.8%, #1a1b21 0%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen overflow-hidden font-body-base text-body-base">
+<!-- Header Navigation -->
+<header class="fixed top-0 w-full flex justify-between items-center px-margin-mobile md:px-margin-desktop h-topbar-height z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(0,212,255,0.1)]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">hub</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tighter uppercase">ARKAIOS CORE OPS</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center">
+<span class="font-label-caps text-label-caps text-primary cursor-pointer hover:text-primary-container transition-colors">CORE_SYST</span>
+<span class="font-label-caps text-label-caps text-outline cursor-pointer hover:text-primary-container transition-colors">VIRTUAL_ENV</span>
+<span class="font-label-caps text-label-caps text-outline cursor-pointer hover:text-primary-container transition-colors">LOGS</span>
+</div>
+<span class="material-symbols-outlined text-primary active:scale-95 duration-100 cursor-pointer">sensors</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-topbar-height h-screen relative flex flex-col items-center justify-center p-4 md:p-margin-desktop overflow-hidden">
+<!-- Background Data Stream Effect -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<div class="data-stream" style="left: 10%; animation-delay: 0s;"></div>
+<div class="data-stream" style="left: 30%; animation-delay: 1.5s;"></div>
+<div class="data-stream" style="left: 55%; animation-delay: 0.5s;"></div>
+<div class="data-stream" style="left: 80%; animation-delay: 2.2s;"></div>
+<div class="data-stream" style="left: 95%; animation-delay: 0.8s;"></div>
+</div>
+<div class="relative w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center z-10">
+<!-- Left Panel: Technical Status Board -->
+<div class="hidden lg:flex lg:col-span-3 flex-col gap-4">
+<div class="glass-panel p-4 rounded-lg flex flex-col gap-3">
+<div class="flex items-center gap-2 border-b border-white/10 pb-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">terminal</span>
+<span class="font-label-caps text-label-caps text-secondary">SYSTEM DIAGNOSTICS</span>
+</div>
+<div class="flex flex-col gap-4 font-technical-sm text-technical-sm">
+<div class="flex justify-between items-center">
+<span class="text-outline uppercase">Kernel Integrity</span>
+<span class="text-secondary">100%</span>
+</div>
+<div class="h-[1px] bg-white/5 w-full"></div>
+<div class="flex justify-between items-center">
+<span class="text-outline uppercase">Neural Link</span>
+<span class="text-secondary">SYNCHRONIZED</span>
+</div>
+<div class="h-[1px] bg-white/5 w-full"></div>
+<div class="flex justify-between items-center">
+<span class="text-outline uppercase">Assets</span>
+<span class="text-primary">COMPRESSED</span>
+</div>
+<div class="h-[1px] bg-white/5 w-full"></div>
+<div class="flex flex-col gap-1">
+<span class="text-outline uppercase">Target OS</span>
+<span class="text-primary-fixed-dim">Android / Tablet (1920x1080)</span>
+</div>
+</div>
+</div>
+<!-- Build Progress Widget -->
+<div class="glass-panel p-4 rounded-lg flex flex-col items-center justify-center gap-4 border-b-2 border-primary">
+<div class="relative w-24 h-24 rounded-full flex items-center justify-center circular-progress shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+<div class="absolute inset-1 bg-surface-container-low rounded-full flex items-center justify-center">
+<span class="font-technical-sm text-technical-sm text-primary">99.8%</span>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary">BUILD PROGRESS</span>
+</div>
+</div>
+<!-- Central Hub: Priestess Oversight -->
+<div class="lg:col-span-6 flex flex-col items-center justify-center relative">
+<div class="relative w-full aspect-[4/5] max-h-[600px] glass-panel rounded-xl overflow-hidden border border-white/20 shadow-2xl group">
+<img alt="Priestess of Arkaios" class="w-full h-full object-cover mix-blend-lighten opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic, hyper-detailed portrait of a futuristic priestess with glowing cyan cybernetic markings on her face and neck. She wears intricate, high-tech robes with obsidian and translucent fiber-optic textures. She is positioned in a holographic command center with floating UI elements in neon green and cyan. The lighting is dramatic and moody, emphasizing a sense of divine authority and advanced technology, following a dark glassmorphism aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDryZ8pl-C--4AG22sRVcAMDXzlMy62IwKzs5Lvz_AbWqPWhrXBSGxA0xkcc-ih2B5e0tgW2TuPvY_2KHE6xozatVHALf8mjLRuIFuaMvxeX4lbpQQlOlVki6hf0mrVkS4W3cvv55SJy0X5JIhtnSqNMPFr-XvMMxjndmYiFp0tAOWfaXfGMo4TIRbIJ8WRunbt7UFsCN6ZOGBJGqQy655kDbuVUAwbecKcvZun6VMl3Z4CusIyn6z6BNcQXPlvfpCg4-xQSqamW48"/>
+<!-- Floating UI Overlay on Priestess -->
+<div class="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-background via-transparent to-transparent">
+<div class="flex flex-col items-center gap-6">
+<div class="text-center">
+<h2 class="font-display-lg text-display-lg text-primary-container drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]">FINAL DEPLOYMENT</h2>
+<p class="font-label-caps text-label-caps text-outline tracking-widest mt-1">ARKAIOS_VERSION_4.2.0_STABLE</p>
+</div>
+<!-- Primary CTA -->
+<button class="pulse-effect bg-primary-container text-on-primary-container px-8 py-4 rounded-lg font-headline-md text-headline-md-mobile flex items-center gap-3 transition-all hover:scale-105 active:scale-95 group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">rocket_launch</span>
+                                GENERATE APK DEMO
+                            </button>
+</div>
+</div>
+<!-- Subtle Corner Accents -->
+<div class="absolute top-4 left-4 flex gap-1">
+<div class="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse"></div>
+<div class="w-1.5 h-1.5 bg-secondary/40 rounded-full"></div>
+<div class="w-1.5 h-1.5 bg-secondary/20 rounded-full"></div>
+</div>
+<div class="absolute top-4 right-4 font-technical-sm text-technical-sm text-outline opacity-50">
+                        LATENCY: 0.04ms
+                    </div>
+</div>
+</div>
+<!-- Right Panel: Mobile Only Status Reflow / Desktop Secondary -->
+<div class="lg:col-span-3 flex flex-col gap-4">
+<div class="glass-panel p-4 rounded-lg flex flex-col gap-4">
+<div class="flex items-center gap-2 border-b border-white/10 pb-2">
+<span class="material-symbols-outlined text-primary text-[18px]">developer_mode</span>
+<span class="font-label-caps text-label-caps text-primary">BUILD LOGS</span>
+</div>
+<div class="font-technical-sm text-technical-sm text-outline h-40 overflow-y-auto space-y-1 custom-scrollbar pr-2">
+<p class="text-secondary">&gt; Initializing APK compiler...</p>
+<p>&gt; Fetching FlowNexus repository</p>
+<p>&gt; Compiling shaders (442/442)</p>
+<p>&gt; Linking native libraries...</p>
+<p class="text-secondary">&gt; Security handshake successful</p>
+<p>&gt; Optimizing dex files...</p>
+<p class="text-primary">&gt; Verification complete.</p>
+<p class="animate-pulse">&gt; Awaiting user trigger...</p>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-lg border-l-2 border-secondary">
+<div class="flex items-start gap-3">
+<div class="p-2 bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="font-body-bold text-body-bold text-on-surface">Cloud Verified</p>
+<p class="font-technical-sm text-technical-sm text-outline">Arkaios Edge Network is ready for sync.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile & Small Desktop Perspective) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 md:hidden">
+<div class="bg-surface-container/90 backdrop-blur-2xl rounded-full border border-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-around items-center w-full max-w-sm px-2 py-2">
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">videocam</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">settings_input_component</span>
+</div>
+<div class="flex items-center justify-center bg-primary/20 text-primary rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.3)] active:scale-90 duration-150">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+</div>
+</nav>
+<script>
+        // Micro-interactions for atmosphere
+        document.addEventListener('mousemove', (e) => {
+            const panels = document.querySelectorAll('.glass-panel');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const moveX = (e.clientX - centerX) / 50;
+                const moveY = (e.clientY - centerY) / 50;
+                
+                panel.style.transform = `perspective(1000px) rotateY(${moveX}deg) rotateX(${-moveY}deg)`;
+            });
+        });
+
+        // Simulating log scrolling
+        const logsContainer = document.querySelector('.custom-scrollbar');
+        if(logsContainer) {
+            setInterval(() => {
+                logsContainer.scrollTop = logsContainer.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body></html>

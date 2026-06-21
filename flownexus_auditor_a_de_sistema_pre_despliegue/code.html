@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#00586b",
+            "on-primary": "#003642",
+            "surface-container-lowest": "#0d0e13",
+            "on-primary-fixed": "#001f27",
+            "secondary-fixed": "#66ff8e",
+            "tertiary-container": "#ffadb3",
+            "surface-container-low": "#1a1b21",
+            "primary-fixed-dim": "#3cd7ff",
+            "outline": "#859398",
+            "on-secondary-fixed": "#002109",
+            "inverse-surface": "#e3e1e9",
+            "on-secondary-fixed-variant": "#005321",
+            "inverse-primary": "#00677e",
+            "surface-tint": "#3cd7ff",
+            "on-secondary-container": "#004a1d",
+            "on-surface": "#e3e1e9",
+            "on-background": "#e3e1e9",
+            "surface-bright": "#38393f",
+            "tertiary": "#ffd5d6",
+            "surface-dim": "#121318",
+            "surface-container-highest": "#34343a",
+            "on-tertiary-fixed": "#40000e",
+            "background": "#121318",
+            "secondary-container": "#00c55a",
+            "primary-fixed": "#b4ebff",
+            "tertiary-fixed-dim": "#ffb2b7",
+            "surface-container": "#1e1f25",
+            "on-tertiary": "#67001c",
+            "secondary": "#3ee272",
+            "on-surface-variant": "#bbc9cf",
+            "on-error": "#690005",
+            "secondary-fixed-dim": "#3ee272",
+            "on-error-container": "#ffdad6",
+            "inverse-on-surface": "#2f3036",
+            "primary": "#a8e8ff",
+            "outline-variant": "#3c494e",
+            "primary-container": "#00d4ff",
+            "error": "#ffb4ab",
+            "surface-variant": "#34343a",
+            "surface-container-high": "#292a2f",
+            "on-tertiary-fixed-variant": "#91002b",
+            "on-primary-fixed-variant": "#004e5f",
+            "surface": "#121318",
+            "error-container": "#93000a",
+            "tertiary-fixed": "#ffdadb",
+            "on-tertiary-container": "#a20532",
+            "on-secondary": "#003915"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "unit": "4px",
+            "topbar-height": "52px",
+            "gutter": "16px",
+            "margin-mobile": "12px",
+            "margin-desktop": "24px",
+            "sidebar-width": "280px"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "body-base": ["Inter"],
+            "technical-sm": ["JetBrains Mono"],
+            "label-caps": ["Inter"],
+            "body-bold": ["Inter"],
+            "headline-md-mobile": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+            "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+            "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+            "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #050712;
+      color: #e3e1e9;
+      overflow-x: hidden;
+    }
+    .glass-panel {
+      background: rgba(22, 33, 62, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .cyan-glow {
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+    }
+    .neon-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    }
+    .scanline {
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 212, 255, 0.1);
+      position: absolute;
+      top: 0;
+      animation: scan 4s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-base text-body-base">
+<!-- Top Navigation (Shell Component) -->
+<nav class="fixed top-0 w-full bg-background/80 dark:bg-background/80 backdrop-blur-xl text-primary dark:text-primary border-b border-white/10 shadow-[0_0_20px_rgba(0,212,255,0.1)] flex justify-between items-center px-margin-mobile h-topbar-height z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary tracking-tighter">AI CORE OPS</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-outline" data-icon="sensors">sensors</span>
+</div>
+</nav>
+<main class="pt-[64px] pb-[100px] px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-6">
+<!-- Supervision Section: Sacerdotisa Arkaios -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-4 glass-panel rounded-xl overflow-hidden relative group">
+<div class="scanline"></div>
+<div class="relative h-64 lg:h-96 w-full">
+<img class="w-full h-full object-cover grayscale contrast-125 opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A highly detailed cinematic portrait of a cybernetic priestess with glowing cyan neural implants and intricate technological armor. She is positioned within a dark obsidian command center filled with holographic interfaces. The lighting is cold and atmospheric with sharp blue highlights illuminating her futuristic robes. Digital data streams flow in the background of this high-performance futuristic visual environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYxPWBxj1zaUtCEgndhiGEOQR5RcMGBnW5pQGo9xKELFLvd6gRU08t6edoGaUDqy0l1jKWdZbcQh-JgJjS6MTkyOEuuwKU5tjQ2SraS9wdMz3vF5tzhu7S2oIIgMuGsIm0gEkQojdK_b1lDO412OWGlp9JOrFh-aYhoUCpszl3YvtX46tlQjKOWvK6NlaunxiaYjvu44LvZeM7NTnhtrEPRMLBd6-DGDjro-jg7p2iI-bvbR-TDjIF1duij2bSvSLX8jO-9nLyztY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-primary/20 text-primary font-label-caps text-label-caps px-2 py-1 rounded border border-primary/30">SUPERVISORA ARKAIOS</span>
+<p class="text-white mt-1 font-body-bold">Sacerdotisa en línea</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low/50">
+<div class="flex justify-between items-center mb-2">
+<span class="font-technical-sm text-technical-sm text-outline">NEURAL SYNC</span>
+<span class="font-technical-sm text-technical-sm text-secondary">98.4%</span>
+</div>
+<div class="h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[98.4%] shadow-[0_0_8px_#3ee272]"></div>
+</div>
+</div>
+</div>
+<!-- Central Diagnostics: Bento Grid -->
+<div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Checklist Module -->
+<div class="md:col-span-2 glass-panel p-6 rounded-xl border-l-4 border-l-primary-container">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary">Diagnóstico de Módulos</h2>
+<p class="text-outline font-technical-sm text-technical-sm">PRE-PACKAGING VALIDATION STAGE</p>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-secondary-container">ESTADO: LISTO</span>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5 hover:border-primary/20 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-bold">Motor de Renderizado Nativo</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-outline">VERIFICADO</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5 hover:border-primary/20 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-bold">Lógica de Autocentrado</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-outline">VERIFICADO</span>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5 hover:border-primary/20 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-bold">Puente API JSON</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-outline">VERIFICADO</span>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center justify-between p-3 rounded bg-white/5 border border-white/5 hover:border-primary/20 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-body-bold">Sistema de Diapositivas</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-outline">VERIFICADO</span>
+</div>
+</div>
+</div>
+<!-- Performance Stats -->
+<div class="glass-panel p-4 rounded-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="query_stats">query_stats</span>
+<h3 class="font-label-caps text-label-caps text-outline">GRÁFICO DE RENDIMIENTO</h3>
+</div>
+<div class="flex items-end gap-1 h-24 pb-2">
+<div class="w-full bg-primary/20 rounded-t h-[60%]"></div>
+<div class="w-full bg-primary/40 rounded-t h-[80%]"></div>
+<div class="w-full bg-primary/20 rounded-t h-[45%]"></div>
+<div class="w-full bg-primary/60 rounded-t h-[95%]"></div>
+<div class="w-full bg-primary/30 rounded-t h-[70%]"></div>
+<div class="w-full bg-primary/50 rounded-t h-[85%]"></div>
+<div class="w-full bg-primary-container rounded-t h-[100%] shadow-[0_0_10px_#00d4ff]"></div>
+</div>
+</div>
+<div class="mt-4 flex justify-between text-[10px] font-technical-sm text-outline border-t border-white/5 pt-2">
+<span>THREAD_MAIN: 12ms</span>
+<span>GPU_LOAD: 24%</span>
+</div>
+</div>
+<!-- File Integrity -->
+<div class="glass-panel p-4 rounded-xl">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="inventory_2">inventory_2</span>
+<h3 class="font-label-caps text-label-caps text-outline">INTEGRIDAD DE ARCHIVOS</h3>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[10px] font-technical-sm mb-1">
+<span>RECURSOS (.assets)</span>
+<span class="text-primary">100%</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-technical-sm mb-1">
+<span>BINARIOS (.dex)</span>
+<span class="text-primary">100%</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-technical-sm mb-1">
+<span>MANIFEST (xml)</span>
+<span class="text-primary">100%</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Audit Logs Section -->
+<section class="glass-panel rounded-xl overflow-hidden">
+<div class="bg-surface-container-high px-4 py-2 border-b border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="terminal">terminal</span>
+<h3 class="font-label-caps text-label-caps">AUDIT_LOGS_SYSTEM_v4.0.2</h3>
+</div>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-error/40"></div>
+<div class="w-2 h-2 rounded-full bg-secondary/40"></div>
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+</div>
+</div>
+<div class="p-4 h-48 overflow-y-auto font-technical-sm text-technical-sm text-outline bg-black/40 space-y-1">
+<p class="text-secondary">[SUCCESS] ARKAIOS_KERN: Neural link established at 0x4F22A</p>
+<p>[INFO] COMPILER: Optimization flags set to -O3 --fast-math</p>
+<p>[INFO] RENDERER: Native vulcan surface initialized</p>
+<p>[INFO] JSON_BRIDGE: 42 endpoint connections validated</p>
+<p class="text-primary">[VERIFY] CHECKSUM: Asset bundle 'ui_slides_final' matches master hash</p>
+<p>[INFO] AUTO_CENTER: Gyroscopic calibration complete</p>
+<p class="text-primary-container">[STAGING] APK_PACKAGER: Awaiting final signature...</p>
+<p class="animate-pulse text-white">&gt; _ System ready for deployment.</p>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar (Shell Component) -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8">
+<div class="bg-surface-container/90 dark:bg-surface-container/90 backdrop-blur-2xl border border-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.55)] fixed bottom-margin-mobile inset-x-margin-mobile rounded-full flex justify-around items-center h-16 max-w-lg mx-auto">
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</div>
+<div class="flex items-center justify-center bg-primary/20 text-primary rounded-full p-unit shadow-[0_0_15px_rgba(0,212,255,0.3)] active:scale-90 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<div class="flex items-center justify-center text-outline p-unit hover:bg-white/5 transition-all active:scale-90 duration-150 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+</div>
+</footer>
+<script>
+    // Lightweight atmospheric effect: simulate log rolling
+    const logContainer = document.querySelector('.overflow-y-auto');
+    const logs = [
+      "[INFO] ARKAIOS: Compressing texture atlas...",
+      "[INFO] APK_SIGNER: Generating SHA-256 signature",
+      "[SUCCESS] BUILD: Module 'SlideSystem' linked successfully",
+      "[INFO] KERNEL: Memory heap optimized",
+      "[INFO] BRIDGE: Latency check 2ms",
+    ];
+
+    setInterval(() => {
+      const p = document.createElement('p');
+      p.className = 'text-outline opacity-0 transition-opacity duration-500';
+      p.innerText = logs[Math.floor(Math.random() * logs.length)];
+      logContainer.appendChild(p);
+      setTimeout(() => p.classList.remove('opacity-0'), 100);
+      
+      if (logContainer.children.length > 20) {
+        logContainer.removeChild(logContainer.children[0]);
+      }
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }, 3000);
+  </script>
+</body></html>

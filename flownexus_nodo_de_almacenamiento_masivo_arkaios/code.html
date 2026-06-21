@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Cloud Storage Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#38393f",
+                    "on-tertiary-container": "#a20532",
+                    "surface-dim": "#121318",
+                    "background": "#121318",
+                    "tertiary": "#ffd5d6",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#00677e",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#3ee272",
+                    "secondary": "#3ee272",
+                    "tertiary-container": "#ffadb3",
+                    "on-surface-variant": "#bbc9cf",
+                    "primary-fixed": "#b4ebff",
+                    "outline": "#859398",
+                    "surface-container": "#1e1f25",
+                    "surface-container-low": "#1a1b21",
+                    "on-tertiary": "#67001c",
+                    "on-secondary-fixed-variant": "#005321",
+                    "surface-tint": "#3cd7ff",
+                    "on-surface": "#e3e1e9",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-tertiary-fixed": "#40000e",
+                    "error": "#ffb4ab",
+                    "on-secondary": "#003915",
+                    "surface": "#121318",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "outline-variant": "#3c494e",
+                    "on-secondary-container": "#004a1d",
+                    "primary": "#a8e8ff",
+                    "on-primary": "#003642",
+                    "surface-container-high": "#292a2f",
+                    "on-primary-container": "#00586b",
+                    "secondary-fixed": "#66ff8e",
+                    "on-error": "#690005",
+                    "surface-container-lowest": "#0d0e13",
+                    "primary-container": "#00d4ff",
+                    "secondary-container": "#00c55a",
+                    "inverse-on-surface": "#2f3036",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "tertiary-fixed": "#ffdadb",
+                    "on-secondary-fixed": "#002109",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "inverse-surface": "#e3e1e9",
+                    "on-primary-fixed": "#001f27",
+                    "surface-container-highest": "#34343a",
+                    "surface-variant": "#34343a",
+                    "on-background": "#e3e1e9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "280px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "topbar-height": "52px",
+                    "margin-mobile": "12px",
+                    "margin-desktop": "24px"
+            },
+            "fontFamily": {
+                    "body-bold": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-base": ["Inter"]
+            },
+            "fontSize": {
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow-x: hidden;
+        }
+        .cyber-grid {
+            background-image: linear-gradient(rgba(168, 232, 255, 0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(168, 232, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-cyan {
+            border-bottom: 2px solid #a8e8ff;
+            box-shadow: 0 4px 12px -2px rgba(168, 232, 255, 0.3);
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(168, 232, 255, 0.1);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-text-cyan {
+            text-shadow: 0 0 8px rgba(168, 232, 255, 0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-base text-body-base">
+<div class="fixed inset-0 cyber-grid pointer-events-none opacity-20"></div>
+<!-- Top Navigation (Shared Component Shell) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-display-lg tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8 font-label-caps text-label-caps">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">STATIONS</a>
+<a class="text-primary border-b border-primary pb-1" href="#">STORAGE</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">NETWORK</a>
+</nav>
+<button class="material-symbols-outlined text-primary hover:bg-white/5 p-2 rounded transition-colors active:scale-95 duration-300" data-icon="settings_input_antenna">settings_input_antenna</button>
+</div>
+</header>
+<!-- Side Navigation (Shared Component Shell) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 w-sidebar-width flex-col p-gutter bg-surface-container/95 backdrop-blur-2xl border-r border-primary/20 pt-[70px] z-40">
+<div class="flex items-center gap-3 mb-8 p-3 bg-primary/5 rounded-lg border border-primary/10">
+<img alt="AETHER CORE" class="w-10 h-10 rounded-full border border-primary/30" data-alt="A highly detailed close-up portrait of a digital humanoid entity with glowing cybernetic circuits visible beneath translucent skin. The aesthetic is futuristic and high-performance, with cool cyan and deep navy lighting. The character has an expression of calm intelligence, surrounded by floating holographic data particles in a dark, minimalist laboratory setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANMKrOeO4FM0aribePTabWz2nVmLfiBE6iejUzCs89dXeiyYwwkUnB8mDkBI9Wy-0X9xZEv5GDQNuJZ421Ge_FTgHJSxSAGYw9VXYS_7uaPpMlV92Y90evcraKnolV4qOT-1e4RHc_mkCMUwazKuavswmS-aQJzC1PEIQBnhJWC7mpIXaXyGVg387wLxCJLGo_IBs5C5XazQNVsT-WjJMmlG173SDnFbRQ-UTAgmvkNlJy9Abbg8_i6W87066M4ctDK-xkF2O7GnI"/>
+<div>
+<div class="font-label-caps text-label-caps text-secondary">AETHER CORE</div>
+<div class="text-[10px] text-on-surface-variant font-technical-sm">v2.4.0-HOLO</div>
+</div>
+</div>
+<nav class="space-y-2 flex-grow">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                Network Map
+            </a>
+<a class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg font-body-bold" href="#">
+<span class="material-symbols-outlined" data-icon="cloud" style="font-variation-settings: 'FILL' 1;">cloud</span>
+                Cloud Bridge
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+                Schedules
+            </a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                Tourist Info
+            </a>
+</nav>
+<div class="mt-auto p-4 glass-panel rounded-xl border-secondary/30 relative overflow-hidden">
+<div class="scanline"></div>
+<div class="font-label-caps text-label-caps text-secondary-fixed mb-2">SYSTEM INTEGRITY</div>
+<div class="flex items-center justify-between text-technical-sm">
+<span>ENCRYPTION</span>
+<span class="text-secondary">ACTIVE</span>
+</div>
+<div class="w-full bg-white/5 h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[88%] shadow-[0_0_8px_rgba(62,226,114,0.5)]"></div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-[70px] pb-24 md:pb-8 md:pl-[300px] px-margin-mobile md:px-margin-desktop min-h-screen">
+<!-- Hero Header -->
+<div class="mb-8 relative p-6 glass-panel rounded-xl border-primary/20 overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="font-technical-sm text-primary opacity-50">NODE_ID: FLX-9982-DRIVE</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary glow-text-cyan flex items-center gap-3">
+<span class="material-symbols-outlined text-4xl" data-icon="cloud_done">cloud_done</span>
+                        Google Drive Bridge
+                    </h2>
+<p class="text-on-surface-variant mt-1 max-w-md">Ecosistema FlowNexus: Conexión de alto rendimiento con repositorio central sincronizada en tiempo real.</p>
+</div>
+<div class="text-right">
+<div class="font-label-caps text-label-caps text-primary mb-1">ESPACIO DISPONIBLE</div>
+<div class="font-display-lg text-display-lg text-white glow-text-cyan">5TB</div>
+<div class="w-full md:w-64 bg-surface-container-highest h-2 rounded-full mt-2 overflow-hidden border border-white/5">
+<div class="bg-primary h-full w-[42%] shadow-[0_0_12px_rgba(168,232,255,0.6)] animate-pulse"></div>
+</div>
+<div class="text-technical-sm text-on-surface-variant mt-2">2.1TB Utilizados de 5.0TB</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Nodos de Almacenamiento -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="folder_managed">folder_managed</span>
+                        Nodos de Almacenamiento
+                    </h3>
+<button class="font-label-caps text-label-caps text-primary hover:underline">VER TODO</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Proyectos -->
+<div class="glass-panel p-5 rounded-lg border-white/5 hover:border-primary/40 transition-all group cursor-pointer relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="workspaces">workspaces</span>
+</div>
+<span class="material-symbols-outlined text-primary mb-4" data-icon="folder_special" style="font-variation-settings: 'FILL' 1;">folder_special</span>
+<h4 class="font-body-bold text-body-bold text-white">Proyectos</h4>
+<p class="text-technical-sm text-on-surface-variant mt-1">1.240 Archivos / 450GB</p>
+<div class="mt-4 flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/50"></div>
+<div class="w-6 h-6 rounded-full bg-secondary/20 border border-secondary/50"></div>
+<div class="w-6 h-6 rounded-full bg-surface-bright border border-white/10 flex items-center justify-center text-[8px]">+12</div>
+</div>
+</div>
+<!-- Assets HD -->
+<div class="glass-panel p-5 rounded-lg border-white/5 hover:border-primary/40 transition-all group cursor-pointer relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="movie">movie</span>
+</div>
+<span class="material-symbols-outlined text-secondary mb-4" data-icon="video_file" style="font-variation-settings: 'FILL' 1;">video_file</span>
+<h4 class="font-body-bold text-body-bold text-white">Assets HD</h4>
+<p class="text-technical-sm text-on-surface-variant mt-1">85 Video RAW / 1.4TB</p>
+<div class="mt-4 flex items-center gap-2">
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary border border-secondary/20 rounded font-technical-sm text-[10px]">4K READY</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded font-technical-sm text-[10px]">SYNCED</span>
+</div>
+</div>
+<!-- Logs de Agentes -->
+<div class="glass-panel p-5 rounded-lg border-white/5 hover:border-primary/40 transition-all group cursor-pointer relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="terminal">terminal</span>
+</div>
+<span class="material-symbols-outlined text-primary mb-4" data-icon="data_object" style="font-variation-settings: 'FILL' 1;">data_object</span>
+<h4 class="font-body-bold text-body-bold text-white">Logs de Agentes</h4>
+<p class="text-technical-sm text-on-surface-variant mt-1">2.4M Entradas / 12GB</p>
+<div class="mt-4 overflow-hidden h-6">
+<div class="text-[9px] font-technical-sm text-primary/60 animate-pulse">
+                               [14:22:01] AGENT_ALPHA: Sync complete...<br/>
+                               [14:22:05] AGENT_BETA: Heartbeat active...
+                           </div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Table -->
+<div class="glass-panel rounded-lg border-white/5 overflow-hidden">
+<div class="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TRANSFERENCIAS RECIENTES</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant cursor-pointer" data-icon="refresh">refresh</span>
+</div>
+<table class="w-full text-left font-technical-sm">
+<thead class="bg-surface-container-low text-on-surface-variant uppercase text-[10px] tracking-wider">
+<tr>
+<th class="p-4 font-normal">Archivo</th>
+<th class="p-4 font-normal">Ruta</th>
+<th class="p-4 font-normal">Estado</th>
+<th class="p-4 font-normal">Velocidad</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 text-white">render_final_v02.mp4</td>
+<td class="p-4 text-on-surface-variant">/Assets_HD/Visuals</td>
+<td class="p-4"><span class="text-secondary">COMPLETADO</span></td>
+<td class="p-4 text-on-surface-variant">850 MB/s</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 text-white">agent_core_dump.log</td>
+<td class="p-4 text-on-surface-variant">/Logs/System</td>
+<td class="p-4"><span class="text-primary animate-pulse">SYNCING...</span></td>
+<td class="p-4 text-on-surface-variant">12 MB/s</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-4 text-white">nexus_schema.json</td>
+<td class="p-4 text-on-surface-variant">/Proyectos/Flow</td>
+<td class="p-4"><span class="text-on-surface-variant">PENDIENTE</span></td>
+<td class="p-4 text-on-surface-variant">--</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Sincronización Inteligente Panel -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="glass-panel rounded-xl border-primary/30 h-full flex flex-col overflow-hidden relative">
+<div class="scanline opacity-20"></div>
+<div class="p-6 border-b border-primary/20 bg-primary/5">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+                            Sincronización
+                        </h3>
+<p class="text-technical-sm text-primary/70">TRANSFERENCIA EN TIEMPO REAL</p>
+</div>
+<div class="p-6 flex-grow space-y-8">
+<!-- Real-time Visualizer -->
+<div class="relative h-48 rounded-lg bg-surface-container-lowest border border-white/5 overflow-hidden p-4">
+<div class="absolute inset-0 flex items-center justify-around opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="monitor">monitor</span>
+<span class="material-symbols-outlined text-4xl animate-bounce" data-icon="trending_flat">trending_flat</span>
+<span class="material-symbols-outlined text-8xl" data-icon="cloud">cloud</span>
+</div>
+<!-- Simple animated CSS wave for data flow -->
+<div class="h-full flex items-end gap-1">
+<div class="flex-grow bg-primary/40 rounded-t h-[20%] animate-[pulse_2s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[40%] animate-[pulse_1.5s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[30%] animate-[pulse_2.5s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[60%] animate-[pulse_1.2s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[85%] animate-[pulse_1.8s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[45%] animate-[pulse_2.2s_infinite]"></div>
+<div class="flex-grow bg-primary/40 rounded-t h-[70%] animate-[pulse_1.4s_infinite]"></div>
+</div>
+<div class="absolute top-4 left-4 font-technical-sm text-primary bg-primary/10 px-2 rounded">UPLINK: 450 MB/s</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-body-bold text-white">Google Drive Bridge</span>
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-bold text-white">FlowNexus Visor</span>
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-bold text-white">IA Optimization</span>
+<span class="material-symbols-outlined text-primary animate-spin" data-icon="settings_slow_motion_video">settings_slow_motion</span>
+</div>
+</div>
+<div class="pt-6 border-t border-white/5">
+<div class="font-label-caps text-label-caps text-on-surface-variant mb-4">MÉTRICAS DE RED</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/5 p-3 rounded-lg">
+<div class="text-[10px] text-on-surface-variant">LATENCIA</div>
+<div class="text-headline-md text-white font-technical-sm">12ms</div>
+</div>
+<div class="bg-white/5 p-3 rounded-lg">
+<div class="text-[10px] text-on-surface-variant">PAQUETES</div>
+<div class="text-headline-md text-white font-technical-sm">0.01% Loss</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 bg-primary/10 border-t border-primary/20">
+<button class="w-full bg-primary text-on-primary font-body-bold py-3 rounded-lg hover:shadow-[0_0_20px_rgba(168,232,255,0.4)] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+                            OPTIMIZAR CONEXIÓN
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 rounded-t-full shadow-[0_-10px_40px_rgba(0,197,90,0.15)]">
+<button class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="font-label-caps text-[9px]">Live Feed</span>
+</button>
+<button class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] animate-pulse-slow">
+<span class="material-symbols-outlined" data-icon="touch_app">touch_app</span>
+<span class="font-label-caps text-[9px]">Interactive</span>
+</button>
+<button class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="font-label-caps text-[9px]">Demo Loop</span>
+</button>
+</nav>
+<script>
+        // Micro-interactions and data simulation
+        document.addEventListener('DOMContentLoaded', () => {
+            const transferRows = document.querySelectorAll('tbody tr');
+            
+            // Subtle hover scaling for cards
+            const cards = document.querySelectorAll('.glass-panel');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Randomly update "Live Logs" simulation
+            const logsContainer = document.querySelector('.animate-pulse');
+            setInterval(() => {
+                const times = new Date().toLocaleTimeString();
+                const possibleLogs = [
+                    `[${times}] NODE: Fetching metadata...`,
+                    `[${times}] SYNC: Block 8829 verified.`,
+                    `[${times}] IA: Path optimization active.`,
+                    `[${times}] CORE: Bridge status OK.`
+                ];
+                const randomLog = possibleLogs[Math.floor(Math.random() * possibleLogs.length)];
+                const logLines = logsContainer.innerHTML.split('<br>');
+                logLines.shift();
+                logLines.push(randomLog);
+                logsContainer.innerHTML = logLines.join('<br>');
+            }, 3000);
+        });
+    </script>
+</body></html>

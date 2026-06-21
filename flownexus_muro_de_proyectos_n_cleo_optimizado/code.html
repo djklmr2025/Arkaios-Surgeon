@@ -1,0 +1,274 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FlowNexus | Muro de Proyectos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        :root {
+            --cyber-void: #050712;
+        }
+        body {
+            background-color: var(--cyber-void);
+            color: #e3e1e9;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(22, 33, 62, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+            border-bottom: 1px solid #00d4ff;
+        }
+        .ascii-overlay {
+            font-family: 'JetBrains Mono', monospace;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(62, 226, 114, 0.1), transparent);
+            height: 20%;
+            width: 100%;
+            animation: scanline 4s linear infinite;
+        }
+    </style>
+</head>
+<body class="font-body-base text-body-base antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex justify-between items-center px-margin-desktop h-topbar-height transition-all duration-300 ease-out">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary font-display-lg text-display-lg tracking-tighter" data-icon="gesture">gesture</span>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tighter">FlowNexus Artist</h1>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="font-technical-sm text-technical-sm text-secondary uppercase tracking-widest">System: 100% Integrated</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest">Kernel: Optimized</span>
+</div>
+<div class="h-8 w-8 rounded-full border border-primary/30 overflow-hidden relative group cursor-pointer">
+<img alt="Arkaios Priestess Avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of the Arkaios Priestess, a cybernetic entity with glowing cyan circuitry embedded in her porcelain skin. She wears a high-collar obsidian mesh suit. The lighting is cold and atmospheric, with sharp emerald highlights cutting through the deep shadows of a high-tech command center. Her expression is serene and focused, representing an advanced AI guide." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd1r8Gyn6bAKy_VTDg3mBa4Hx_wbK0F9XhV46GNa4kji0i8Z28WDpexxUcpN--FLDzRNSEuHgArfVZ8q3h2vpRGljSno1B6jH-IcdPRm-ukRp15fD5puwlEbjQztce6B0U0LG6LoVzLoKjpcmCEpYMTYBKARefU1nizZHaeYugiyApJf5_ch4P_EvqWQU0dZ5mjbXJKdnVlFTkMUUBiyXp-sTAIntULTMDM2cmfID9Rxrf4iTRpX31i8S75rpY7FviLztX5kn0YAA">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="cloud_done">cloud_done</span>
+</div>
+</header>
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-sidebar-width z-40 bg-surface-container-low/95 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col gap-unit p-gutter pt-24 transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)">
+<div class="mb-8 px-4">
+<h2 class="font-headline-md text-headline-md text-secondary">Arkaios Sync</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">V.2.4.0</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary/10 text-secondary border-l-4 border-secondary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+<span class="font-body-base text-body-base">Layers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="timeline">timeline</span>
+<span class="font-body-base text-body-base">Timeline</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+<span class="font-body-base text-body-base">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+<span class="font-body-base text-body-base">Brushes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-base text-body-base">Arkaios Sync</span>
+</a>
+</nav>
+<div class="mt-auto p-4 glass-panel rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="account_tree">account_tree</span>
+</div>
+<div>
+<p class="font-body-bold text-body-bold text-on-surface">Lead Animator</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Project: Arkaios Alpha</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-sidebar-width pt-24 pb-32 px-margin-mobile md:px-margin-desktop min-h-screen">
+<!-- Search & Filter Bar -->
+<section class="max-w-7xl mx-auto mb-12">
+<div class="flex flex-col md:flex-row gap-6 items-end justify-between bg-surface-container/40 p-6 rounded-xl border border-white/5 backdrop-blur-md">
+<div class="w-full md:w-1/2 space-y-2">
+<label class="font-label-caps text-label-caps text-primary uppercase ml-1">Terminal Search</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest/60 border border-white/10 rounded-lg py-3 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all px-14" placeholder="Querying active nodes..." type="text">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="search">search</span>
+</div>
+</div>
+<div class="flex gap-3 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+<button class="px-6 py-2 rounded-full border border-primary text-primary font-label-caps text-label-caps hover:bg-primary/10 transition-colors whitespace-nowrap">Cloud</button>
+<button class="px-6 py-2 rounded-full border border-white/10 text-on-surface-variant font-label-caps text-label-caps hover:border-white/30 transition-colors whitespace-nowrap">Vectors</button>
+<button class="px-6 py-2 rounded-full border border-white/10 text-on-surface-variant font-label-caps text-label-caps hover:border-white/30 transition-colors whitespace-nowrap">Active Nodes</button>
+</div>
+</div>
+</section>
+<!-- Bento Project Wall -->
+<section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Featured Card: Metro CDMX -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl glass-panel aspect-[16/9] md:aspect-auto h-[400px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A futuristic reimagining of the Mexico City Metro station. The tunnels are lined with glowing emerald LED strips and digital wayfinding systems displaying glitch-art iconography. A sleek, high-speed maglev train sits at the platform, its surface reflecting a cyberpunk city above. The color palette is dominated by deep obsidian, vibrant cyan, and neon emerald, creating a high-performance, urban-futurist atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdEhxXCVT7oB4uK8tWuoSG8OFmaHxGVFWEMjwf8BlnTYRBensWXum37rREwVTsJCGdCOowOMHJ6PsRsiolLMrQNAMeRtDRa9Lim5SsXeCsJBV8HDizsvckhAlxT8wGR3CWbtyTxOkfHJ_Pcf9WrrYqVdVkqzfacWKG4n2JCzPw0CNpn4SAuBKKkAlF-Fn3xLk4dBe7lQ5tyV5F9SNxTJ7hx3MViAg9BfF7VBkKpa3gqNCbRxfs3Hl030_dvgxguKSTZIHrcokXY8A">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-surface-dim/20 to-transparent"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-secondary/20 text-secondary border border-secondary/30 px-3 py-1 rounded-full font-technical-sm text-technical-sm uppercase">Active Node</span>
+<span class="bg-primary/20 text-primary border border-primary/30 px-3 py-1 rounded-full font-technical-sm text-technical-sm uppercase">High Fidelity</span>
+</div>
+<div class="absolute bottom-0 left-0 p-8 w-full border-b-2 border-primary">
+<div class="ascii-overlay text-[8px] mb-2 leading-none whitespace-pre">
+                        ░▒▓█ METRO_CDMX_KERNEL █▓▒░
+                        IDENT: CDMX-772-NODE
+                    </div>
+<h3 class="font-display-lg text-display-lg text-white mb-2">Metro CDMX</h3>
+<p class="text-on-surface-variant max-w-lg font-body-base text-body-base line-clamp-2">Visual redesign of the urban transit backbone. Integrating holographic wayfinding and real-time kinetic telemetry.</p>
+</div>
+</div>
+<!-- Side Card 1 -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel h-[400px] border-b-2 border-secondary">
+<div class="absolute inset-0 bg-surface-container-high scanline"></div>
+<div class="relative z-10 p-6 flex flex-col h-full">
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-secondary text-4xl" data-icon="hub">hub</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">NODE_022</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-white mb-4">Neural Graph Mapping</h3>
+<div class="flex-grow flex items-center justify-center">
+<!-- ASCII Art placeholder -->
+<div class="ascii-overlay text-center leading-tight">
+                            ( . ) ( . )<br>
+                            )  (  (  )<br>
+                            (_/ \_)<br>
+                            _|_|_<br>
+                            CONNECTING...
+                        </div>
+</div>
+<div class="mt-auto">
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[84%] shadow-[0_0_10px_#3ee272]"></div>
+</div>
+<div class="flex justify-between mt-2 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="">OPTIMIZED</span>
+<span class="">84%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Project Grid Row -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel aspect-square border-b-2 border-white/10 hover:border-primary transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="A macro shot of a futuristic hardware motherboard with glowing blue neon liquid cooling tubes. The components are sleek and silver, with intricate gold-plated circuits. The lighting is low and focused, highlighting the high-performance engineering. Cyberpunk aesthetic with deep shadows and vibrant cyan accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWJcB4vmExhqn17rDEso9Ttj40XU5YthTjw5nryR5La-jqA4YHTgi8OVurbjVSK6sD_B_83cGEa4eoAPiP-X2z-N-l4nXOsm0BP7z0MOSP01_edFGn_U0yNLqBJOoVrqn0la8CvhOykEwBFVbxCK-fpz8zwVaNKWvjyX60vBwWd8LKWGliuqergtjoIZTc-N9HOd7OUwrFS91Ndu_PpqEv0onqlcM3Ir9I6z9tdNbuxW5pTQKO1GU8hdDG4eZLM7tC5uk62THT1wU">
+<div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black to-transparent">
+<h4 class="font-body-bold text-body-bold text-white truncate">Kernel Overdrive</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant truncate">Low-level optimization UI</p>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel aspect-square border-b-2 border-white/10 hover:border-primary transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="An abstract 3D render of floating glass shards and geometric primitives illuminated by a split-lighting setup of pink and cyan. The environment is a pitch-black void, creating high contrast and deep shadows. The surfaces of the shapes are highly reflective, showing distorted glitch textures and neon trails." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl4cIK3iPvXROFM8LQ9JMasePP-u4IEi5rFK2Adoay2FRWNm11-MR8KILjxZnWucfynzqYi-TrRVf5jbKV8PaIl1S1T4ALL8Ojb-duynQJH3ZFFPGmzLPWwiFXOi7qLwq-uIkBTs3vkupFjWqjVF0QwQmxrzRIvQTuk9lZdq0k26DaUj_S-Z6MzJbQDR8C42BAURgHO_f2rj-AR_6j0_SMWx-3ZaxLlrOVD0x5XLV54spKvV4h2KOyyqIeteci6XZQW-DJNvVGzug">
+<div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black to-transparent">
+<h4 class="font-body-bold text-body-bold text-white truncate">Prism Vectors</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant truncate">Generative geometry engine</p>
+</div>
+</div>
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel aspect-square border-b-2 border-white/10 hover:border-primary transition-all duration-300">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="A stunning satellite-style view of a digital Earth glowing with a web of emerald and gold light connections. The continents are dark silhouettes against a vibrant, neon-lit infrastructure that wraps around the globe like a shimmering web. Cinematic lighting with deep space blacks and luminous technical overlays." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDRSwvlZudClBxCpVpRwJaG00EcNmXDdG5J7N_AqD6KqLmL4edugoTwwS3XdK1BDVtbvydnKNJH6lwZejMG1fMp-kAmu7wRuArBvgD_KYt-IGdTfj5HkufgYvaRm5jMcxjSY2_cG2KVEnmItUiMDZ5IRHg27Ttp7oM27FMxRLfxV8qUVudErSzwu61IojqMcXYFuuh1AvsFtRXAStL5v6FGemtMBT40-RHBVPeDm7Aj477ma2Uxho_4dJVpLR-HfR6tDFhQBlf6Wk">
+<div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black to-transparent">
+<h4 class="font-body-bold text-body-bold text-white truncate">Global Flow</h4>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant truncate">Real-time data visualization</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile & Tablet) -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full w-auto min-w-[320px] bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-center items-center gap-6 px-6 py-2 z-50 transition-all duration-200">
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+</button>
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] hover:scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span>
+</button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+</button>
+</nav>
+<!-- Desktop Dock (Fixed Bottom) -->
+<div class="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+<div class="bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 shadow-2xl rounded-2xl flex items-center gap-1 p-2">
+<div class="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
+<button class="p-3 rounded-xl hover:bg-white/10 text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+</button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span>
+</button>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-3 rounded-xl bg-primary text-on-primary shadow-[0_0_20px_rgba(168,232,255,0.3)] transition-all">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+        // Micro-interaction for project cards
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                
+                // Subtle tilt effect
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            document.body.style.backgroundColor = '#020308';
+        });
+        searchInput.addEventListener('blur', () => {
+            document.body.style.backgroundColor = '#050712';
+        });
+    </script>
+
+
+</body></html>

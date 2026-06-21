@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Arkaios Core - Sacerdotisa AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ffb4ab",
+                    "on-primary": "#003642",
+                    "on-secondary-fixed-variant": "#005321",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "on-secondary-fixed": "#002109",
+                    "on-background": "#e3e1e9",
+                    "primary-container": "#00d4ff",
+                    "inverse-primary": "#00677e",
+                    "on-secondary": "#003915",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "tertiary": "#ffd5d6",
+                    "surface-container-high": "#292a2f",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "on-surface-variant": "#bbc9cf",
+                    "on-secondary-container": "#004a1d",
+                    "secondary-fixed": "#66ff8e",
+                    "on-tertiary-container": "#a20532",
+                    "inverse-on-surface": "#2f3036",
+                    "surface-tint": "#3cd7ff",
+                    "on-tertiary": "#67001c",
+                    "on-surface": "#e3e1e9",
+                    "surface-dim": "#121318",
+                    "outline-variant": "#3c494e",
+                    "surface-container-low": "#1a1b21",
+                    "error-container": "#93000a",
+                    "on-error": "#690005",
+                    "background": "#121318",
+                    "primary-fixed": "#b4ebff",
+                    "surface-container-highest": "#34343a",
+                    "surface-variant": "#34343a",
+                    "secondary": "#3ee272",
+                    "surface-container": "#1e1f25",
+                    "on-tertiary-fixed": "#40000e",
+                    "inverse-surface": "#e3e1e9",
+                    "secondary-fixed-dim": "#3ee272",
+                    "secondary-container": "#00c55a",
+                    "surface-bright": "#38393f",
+                    "outline": "#859398",
+                    "surface": "#121318",
+                    "on-primary-fixed": "#001f27",
+                    "primary": "#a8e8ff",
+                    "tertiary-container": "#ffadb3",
+                    "on-primary-container": "#00586b",
+                    "tertiary-fixed": "#ffdadb",
+                    "surface-container-lowest": "#0d0e13"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "topbar-height": "52px",
+                    "sidebar-width": "280px",
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "margin-desktop": "24px",
+                    "margin-mobile": "12px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "headline-md-mobile": ["Inter"],
+                    "body-base": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes liquid-drift {
+            0% { transform: translateY(-10px) scaleY(1); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(400px) scaleY(2); opacity: 0; }
+        }
+        .liquid-drop {
+            position: absolute;
+            background: rgba(168, 232, 255, 0.4);
+            width: 2px;
+            height: 20px;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: liquid-drift 3s infinite linear;
+        }
+        .glow-mesh {
+            background-image: 
+                linear-gradient(to right, rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .priestess-aura {
+            filter: drop-shadow(0 0 30px rgba(168, 232, 255, 0.4));
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(22, 33, 62, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .haptic-feedback:active {
+            transform: scale(0.95);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base overflow-hidden selection:bg-primary/30">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-primary/10 transition-all duration-300">
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-primary hover:bg-primary/5 p-2 rounded-full transition-all active:scale-95 duration-200" data-icon="menu">menu</button>
+<h1 class="font-headline-sm-mobile text-headline-sm-mobile font-bold text-primary tracking-wider uppercase">Arkaios Core</h1>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-primary/5 p-2 rounded-full transition-all active:scale-95 duration-200" data-icon="settings_input_component">settings_input_component</button>
+</header>
+<!-- Main Canvas -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-surface-container-lowest">
+<!-- Cyber Void Background -->
+<div class="absolute inset-0 glow-mesh opacity-20"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<!-- Cityscape Background (Visible through forms) -->
+<div class="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
+<img class="w-full h-full object-cover" data-alt="A sprawling cinematic futuristic cityscape at night featuring towering skyscrapers with bioluminescent azure lights and holographic advertisements. The sky is a deep indigo with streaks of flying vehicles creating long light trails. The overall atmosphere is high-contrast, professional, and captures a Tomorrowland futurism aesthetic with deep blacks and neon cyan accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQCpBQVFfMEFVMAvidmW-aDLq-XESK-a8h74yUuwLqS_4Kjh60Zvw1Q7p_R5FTPXXbRLE2HEXMwP5rkkjafmH1vTphPWDjG9rCiLYegYqVLeRGSiEf9f-7y2kgbAjcAZkwxbActEEOeTSZGOPB8nQ_7GkkZEdWMzx8SAIx7tc8zoRbIasTufYaKK1_Qhx9MsnGddmk2OYmt6ffmitXmtVNk8Ijx8Xzv1vV1O00TbLucURaU0LFh_Yep5nTzGZe1MO7WhufKbCoq0U"/>
+</div>
+<!-- Liquid Drops Animation Layer -->
+<div class="absolute inset-0 pointer-events-none z-10" id="liquid-container"></div>
+<!-- Priestess Entity -->
+<div class="relative z-20 w-full h-full flex items-center justify-center transition-opacity duration-1000 ease-in-out">
+<div class="priestess-aura relative h-[751px] w-auto aspect-[9/16]">
+<img class="h-full w-full object-contain mix-blend-screen opacity-90" data-alt="A hyper-realistic 3D AI entity known as the Priestess of Arkaios, standing tall in ornate cybernetic robes of white, gold, and cyan. She possesses a serene, authoritative expression with glowing azure eyes and floating metallic accessories. The character is bathed in a soft divine white aura, set against a deep black void with technical holographic data swirling around her form. The lighting is dramatic, high-key, and reinforces a premium cyber-flow aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfws_Ww6O-mRmCQ7S6dSJN_ndpv6l_5E8Vlq3oAgWaornELSA4yYb5arRWvbKNBkjwiThvHMCht6knJwchzZb1i5EV-vqQzoNKkwXvV-95lKJCf0APX7v7NkGpdjO5E0-EXCcB95iCDyh16V6ys9_z2jDFqamEBCK90U741hkk4WtmLIc6jITvMFzUpDSdCydiJ0GHM5CF1OV5uyBe_GhFQEhb2c88TnDOHhqW4JHv5xwcBeyrso7WKaiSS8D_JLL8-tPHLc58JPE"/>
+<!-- Floating Holographic Panels -->
+<div class="absolute top-1/4 -left-12 glass-panel p-3 rounded-lg flex flex-col gap-1 border-l-4 border-primary">
+<span class="font-label-caps text-label-caps text-primary">CORE SYNC</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">NODE: 0x98AF</span>
+<div class="h-1 w-16 bg-primary/20 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 animate-pulse"></div>
+</div>
+</div>
+<div class="absolute bottom-1/3 -right-8 glass-panel p-3 rounded-lg flex flex-col gap-1 border-r-4 border-secondary">
+<span class="font-label-caps text-label-caps text-secondary">NEURAL LOAD</span>
+<div class="flex items-center gap-2">
+<span class="font-technical-sm text-technical-sm text-on-surface">94.2%</span>
+<span class="material-symbols-outlined text-[12px] text-secondary">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+<!-- User Greeting Overlay -->
+<div class="absolute bottom-32 z-30 flex flex-col items-center text-center px-gutter gap-2 pointer-events-none">
+<h2 class="font-display-lg text-display-lg text-white drop-shadow-lg">Welcome, Architect</h2>
+<p class="font-body-base text-on-surface-variant max-w-[280px]">The Arkaios System is initialized. Core V2 is standing by for your command.</p>
+</div>
+</main>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter py-4 bg-surface-container-low/70 backdrop-blur-md rounded-t-xl border-t border-primary/20 shadow-[0_-4px_20px_rgba(0,212,255,0.15)]">
+<button class="flex flex-col items-center gap-1 haptic-feedback transition-all duration-300 group">
+<span class="material-symbols-outlined text-outline opacity-60 group-hover:text-primary-fixed" data-icon="database">database</span>
+<span class="font-label-caps text-label-caps text-outline opacity-60 group-hover:text-primary-fixed uppercase">Data</span>
+</button>
+<button class="relative -top-6 haptic-feedback transition-transform">
+<div class="bg-primary shadow-[0_0_20px_rgba(0,212,255,0.6)] p-4 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-3xl" data-icon="play_circle" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<div class="absolute -bottom-8 left-1/2 -translate-x-1/2">
+<span class="font-label-caps text-label-caps text-primary drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] uppercase">Status</span>
+</div>
+</button>
+<button class="flex flex-col items-center gap-1 haptic-feedback transition-all duration-300 group">
+<span class="material-symbols-outlined text-outline opacity-60 group-hover:text-primary-fixed" data-icon="rss_feed">rss_feed</span>
+<span class="font-label-caps text-label-caps text-outline opacity-60 group-hover:text-primary-fixed uppercase">Feed</span>
+</button>
+</nav>
+<!-- UI Overlay Elements -->
+<div class="fixed top-20 right-4 z-40 flex flex-col gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+</div>
+<script>
+        // Liquid glass droplets simulation
+        const container = document.getElementById('liquid-container');
+        const createDrop = () => {
+            const drop = document.createElement('div');
+            drop.className = 'liquid-drop';
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            drop.style.width = (Math.random() * 2 + 1) + 'px';
+            container.appendChild(drop);
+            setTimeout(() => drop.remove(), 3000);
+        };
+
+        // Create initial burst
+        for(let i=0; i<20; i++) setTimeout(createDrop, i * 100);
+        
+        // Continuous cycle
+        setInterval(createDrop, 400);
+
+        // Simple parallax on mouse/touch
+        document.addEventListener('mousemove', (e) => {
+            const aura = document.querySelector('.priestess-aura');
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            aura.style.transform = `translateX(${x}px) translateY(${y}px)`;
+        });
+    </script>
+</body></html>

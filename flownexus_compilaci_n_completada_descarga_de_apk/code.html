@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus // Deploy Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#3cd7ff",
+                        "on-error": "#690005",
+                        "on-primary-container": "#00586b",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary-container": "#a20532",
+                        "inverse-on-surface": "#2f3036",
+                        "outline": "#859398",
+                        "on-primary-fixed": "#001f27",
+                        "primary": "#a8e8ff",
+                        "background": "#121318",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "inverse-primary": "#00677e",
+                        "inverse-surface": "#e3e1e9",
+                        "on-primary": "#003642",
+                        "on-background": "#e3e1e9",
+                        "on-secondary-fixed": "#002109",
+                        "secondary": "#3ee272",
+                        "on-secondary-fixed-variant": "#005321",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#40000e",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#bbc9cf",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container": "#1e1f25",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container-high": "#292a2f",
+                        "surface-variant": "#34343a",
+                        "secondary-fixed": "#66ff8e",
+                        "secondary-container": "#00c55a",
+                        "surface-container-highest": "#34343a",
+                        "outline-variant": "#3c494e",
+                        "on-secondary": "#003915",
+                        "on-secondary-container": "#004a1d",
+                        "secondary-fixed-dim": "#3ee272",
+                        "primary-fixed": "#b4ebff",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-surface": "#e3e1e9",
+                        "primary-container": "#00d4ff",
+                        "tertiary-container": "#ffadb3",
+                        "surface": "#121318",
+                        "surface-dim": "#121318",
+                        "surface-bright": "#38393f",
+                        "on-tertiary": "#67001c",
+                        "tertiary": "#ffd5d6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: #3cd7ff; border-radius: 10px; }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(22, 33, 62, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .shimmer-text {
+            background: linear-gradient(90deg, #a8e8ff, #3ee272, #a8e8ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+        @keyframes shimmer { to { background-position: 200% center; } }
+        .terminal-scroll { animation: terminal-flow 20s linear infinite; }
+        @keyframes terminal-flow { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-container/90 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_0_20px_rgba(60,215,255,0.1)] h-topbar-height px-margin-desktop flex justify-between items-center">
+<div class="flex items-center gap-gutter">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<h1 class="font-display-lg text-[18px] leading-tight tracking-tighter text-surface-tint">FlowNexus // Deploy Hub</h1>
+<div class="hidden md:flex items-center gap-4 ml-8">
+<span class="font-technical-sm text-technical-sm text-tertiary-container border-b-2 border-tertiary-fixed px-2 py-1">BUILD ENGINE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant hover:bg-surface-variant/50 transition-colors px-2 py-1 cursor-pointer">ENVIRONMENT</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant hover:bg-surface-variant/50 transition-colors px-2 py-1 cursor-pointer">VAULT</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="font-technical-sm text-[10px] text-secondary"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse inline-block mr-1"></span>STAGING: COMPILING_APK</span>
+<span class="font-technical-sm text-[9px] text-outline">LATENCY: 14MS // UPTIME: 99.9%</span>
+</div>
+<div class="w-8 h-8 rounded-full border border-primary/30 overflow-hidden bg-surface-container-highest cursor-pointer active:scale-95 transition-all">
+<img alt="Priestess" class="w-full h-full object-cover" data-alt="A professional headshot of a futuristic digital priestess with glowing cyan cybernetic markings on her temples, serene expression, high-fidelity skin texture, set against a dark architectural background with subtle light trails and modern corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp-yjn8w_qa7czAQFZQks8efQKaBoPrGdQC-KdLOrcXIly5Qt-8rRQ_b2-CMCldg5gpDRuFhm6ANrXHF-TkGpIuTSh21XGC942Wyc-zDnKhvMoQp9vbne65FapeNKFy25LJ41S6QT5bJZqOzYabxXOLZjRY3kQFSzH8B4VGHdu_Y4biQ-6vxvk2lvK68vvh41HfwLpNzwwZvr9-lKDxGs19jG9f29YjDIyLAWpu4PYFd8b3yB6vVwIRD1bj4Yh-dxoa12izqpZymE"/>
+</div>
+</div>
+</header>
+<!-- NavigationDrawer (Desktop Only) -->
+<nav class="fixed left-0 top-topbar-height h-screen w-sidebar-width bg-surface-container-low/95 backdrop-blur-2xl border-r border-outline-variant/20 shadow-2xl shadow-black hidden md:flex flex-col p-gutter space-y-unit z-40">
+<div class="mb-8 p-4 bg-surface-variant/20 rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-primary">Arkaios Supervisor</h3>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">Core V1.1 Architecture</p>
+</div>
+</div>
+<p class="mt-4 font-technical-sm text-[10px] text-secondary flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                Status: Compiling
+            </p>
+</div>
+<div class="space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container/20 text-secondary border-r-2 border-secondary transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="package_2">package_2</span>
+<span class="font-technical-sm text-technical-sm">Build Pipeline</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-technical-sm text-technical-sm">Binary Logs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-technical-sm text-technical-sm">Asset Bundler</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-technical-sm text-technical-sm">Security Signing</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[72px] pb-[84px] md:pl-[300px] md:pr-margin-desktop px-margin-mobile min-h-screen grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Supervisor & Pipeline -->
+<section class="lg:col-span-7 space-y-gutter">
+<!-- Central Supervisor Area -->
+<div class="relative glass-panel rounded-xl overflow-hidden aspect-video group"><img alt="Arkaios Priestess" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLs_HzYzRJmw9D86Iktvgov7ZvoERmef2F1bmfh3Ea-4iMbhgRU7sD6N7F9lPNDZDD6on92Ldjf311AkrTdfAz4YRsrKOBiot9EguxGfv8ZiHWvuJk_EeqVsXHruJT37dOArFoXsUqBL77CJQYcfj0YCbefTcdWrdLH5gSTBczhYqaGWKnX54PNXdCEDdpapRmhBJTLMj_jaWK_iGZZ1TGNQTHOcRBqleqO9dBqFUeRT05kTkz4VBO2pChM"/><div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center"><div class="relative w-32 h-32 flex items-center justify-center"><svg class="w-full h-full -rotate-90" viewbox="0 0 100 100"><circle class="text-surface-variant" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle><circle class="text-primary shadow-[0_0_8px_#a8e8ff]" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="282.7" stroke-dashoffset="0" stroke-width="8"></circle></svg><span class="absolute font-display-lg text-headline-md text-white">100%</span></div><span class="font-label-caps text-primary mt-2 tracking-widest">OVERALL PROGRESS</span></div><div class="absolute bottom-6 left-6"><h2 class="font-headline-md text-white mb-1">Supervisor Node: Arkaios</h2><p class="font-technical-sm text-on-surface-variant">Monitoring active compilation stream... [UID: 0x88FF1]</p></div></div>
+<!-- Build Pipeline -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h3 class="font-label-caps text-label-caps text-primary uppercase tracking-widest">Build Pipeline</h3>
+<p class="font-technical-sm text-outline">Operation: Core Assembly V1.1</p>
+</div>
+<span class="font-technical-sm text-secondary">74% Total Progress</span>
+</div>
+<div class="space-y-6">
+<!-- Progress Item -->
+<div class="space-y-2"><div class="flex justify-between font-technical-sm text-[11px]"><span class="text-on-surface">Binary Compilation (.dex)</span><span class="text-secondary">100%</span></div><div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-secondary shadow-[0_0_8px_#3ee272]" style="width: 100%;"></div></div></div>
+<!-- Progress Item -->
+<div class="space-y-2"><div class="flex justify-between font-technical-sm text-[11px]"><span class="text-on-surface">Asset Bundling (16 Units)</span><span class="text-secondary">100%</span></div><div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-secondary shadow-[0_0_8px_#3ee272]" style="width: 100%;"></div></div></div>
+<!-- Progress Item -->
+<div class="space-y-2"><div class="flex justify-between font-technical-sm text-[11px]"><span class="text-on-surface">Security Signing (ARKAIOS_KEY)</span><span class="text-primary">75%</span></div><div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-primary shadow-[0_0_8px_#a8e8ff]" style="width: 75%;"></div></div></div>
+</div>
+</div>
+</section>
+<!-- Right Column: Terminal & Config -->
+<section class="lg:col-span-5 space-y-gutter">
+<!-- Real-time Terminal -->
+<div class="glass-panel rounded-xl flex flex-col h-[400px] overflow-hidden border-primary/10">
+<div class="px-4 py-2 bg-surface-container-highest/50 border-b border-outline-variant/30 flex items-center justify-between">
+<div class="flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+</div>
+<span class="font-technical-sm text-[10px] text-outline uppercase">Live_Build_Logs.sh</span>
+</div>
+<div class="flex-grow p-4 font-technical-sm text-primary/80 overflow-hidden relative">
+<div class="terminal-scroll space-y-1"><p class="text-secondary">&gt; [DONE] 16 high-priority entities bundled.</p><p>&gt; [INFO] Injecting Arkaios Core V1.1 architecture.</p><p>&gt; [INFO] Generating cryptographic signature...</p><p class="text-secondary">&gt; [OK] Signature verified with Arkaios-flow-secret-2026.</p><p class="text-secondary">&gt; [DONE] APK Package finalized and signed.</p></div>
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-background/40"></div>
+</div>
+</div>
+<!-- Deployment Config -->
+<div class="glass-panel rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-[64px]" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<h3 class="font-label-caps text-label-caps text-primary mb-6">Deployment Config</h3>
+<div class="space-y-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-technical-sm text-[10px] text-outline">TARGET API LEVEL</label>
+<select class="bg-surface-container-highest border border-outline-variant/30 rounded px-3 py-2 text-body-base font-technical-sm focus:outline-none focus:ring-1 focus:ring-primary appearance-none">
+<option>API 33 (Android 13.0)</option>
+<option>API 34 (Android 14.0)</option>
+<option>API 31 (Android 12.0)</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-technical-sm text-[10px] text-outline">BUILD VERSION</label>
+<input class="bg-surface-container-highest border border-outline-variant/30 rounded px-3 py-2 text-body-base font-technical-sm focus:outline-none focus:ring-1 focus:ring-primary" type="text" value="1.1.0-PROD"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-technical-sm text-[10px] text-outline">BUILD TYPE</label>
+<div class="flex h-full">
+<button class="flex-1 bg-primary text-on-primary font-technical-sm text-[11px] rounded-l">RELEASE</button>
+<button class="flex-1 bg-surface-container-highest text-on-surface-variant font-technical-sm text-[11px] rounded-r border-l border-outline-variant/30">DEBUG</button>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary h-12 rounded-lg font-body-bold flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(168,232,255,0.3)] group"><span class="material-symbols-outlined" data-icon="download">download</span>DOWNLOAD APK NOW</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[64px] px-margin-mobile md:hidden bg-surface-container-lowest/90 backdrop-blur-lg border-t border-primary/20 shadow-[0_-4px_24px_rgba(0,0,0,0.8)]">
+<a class="flex flex-col items-center justify-center text-primary-container font-bold bg-primary/10 rounded-xl px-4 py-1 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-caps text-[10px]">Status</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-label-caps text-[10px]">Config</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+<span class="font-label-caps text-[10px]">Export</span>
+</a>
+</footer>
+<script>
+        // Micro-interaction: Update build log timestamps or progress randomly
+        setInterval(() => {
+            const progress = document.querySelectorAll('.bg-primary, .bg-secondary');
+            progress.forEach(bar => {
+                if(Math.random() > 0.8) {
+                    const currentWidth = parseFloat(bar.style.width);
+                    if(currentWidth < 98) {
+                        bar.style.width = (currentWidth + Math.random() * 0.5) + '%';
+                    }
+                }
+            });
+        }, 2000);
+    </script>
+</body></html>

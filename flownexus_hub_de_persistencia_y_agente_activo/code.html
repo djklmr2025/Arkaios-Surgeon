@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Core | Persistence Flow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-bottom {
+            box-shadow: 0 4px 12px -2px rgba(168, 232, 255, 0.3);
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(168, 232, 255, 0.05) 50.5%, transparent 51%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+        }
+        .cyber-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#34343a",
+                        "on-primary": "#003642",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-surface": "#e3e1e9",
+                        "inverse-on-surface": "#2f3036",
+                        "surface-dim": "#121318",
+                        "on-surface-variant": "#bbc9cf",
+                        "primary-fixed": "#b4ebff",
+                        "secondary": "#3ee272",
+                        "on-background": "#e3e1e9",
+                        "surface-bright": "#38393f",
+                        "primary": "#a8e8ff",
+                        "surface": "#121318",
+                        "on-secondary-container": "#004a1d",
+                        "tertiary-container": "#ffadb3",
+                        "outline": "#859398",
+                        "tertiary-fixed": "#ffdadb",
+                        "tertiary": "#ffd5d6",
+                        "on-tertiary-container": "#a20532",
+                        "secondary-fixed": "#66ff8e",
+                        "outline-variant": "#3c494e",
+                        "primary-container": "#00d4ff",
+                        "surface-tint": "#3cd7ff",
+                        "on-secondary-fixed": "#002109",
+                        "surface-container-high": "#292a2f",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container": "#1e1f25",
+                        "on-tertiary-fixed": "#40000e",
+                        "secondary-container": "#00c55a",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-secondary": "#003915",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#34343a",
+                        "on-primary-container": "#00586b",
+                        "on-secondary-fixed-variant": "#005321",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#e3e1e9",
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary": "#67001c",
+                        "background": "#121318",
+                        "on-primary-fixed": "#001f27",
+                        "inverse-primary": "#00677e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "24px",
+                        "topbar-height": "52px",
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "gutter": "16px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-base antialiased selection:bg-primary/30 overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl border-b border-white/10 z-[60] flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8">
+<a class="font-label-caps text-primary border-b-2 border-tertiary pb-1" href="#">Live Feed</a>
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Interactive Mode</a>
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Demo Loop</a>
+</nav>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="settings_input_antenna">settings_input_antenna</span>
+</div>
+</header>
+<!-- Main Content Stage -->
+<main class="pt-[52px] pb-32 min-h-screen scanline relative">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mt-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+<div>
+<span class="font-technical-sm text-primary uppercase tracking-widest mb-2 block">Archive System v2.4</span>
+<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">PERSISTENCE FLOW</h2>
+</div>
+<div class="flex gap-4">
+<div class="glass-panel px-4 py-2 rounded flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-technical-sm text-on-surface-variant uppercase">Ecosystem Sync: Active</span>
+</div>
+</div>
+</div>
+<!-- Bento Feed Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Project Card 1 (IA Result) -->
+<div class="group relative aspect-square glass-panel overflow-hidden rounded-xl border-white/5 hover:border-primary/40 transition-all duration-500">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" data-alt="A futuristic holographic cityscape at night with neon cyan and deep blue lighting. Tall glass skyscrapers reflect glowing data streams and volumetric light displays. The mood is high-tech, cinematic, and sophisticated, aligning with the Cyber Void aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHRZm-lADdDJYvpmvFUsyhbClItxhuUKXqIPltTJVWeXDKLgUuBKx9e7vyItuJdSN-tHVAI_522TrF3Ft4vhStbHcbBjLfqLpH-Lq9XQPEsrYQWcVrCn0739oasOZC5VyzgynAim_CVo-JpHeJD_GbsRvz6FKDYffWj1fuN5opqKvO-8yEgYyydE-YPIeC41iMfeLlptYxpNANd2f8TIN-Sy2HkQNPDSSitvJtroVWps2FsmQZT_6WjxIXwWYoVrXCC6YC3-IeKXs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary/20 backdrop-blur-md text-primary font-label-caps px-2 py-1 rounded text-[9px] border border-primary/30">IA GENESIS</span>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-body-bold text-white text-sm mb-1">CYBER_STRUCT_01</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">CREATED 12:44:02</p>
+</div>
+<div class="absolute inset-0 border-[0.5px] border-white/10 group-hover:border-primary/30 transition-colors pointer-events-none"></div>
+</div>
+<!-- Project Card 2 (Reedición) -->
+<div class="group relative aspect-square glass-panel overflow-hidden rounded-xl border-white/5 hover:border-tertiary/40 transition-all duration-500">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" data-alt="Intricate digital circuitry and microchips glowing with a vibrant magenta and deep indigo light. Flowing lines of light trace through the components like liquid neon. The visual style is crisp, engineering-focused, and highly detailed, reflecting the futuristic command center identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgBMe_MFSvOPBAMs7THXiKUGMPxdI-fzkoDgKEElVN4W5TtLlpbcWh5Q3MhHO2fFtN0xoqOzmjIqzC6qj_SlAcb47gzgwmnA_bGx6VXidClbzxVm9IxxUb8ar98Wu-wyHLgo3Pr-9C__QLlLp8m5MKMGukt2j6Y2sWUXMdwK264YGG35Kqat9lpG5uaq9UHZ26XvrL8T8CAJx5lgbOKPqyQW_cmjWMZ_8bj5nSsBvWfsKFUM9E2DuKF0rU9hHAswvMOA5bcL4dgIM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-tertiary/20 backdrop-blur-md text-tertiary font-label-caps px-2 py-1 rounded text-[9px] border border-tertiary/30">RE-EDITION</span>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-body-bold text-white text-sm mb-1">LOGIC_CORE_DELTA</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">MODIFIED 02:15:11</p>
+</div>
+</div>
+<!-- Project Card 3 (IA Result) -->
+<div class="group relative aspect-square glass-panel overflow-hidden rounded-xl border-white/5 hover:border-primary/40 transition-all duration-500">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" data-alt="An abstract 3D visualization of data nodes connecting in a deep obsidian space. The nodes emit soft cyan light and are linked by razor-thin glowing lines. The atmosphere is professional, immersive, and cold, emphasizing the high-performance interface theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2ApvQvf0mruhVcNt6OFqnx-E75EYKvisiTP7GbGZeihjrrxgaaH9OI-FVG1UDDsIVcD8t6EpX_oOo70cMANJamVUI0NExU464TqZpHh53KrHU_sv5m6B6idQrrbXbproy_j5VgvP7IOC2-FDC6QPWXPfdhurqzXWoLctvnqrq8Pxom3EqYf6181-J8SJiYFG3tLM8yk1PYDw54Q3Bvn3IiwqgcnBxkbduqKW0z6MLaUSEcVbWYdP5UVljP8I0LKu4_Kpbjiflrzc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary/20 backdrop-blur-md text-primary font-label-caps px-2 py-1 rounded text-[9px] border border-primary/30">IA GENESIS</span>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-body-bold text-white text-sm mb-1">NET_NODE_ALPHA</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">CREATED 10:20:55</p>
+</div>
+</div>
+<!-- Project Card 4 (Reedición) -->
+<div class="group relative aspect-square glass-panel overflow-hidden rounded-xl border-white/5 hover:border-tertiary/40 transition-all duration-500">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" data-alt="A futuristic server room with rows of glowing cyan LED strips reflecting off polished dark obsidian floors. There is a sense of immense depth and power. The lighting is moody and dramatic with sharp highlights and deep shadows, fitting the tomorrowland futurism style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYl02LJ5ftFM2YO0SYl6kvpjKE2cPGAJorBmHJbKIbrpZCDV057NQTKtuyPwHq1DvNTRFTYfcL-8SLN24N_apBy6jKDApdUMbO8YKbk4fA5w6moji0j8Lrn4A93E2_SEj09jX36e23B2_si3OENAXkG3UYL-Gsy55g0k5e2wETTvlsjhzlDKjY2jQCdPkHEpwvhgNOyChy0hwGWvep36319azarPlFUOlieezvT8gX8GvGOTsUGdVexPQJHwH_Gj88v1hxbve5dFg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-tertiary/20 backdrop-blur-md text-tertiary font-label-caps px-2 py-1 rounded text-[9px] border border-tertiary/30">RE-EDITION</span>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-body-bold text-white text-sm mb-1">SERVER_STASH_7</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">MODIFIED 08:44:00</p>
+</div>
+</div>
+<!-- Card 5 (IA) -->
+<div class="group relative aspect-square glass-panel overflow-hidden rounded-xl border-white/5 hover:border-primary/40 transition-all duration-500">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" data-alt="A macroscopic view of liquid metal cooling in a futuristic processor, with shimmering silver textures and glowing cyan accents deep within the crevices. The lighting is focused and technical, creating a 2.5D environment effect with high contrast between dark surfaces and light accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtq67egqJvWz_foIEGXwef_nqkOgrYKt4pX7EtqNDhU3EpVMoQLHjjD0gPcrZ240J2tr1wbTtgY_qMdu29dOyJsGHIcWqjqEJP0-ipmz4C6fg9yLE24Vq0dnZBu6MhFPr7jit1fp9CwMckCh0YGJmfGELiB_iAHpA6UrgTlAwgGBaSfJL2V-BqwyH_GWaqSmNRq4EiXkLpWRKcRXxlx2v2De0IFJHXkvPP8K_XghGmcHAjUUMV_zSWkPBRWa3FSIoUay3UqMuuLuc"/>
+<div class="absolute top-3 left-3">
+<span class="bg-primary/20 backdrop-blur-md text-primary font-label-caps px-2 py-1 rounded text-[9px] border border-primary/30">IA GENESIS</span>
+</div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="font-body-bold text-white text-sm mb-1">LIQUID_CPU_01</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">CREATED 22:11:30</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- ARKAIOS AGENT FLOATING FRAGMENT -->
+<div class="fixed bottom-margin-mobile md:bottom-margin-desktop left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-48px)] max-w-2xl transition-all duration-500" id="arkaios-fragment">
+<div class="glass-panel rounded-xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)] border-primary/20 neon-border-bottom relative overflow-hidden group">
+<!-- Shimmer Effect -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+<div class="flex items-center justify-between relative z-10">
+<div class="flex items-center gap-4">
+<!-- Avatar/Logo -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border border-primary/30 cyber-pulse"></div>
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="hub">hub</span>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-secondary rounded-full border-2 border-surface"></div>
+</div>
+<!-- Status Text -->
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-secondary text-[10px]">ARKAIOS ACTIVE</span>
+<span class="font-technical-sm text-on-surface-variant/40 text-[9px]">ID: 982-HOLO</span>
+</div>
+<div class="flex items-center gap-2">
+<h3 class="font-body-bold text-white">Thinking...</h3>
+<span class="font-technical-sm text-primary animate-pulse">|</span>
+</div>
+<div class="mt-1 h-[2px] w-32 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 animate-[progress_3s_infinite]"></div>
+</div>
+</div>
+</div>
+<!-- Interaction Actions -->
+<div class="flex items-center gap-3">
+<div class="hidden sm:block text-right">
+<p class="font-technical-sm text-on-surface-variant text-[10px]">SYNC STATUS</p>
+<p class="font-technical-sm text-secondary text-[10px]">99.4% COHERENCY</p>
+</div>
+<button class="bg-primary text-on-primary font-label-caps px-6 py-3 rounded hover:bg-white transition-all active:scale-95 shadow-[0_0_15px_rgba(168,232,255,0.4)] flex items-center gap-2" onclick="toggleCall()">
+<span class="material-symbols-outlined text-[16px]" data-icon="call" style="font-variation-settings: 'FILL' 1;">call</span>
+                        LLAMAR
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Navigation Decoration (Mobile Bottom Nav) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30">
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="font-label-caps text-[10px]">Live</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]">
+<span class="material-symbols-outlined" data-icon="touch_app">touch_app</span>
+<span class="font-label-caps text-[10px]">Interactive</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="font-label-caps text-[10px]">Loop</span>
+</div>
+</nav>
+<script>
+        function toggleCall() {
+            const agent = document.getElementById('arkaios-fragment');
+            agent.classList.add('scale-105');
+            setTimeout(() => {
+                agent.classList.remove('scale-105');
+                alert('Arkaios Arkhe: Sincronización establecida. ¿Qué fragmento deseas reeditar?');
+            }, 200);
+        }
+
+        // Ambient progress bar animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes progress {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(200%); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body></html>

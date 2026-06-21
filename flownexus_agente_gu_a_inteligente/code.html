@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(24px);
+            background: rgba(22, 33, 62, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .holographic-glow {
+            box-shadow: 0 0 15px rgba(168, 232, 255, 0.3), inset 0 0 10px rgba(168, 232, 255, 0.1);
+        }
+        .scan-line {
+            background: linear-gradient(to bottom, transparent, rgba(168, 232, 255, 0.1) 50%, transparent);
+            background-size: 100% 4px;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            from { background-position: 0 0; }
+            to { background-position: 0 100%; }
+        }
+        .waveform-bar {
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 24px; }
+        }
+        .route-path {
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+        .pulse-location {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(0.8); opacity: 0.8; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002109",
+                        "secondary-container": "#00c55a",
+                        "surface-container-highest": "#34343a",
+                        "surface-container-low": "#1a1b21",
+                        "on-primary": "#003642",
+                        "primary-fixed": "#b4ebff",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary-container": "#a20532",
+                        "inverse-primary": "#00677e",
+                        "surface-dim": "#121318",
+                        "tertiary-fixed": "#ffdadb",
+                        "background": "#121318",
+                        "surface-container": "#1e1f25",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#003915",
+                        "on-primary-container": "#00586b",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000e",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface": "#121318",
+                        "surface-container-high": "#292a2f",
+                        "primary-container": "#00d4ff",
+                        "surface-bright": "#38393f",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-primary-fixed": "#001f27",
+                        "error-container": "#93000a",
+                        "surface-variant": "#34343a",
+                        "on-secondary-container": "#004a1d",
+                        "secondary-fixed": "#66ff8e",
+                        "secondary": "#3ee272",
+                        "tertiary-container": "#ffadb3",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-tertiary": "#67001c",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "inverse-on-surface": "#2f3036",
+                        "outline": "#859398",
+                        "surface-container-lowest": "#0d0e13",
+                        "tertiary": "#ffd5d6",
+                        "surface-tint": "#3cd7ff",
+                        "primary": "#a8e8ff",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "outline-variant": "#3c494e",
+                        "on-error": "#690005",
+                        "on-background": "#e3e1e9",
+                        "inverse-surface": "#e3e1e9",
+                        "on-surface": "#e3e1e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface select-none">
+<!-- Top Navigation Anchor (Shared Component) -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop border-b border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">waves</span>
+<h1 class="font-display-lg text-[20px] leading-tight tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-technical-sm text-technical-sm text-primary uppercase">IA Generando Ruta</span>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-white/5 transition-colors p-2 rounded-lg">settings_input_antenna</button>
+</div>
+</header>
+<!-- Side Navigation Drawer (Shared Component) -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 w-sidebar-width bg-surface-container/95 backdrop-blur-2xl flex flex-col p-gutter border-r border-primary/20 shadow-[20px_0_60px_rgba(0,0,0,0.55)] z-40 mt-[52px]">
+<div class="flex flex-col gap-1 mb-8">
+<div class="flex items-center gap-3 p-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<div class="font-body-bold text-body-base text-primary">AETHER CORE</div>
+<div class="font-technical-sm text-[10px] text-on-surface-variant">Ecosystem Creator | v2.4.0-HOLO</div>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg transition-all ease-out duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-body-base text-body-base">Network Map</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<span class="font-body-base text-body-base">Schedules</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-body-base text-body-base">Tourist Info</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all" href="#">
+<span class="material-symbols-outlined">emergency</span>
+<span class="font-body-base text-body-base">Emergency</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<!-- Dynamic AI Panels -->
+<div class="p-4 rounded-xl glass-panel border-l-2 border-primary">
+<div class="font-label-caps text-label-caps text-primary mb-2 flex items-center justify-between">
+<span>OPTIMIZANDO TOKENS</span>
+<span class="animate-pulse">84%</span>
+</div>
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[84%]"></div>
+</div>
+</div>
+<div class="p-4 rounded-xl glass-panel border-l-2 border-secondary">
+<div class="font-label-caps text-label-caps text-secondary mb-1">BANCO DE CREACIONES</div>
+<div class="font-technical-sm text-technical-sm text-on-surface-variant">Guardando estado de ruta...</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas (The Infinite Stage) -->
+<main class="fixed inset-0 md:ml-sidebar-width mt-[52px] mb-16 md:mb-0 relative overflow-hidden bg-[#050712]">
+<!-- Holographic Grid Background -->
+<div class="absolute inset-0 scan-line pointer-events-none"></div>
+<div class="absolute inset-0" style="background-image: radial-gradient(rgba(168, 232, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Real-time Metro Map Interface -->
+<div class="absolute inset-0 flex items-center justify-center">
+<!-- Simulated Map Elements -->
+<svg class="w-full h-full max-w-4xl" fill="none" viewbox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+<!-- Metro Network Background -->
+<path d="M100 100 L700 100 M400 50 L400 550 M100 300 L700 300 M200 100 L200 500 L600 500 L600 100" stroke="rgba(255,255,255,0.05)" stroke-width="4"></path>
+<!-- Highlighted Active Route (CDMX Metro Style) -->
+<path class="route-path" d="M150 450 Q 250 450, 250 350 T 400 300 T 550 250" id="activeRoute" stroke="#00d4ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+<path d="M150 450 Q 250 450, 250 350 T 400 300 T 550 250" stroke="#00d4ff" stroke-linecap="round" stroke-opacity="0.15" stroke-width="12"></path>
+<!-- User Location Marker -->
+<g transform="translate(150, 450)">
+<circle class="pulse-location" fill="#00d4ff" fill-opacity="0.2" r="12"></circle>
+<circle fill="#00d4ff" r="6"></circle>
+</g>
+<!-- Destination Marker -->
+<g transform="translate(550, 250)">
+<path d="M0 -15 L5 -5 L15 -5 L7 2 L10 12 L0 6 L-10 12 L-7 2 L-15 -5 L-5 -5 Z" fill="#ffd5d6"></path>
+</g>
+<!-- Animated Mover (Train Sim) -->
+<circle class="holographic-glow" fill="#ffffff" r="5">
+<animatemotion dur="10s" path="M150 450 Q 250 450, 250 350 T 400 300 T 550 250" repeatcount="indefinite"></animatemotion>
+</circle>
+</svg>
+</div>
+<!-- Floating UI Widgets -->
+<div class="absolute top-gutter right-gutter flex flex-col gap-4">
+<button class="flex items-center gap-3 px-4 py-3 glass-panel rounded-xl holographic-glow text-primary hover:bg-primary/20 transition-all active:scale-95 group">
+<span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">sync</span>
+<span class="font-body-bold text-body-base">Sincronización de Ubicación</span>
+</button>
+<div class="glass-panel p-4 rounded-xl border-b-2 border-primary/50 max-w-[240px]">
+<div class="font-technical-sm text-[10px] text-on-surface-variant mb-2">COORDENADAS DE MUNDO</div>
+<div class="font-technical-sm text-primary text-[12px] leading-tight">
+                    LAT: 19.4326° N<br/>
+                    LON: 99.1332° W<br/>
+                    ALT: 2,240m
+                </div>
+</div>
+</div>
+<!-- Agent Voice Status (Bottom Center) -->
+<div class="absolute bottom-gutter left-1/2 -translate-x-1/2 w-full max-w-md px-margin-mobile">
+<div class="glass-panel p-6 rounded-2xl flex flex-col items-center gap-4 border-t-2 border-primary/30">
+<div class="flex items-end gap-1.5 h-8">
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.1s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.3s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.2s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.5s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.4s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.6s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.2s"></div>
+<div class="w-1 bg-primary waveform-bar" style="animation-delay: 0.1s"></div>
+</div>
+<div class="text-center">
+<div class="font-label-caps text-label-caps text-secondary tracking-widest mb-1">VOZ DEL AGENTE</div>
+<p class="font-body-base text-on-surface italic">"Calculando transbordo óptimo en Bellas Artes para evitar saturación de nodos..."</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component - Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 rounded-t-full shadow-[0_-10px_40px_rgba(0,197,90,0.15)]">
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined">motion_photos_on</span>
+<span class="font-label-caps text-label-caps">Live Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] animate-pulse-slow">
+<span class="material-symbols-outlined">touch_app</span>
+<span class="font-label-caps text-label-caps">Interactive Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined">replay</span>
+<span class="font-label-caps text-label-caps">Demo Loop</span>
+</div>
+</nav>
+<!-- Ambient Visual Effects Overlay -->
+<div class="fixed inset-0 pointer-events-none opacity-20">
+<div class="absolute top-0 left-0 w-full h-full" style="background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.05), transparent 70%);"></div>
+</div>
+<script>
+        // Micro-interactions and dynamic data simulation
+        document.addEventListener('DOMContentLoaded', () => {
+            const coords = document.querySelector('.font-technical-sm.text-primary');
+            setInterval(() => {
+                const lat = (19.4326 + (Math.random() - 0.5) * 0.001).toFixed(4);
+                const lon = (99.1332 + (Math.random() - 0.5) * 0.001).toFixed(4);
+                coords.innerHTML = `LAT: ${lat}° N<br>LON: ${lon}° W<br>ALT: 2,240m`;
+            }, 2000);
+
+            // Toggle active state for voice bars
+            const bars = document.querySelectorAll('.waveform-bar');
+            setInterval(() => {
+                bars.forEach(bar => {
+                    bar.style.height = (Math.random() * 24 + 4) + 'px';
+                });
+            }, 150);
+        });
+    </script>
+</body></html>

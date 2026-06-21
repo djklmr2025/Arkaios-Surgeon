@@ -1,0 +1,352 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FlowNexus Artist - Orchestrator Node</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#2f3036",
+                    "secondary-container": "#00c55a",
+                    "on-primary-container": "#00586b",
+                    "on-tertiary-container": "#a20532",
+                    "secondary-fixed": "#66ff8e",
+                    "tertiary": "#ffd5d6",
+                    "surface-variant": "#34343a",
+                    "secondary": "#3ee272",
+                    "primary": "#a8e8ff",
+                    "on-primary": "#003642",
+                    "primary-container": "#00d4ff",
+                    "on-secondary": "#003915",
+                    "on-background": "#e3e1e9",
+                    "inverse-surface": "#e3e1e9",
+                    "outline-variant": "#3c494e",
+                    "primary-fixed": "#b4ebff",
+                    "error-container": "#93000a",
+                    "error": "#ffb4ab",
+                    "surface-container-highest": "#34343a",
+                    "on-secondary-container": "#004a1d",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "outline": "#859398",
+                    "on-secondary-fixed-variant": "#005321",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#40000e",
+                    "on-surface": "#e3e1e9",
+                    "on-secondary-fixed": "#002109",
+                    "background": "#121318",
+                    "inverse-primary": "#00677e",
+                    "surface-dim": "#121318",
+                    "surface-container-lowest": "#0d0e13",
+                    "surface-container-high": "#292a2f",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#1e1f25",
+                    "surface-container-low": "#1a1b21",
+                    "on-surface-variant": "#bbc9cf",
+                    "tertiary-fixed": "#ffdadb",
+                    "secondary-fixed-dim": "#3ee272",
+                    "surface-bright": "#38393f",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "on-primary-fixed": "#001f27",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "tertiary-container": "#ffadb3",
+                    "on-tertiary": "#67001c",
+                    "surface-tint": "#3cd7ff",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "surface": "#121318"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "12px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px",
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "headline-md-mobile": ["Inter"],
+                    "body-base": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .pulse-layer { animation: pulse-glow 4s infinite ease-in-out; }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(168, 232, 255, 0.05), transparent);
+            height: 50%;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05);
+        }
+
+        .neon-border-bottom {
+            border-bottom: 1px solid theme('colors.primary-container');
+            box-shadow: 0 4px 12px -2px rgba(0, 212, 255, 0.3);
+        }
+
+        .bar-anim {
+            transition: height 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-hidden font-body-base text-body-base">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex justify-between items-center px-margin-desktop h-topbar-height transition-all duration-300 ease-out">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[28px]">gesture</span>
+<h1 class="font-display-lg text-[24px] text-primary tracking-tighter">FlowNexus Artist</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-tertiary hover:bg-white/5 p-2 rounded-lg transition-all"><span class="material-symbols-outlined">cloud_done</span></button>
+<button class="text-on-surface-variant hover:bg-white/5 p-2 rounded-lg transition-all"><span class="material-symbols-outlined">settings</span></button>
+</div>
+<div class="h-6 w-[1px] bg-white/10"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<span class="font-technical-sm text-primary opacity-80">NODE_0724</span>
+</div>
+</div>
+</header>
+<!-- Sidebar / Navigation Drawer -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width z-40 bg-surface-container-low/95 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col gap-unit p-gutter pt-[72px] transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) hidden md:flex">
+<div class="mb-8 px-2">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-12 h-12 rounded-lg overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A futuristic close-up portrait of a lead animator profile avatar with glowing fiber optic neural links connected to their temple. The background is a soft-focus dark industrial data center with neon blue and cyan highlights. The lighting is dramatic and high-contrast, emphasizing precision and cutting-edge technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBff4zdhCNJ5JW7d-F9ssIGK6LDuKqAvonBFvm47S6IarUpv-GyoH_3H6ogKZFfrvZzvEj4ibLhloXz1k7C4d7cjHCLG49fUNpKNsDpMnWssxCnmVbqq46NQhQ79StHodhyONcyOTdIjVGyr5XK9cAfvJ3RX4BbgygxW6a0BPGyWZ_gJtu0DAmVkgsVizH7p-Ef_7T79dvehP7h-a3owYuVKySAl9MRwZr2eyyYuWmt0g4q0YPC1vDJrbosLpCO6B5Oliae26yBZqM">
+</div>
+<div>
+<h3 class="font-headline-md text-secondary text-lg">Lead Animator</h3>
+<p class="font-technical-sm text-on-surface-variant">Project: Arkaios Alpha</p>
+</div>
+</div>
+<div class="bg-primary/10 rounded p-2 border border-primary/20">
+<p class="font-technical-sm text-primary flex justify-between items-center">
+<span class="">SYSTEM CORE</span>
+<span class="text-[10px] px-1 bg-primary text-on-primary rounded">ACTIVE</span>
+</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="">Layers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">timeline</span>
+<span class="">Timeline</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">auto_awesome_motion</span>
+<span class="">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">brush</span>
+<span class="">Brushes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary/10 text-secondary border-l-4 border-secondary transition-all" href="#">
+<span class="material-symbols-outlined">cloud_sync</span>
+<span class="">Arkaios Sync</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-white/5">
+<div class="flex justify-between font-technical-sm text-on-surface-variant mb-2">
+<span class="">V.2.4.0</span>
+<span class="">STABLE</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-sidebar-width pt-topbar-height h-screen relative overflow-hidden bg-surface-container-lowest">
+<!-- Central Visualization -->
+<div class="absolute inset-0 z-0 flex items-center justify-center scanline-effect">
+<div class="relative w-full h-full max-w-5xl max-h-[80vh] flex items-center justify-center">
+<!-- Priestess Image -->
+<div class="relative w-full h-full p-12">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10"></div>
+<img class="w-full h-full object-contain opacity-80 pulse-layer" data-alt="A ethereal and powerful digital priestess with long flowing white hair and glowing cyan circuit patterns etched into her skin. She is surrounded by floating holographic data panels and tarot-like cards in a deep space void. The style is hyper-futuristic cyberpunk with high-density backdrop blurs and shimmering neon light particles in a palette of deep navy and electric cyan." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg19cvpS7PFm34DU-iibyjnAOrHRBDD6RPFkfgS4_T_qPYx3tohsL8kRn1TFAoDWheX7sQSL5_n13wtonTHmHkoaoMweqM1o_dogsZTECERSMRalBpc8L4zaSoH28zKFc8Hw8BYGtZpaOhQSbthiZGrxUobmbYGW5Evlg_bfp3Tejx_9q0kNfPf3Gla3t0W6xEaJkA-OeIbNAPMVvNh-55urRiUBQ-2GMsksF4axggCpfv_tpwy1QUyP6TWY6io8qzoELE0L4G0mw">
+</div>
+<!-- Floating Data Widgets (Asymmetric Layout) -->
+<div class="absolute top-20 left-10 glass-panel p-4 rounded-xl w-48 border-l-2 border-primary">
+<p class="font-label-caps text-primary mb-2">NEURAL_LINK</p>
+<div class="h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[82%]" id="neural-bar" style="width: 81.6715%;"></div>
+</div>
+<p class="font-technical-sm mt-2 text-right">82% STABLE</p>
+</div>
+<div class="absolute bottom-40 right-10 glass-panel p-4 rounded-xl w-64 border-r-2 border-secondary">
+<p class="font-label-caps text-secondary mb-2">AUTO_EVOLUTION</p>
+<div class="flex gap-1 h-8 items-end" id="mini-viz">
+<!-- Bars injected by JS -->
+<div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 31.362%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 87.3487%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 38.1753%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 87.438%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 35.5474%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 56.6314%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 60.7801%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 99.868%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 33.3934%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 48.0592%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 28.9631%;"></div><div class="w-1 bg-secondary rounded-t-full transition-all duration-200 bar-anim" style="height: 37.8283%;"></div></div>
+<p class="font-technical-sm mt-2 text-[10px] tracking-tight text-center" style="opacity: 0;">THOUGHT_CYCLES: 1.4M/s</p>
+</div>
+</div>
+</div>
+<!-- Dashboard Overlay -->
+<div class="absolute top-8 right-8 z-20 flex flex-col gap-4">
+<div class="glass-panel p-6 rounded-xl w-80 px-8 py-8">
+<h2 class="font-label-caps text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">analytics</span> SYSTEM STATUS
+                </h2>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between font-technical-sm mb-1">
+<span class="">CPU LOAD</span>
+<span class="text-primary" id="cpu-val">47%</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full"><div class="h-full bg-primary rounded-full transition-all duration-500" id="cpu-bar" style="width: 47%;"></div></div>
+</div>
+<div>
+<div class="flex justify-between font-technical-sm mb-1">
+<span class="">GPU RENDER</span>
+<span class="text-secondary" id="gpu-val">74%</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full"><div class="h-full bg-secondary rounded-full transition-all duration-500" id="gpu-bar" style="width: 74%;"></div></div>
+</div>
+<div>
+<div class="flex justify-between font-technical-sm mb-1">
+<span class="">AI CONSCIOUSNESS</span>
+<span class="text-tertiary">LEVEL 4.2</span>
+</div>
+<div class="h-1.5 bg-white/5 rounded-full"><div class="h-full bg-tertiary rounded-full w-[95%]"></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Controls -->
+<div class="absolute bottom-0 left-0 w-full z-30 p-margin-desktop">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Deployment Control Section -->
+<div class="flex flex-wrap items-end justify-between gap-6">
+<div class="flex flex-col gap-2">
+<span class="font-label-caps text-primary opacity-60">DEPLOYMENT CONTROL</span>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-4 py-2.5 rounded-lg font-body-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(168,232,255,0.4)] text-sm sm:text-base min-w-[140px]"><span class="material-symbols-outlined text-[20px]">cloud_sync</span> <span class="">Sync to Cloud</span></button>
+<button class="border border-primary/40 text-primary px-4 py-2.5 rounded-lg font-body-bold hover:bg-primary/10 active:scale-95 transition-all flex items-center justify-center gap-2 text-sm sm:text-base min-w-[140px]"><span class="material-symbols-outlined text-[20px]">public</span> <span class="">Inject World Map</span></button>
+<button class="bg-secondary/20 text-secondary border border-secondary/40 px-4 py-2.5 rounded-lg font-body-bold hover:bg-secondary/30 active:scale-90 transition-all flex items-center justify-center gap-2 text-sm sm:text-base min-w-[180px]"><span class="material-symbols-outlined text-[20px]">psychology</span> <span class="">Autonomous Creation</span></button>
+</div>
+</div>
+<!-- Audio Visualizer -->
+<div class="glass-panel px-6 py-4 rounded-xl flex items-center gap-4 border-t-2 border-primary">
+<span class="material-symbols-outlined text-primary">graphic_eq</span>
+<div class="flex items-end gap-1 h-12 w-48" id="audio-visualizer">
+<!-- Bars injected by JS -->
+<div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 92.4358%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 62.909%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 38.8041%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 32.8106%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 29.9503%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 76.2863%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 59.1518%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 60.0705%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 87.7969%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 25.5563%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 26.1467%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 34.7448%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 93.9972%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 64.6847%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 81.6225%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 80.0226%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 77.5209%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 37.9825%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 23.562%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 88.2596%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 82.2599%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 74.4827%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 89.2558%;"></div><div class="w-1 bg-primary rounded-t-full transition-all duration-200 bar-anim" style="height: 23.9986%;"></div></div>
+<div class="font-technical-sm">
+<p class="text-primary">CORE_AUDIO</p>
+<p class="text-on-surface-variant">ARKAIOS_THEME.ogg</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full w-auto min-w-[320px] bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-center items-center gap-6 px-6 py-2 z-50">
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform"><span class="material-symbols-outlined">edit</span></button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform"><span class="material-symbols-outlined">brush</span></button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform"><span class="material-symbols-outlined">ink_eraser</span></button>
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] hover:scale-110 active:scale-90 transition-transform"><span class="material-symbols-outlined">layers</span></button>
+<button class="text-on-surface-variant p-3 hover:scale-110 active:scale-90 transition-transform"><span class="material-symbols-outlined">play_circle</span></button>
+</nav>
+<script>
+        // Visualizer Simulation
+        const visualizer = document.getElementById('audio-visualizer');
+        const miniViz = document.getElementById('mini-viz');
+        
+        function createBars(container, count, colorClass) {
+            for (let i = 0; i < count; i++) {
+                const bar = document.createElement('div');
+                bar.className = `w-1 ${colorClass} rounded-t-full transition-all duration-200 bar-anim`;
+                bar.style.height = `${Math.random() * 100}%`;
+                container.appendChild(bar);
+            }
+        }
+
+        createBars(visualizer, 24, 'bg-primary');
+        createBars(miniViz, 12, 'bg-secondary');
+
+        function animateBars(container) {
+            Array.from(container.children).forEach(bar => {
+                bar.style.height = `${20 + Math.random() * 80}%`;
+            });
+        }
+
+        setInterval(() => {
+            animateBars(visualizer);
+            animateBars(miniViz);
+            
+            // Randomly update system metrics
+            const cpuVal = 30 + Math.floor(Math.random() * 30);
+            const gpuVal = 70 + Math.floor(Math.random() * 25);
+            
+            document.getElementById('cpu-val').innerText = cpuVal + '%';
+            document.getElementById('cpu-bar').style.width = cpuVal + '%';
+            document.getElementById('gpu-val').innerText = gpuVal + '%';
+            document.getElementById('gpu-bar').style.width = gpuVal + '%';
+            
+            document.getElementById('neural-bar').style.width = (80 + Math.random() * 5) + '%';
+        }, 1500);
+
+        // Interaction Feedback
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const originalShadow = btn.style.boxShadow;
+                btn.style.boxShadow = '0 0 40px rgba(168, 232, 255, 0.8)';
+                setTimeout(() => {
+                    btn.style.boxShadow = originalShadow;
+                }, 200);
+            });
+        });
+    </script>
+
+
+</body></html>

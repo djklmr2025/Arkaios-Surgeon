@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-low": "#1a1b21",
+                "inverse-surface": "#e3e1e9",
+                "surface-bright": "#38393f",
+                "on-secondary-fixed-variant": "#005321",
+                "inverse-on-surface": "#2f3036",
+                "on-primary-fixed-variant": "#004e5f",
+                "surface-tint": "#3cd7ff",
+                "surface-container-lowest": "#0d0e13",
+                "on-surface": "#e3e1e9",
+                "on-tertiary-container": "#a20532",
+                "on-error-container": "#ffdad6",
+                "on-primary-fixed": "#001f27",
+                "primary-fixed-dim": "#3cd7ff",
+                "primary-container": "#00d4ff",
+                "inverse-primary": "#00677e",
+                "error": "#ffb4ab",
+                "on-secondary-container": "#004a1d",
+                "primary-fixed": "#b4ebff",
+                "on-surface-variant": "#bbc9cf",
+                "outline-variant": "#3c494e",
+                "on-tertiary": "#67001c",
+                "on-secondary": "#003915",
+                "on-primary": "#003642",
+                "surface-container-highest": "#34343a",
+                "background": "#121318",
+                "on-error": "#690005",
+                "surface-container-high": "#292a2f",
+                "surface": "#121318",
+                "on-background": "#e3e1e9",
+                "secondary-fixed-dim": "#3ee272",
+                "secondary-fixed": "#66ff8e",
+                "outline": "#859398",
+                "on-tertiary-fixed": "#40000e",
+                "primary": "#a8e8ff",
+                "tertiary-fixed": "#ffdadb",
+                "tertiary": "#ffd5d6",
+                "error-container": "#93000a",
+                "tertiary-container": "#ffadb3",
+                "on-tertiary-fixed-variant": "#91002b",
+                "on-primary-container": "#00586b",
+                "surface-dim": "#121318",
+                "secondary-container": "#00c55a",
+                "surface-container": "#1e1f25",
+                "surface-variant": "#34343a",
+                "tertiary-fixed-dim": "#ffb2b7",
+                "on-secondary-fixed": "#002109",
+                "secondary": "#3ee272"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "margin-desktop": "24px",
+                "gutter": "16px",
+                "sidebar-width": "280px",
+                "margin-mobile": "12px",
+                "unit": "4px",
+                "topbar-height": "52px"
+            },
+            "fontFamily": {
+                "body-base": ["Inter"],
+                "technical-sm": ["JetBrains Mono"],
+                "headline-md-mobile": ["Inter"],
+                "body-bold": ["Inter"],
+                "headline-md": ["Inter"],
+                "display-lg": ["Inter"],
+                "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-bottom {
+            border-bottom: 2px solid #a8e8ff;
+            box-shadow: 0 4px 12px -2px rgba(168, 232, 255, 0.3);
+        }
+        .cyber-grid {
+            background-image: linear-gradient(rgba(168, 232, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(168, 232, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shimmer-hover:hover {
+            backdrop-filter: blur(40px);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-base text-body-base">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full h-[52px] flex items-center justify-between px-margin-mobile bg-surface/90 backdrop-blur-md border-b border-white/10 z-50 shadow-xl">
+<div class="flex items-center gap-3">
+<span class="font-display-lg text-headline-md-mobile tracking-tighter text-primary dark:text-primary-fixed-dim">FlowNexus</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-bold text-body-bold text-primary transition-opacity hover:opacity-80" href="#">Feed</a>
+<a class="font-body-bold text-body-bold text-on-surface-variant transition-opacity hover:opacity-80" href="#">Explore</a>
+<a class="font-body-bold text-body-bold text-on-surface-variant transition-opacity hover:opacity-80" href="#">Models</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 bg-white text-[#121318] px-4 py-1.5 rounded-lg font-body-bold text-body-bold hover:bg-opacity-90 transition-all active:scale-95">
+<img alt="Google Logo" class="w-4 h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFTv69nWVCX3Vl6D4ByKNv1NCl9i6gP2nwa1k71e17N6cWoU5MjJnFrhJ4yM94VSCpe_6_8F0jgqnFj2YxLjGE8lr5HyYfRO3YIfnrXE77sZzCIbxOXfXtlNNe95NVE9BP2aVjF2llAOVlpwhBbeThcEmwV1MeEjr6KESilO5X4_9RGmyMCTsyVfheYgRC2kn9ikL0JJrwpmUm2rK2FStqL1tJyvacE9v3saobQ1f3nglJFQnICGo8QIJuTYNxxl3sZswV0y5cf94"/>
+                Login
+            </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a modern tech professional with soft rim lighting. The background is a blurred futuristic office with cool blue and deep indigo tones, matching a high-end cybernetic aesthetic. The lighting is crisp and emphasizes clean lines and a professional, cutting-edge mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Zvj4OoM01sxNr2CvVOc70WddDMGEMNt7o_7xsyedA0ii7HePjiUH3ELuky5nEdDBEdoceNZwh1KzhUspNWJreb4v6SQXwwR7Lvk8TUr27Rull9AKZV6oUTAy_8YrwzxVtMXMkyt6Ph106Qzz-L1rh7venTfHee3qNRK2HXEh5xP5LT0D8LGZLX8gNHKMTlxB1FIft90dk1tGFyjNnsGWFiNytRde_LyVjMJ40rHpZuE2rWUWMg07L9wcTDuNpIytWEfQb0pgd2w"/>
+</div>
+</div>
+</header>
+<main class="pt-[72px] pb-24 px-margin-mobile md:px-margin-desktop min-h-screen cyber-grid">
+<!-- Feed Container -->
+<div class="max-w-[1400px] mx-auto">
+<!-- Category Tabs (Desktop Only) -->
+<div class="hidden md:flex gap-4 mb-8 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-label-caps text-label-caps whitespace-nowrap">ALL FLOWS</button>
+<button class="px-6 py-2 rounded-full glass-panel text-on-surface-variant font-label-caps text-label-caps whitespace-nowrap hover:text-primary border-white/5 transition-colors">SYSTEM ARCHITECTURE</button>
+<button class="px-6 py-2 rounded-full glass-panel text-on-surface-variant font-label-caps text-label-caps whitespace-nowrap hover:text-primary border-white/5 transition-colors">USER JOURNEYS</button>
+<button class="px-6 py-2 rounded-full glass-panel text-on-surface-variant font-label-caps text-label-caps whitespace-nowrap hover:text-primary border-white/5 transition-colors">DATA PIPELINES</button>
+<button class="px-6 py-2 rounded-full glass-panel text-on-surface-variant font-label-caps text-label-caps whitespace-nowrap hover:text-primary border-white/5 transition-colors">3D SIMULATIONS</button>
+</div>
+<!-- Bento Grid Feed -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Card 1: Interactive Model -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A complex 3D digital visualization of a neural network flow with glowing cyan and neon pink pathways. The composition is dynamic and abstract, set against a deep obsidian background with subtle atmospheric particles. The lighting simulates a holographic display in a high-tech lab environment, evoking futuristic precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWOhaeiNo1io3Zpbq4cjR9rPKkjqANiYfVCEXOiWMCLQ4R2igm_SxlDWoLeXr_nqoglrfhowYeocz2JeH6i96yYVGQgOBK32QOmpS29WKwKbNTOdEgdNyp7TNNlX0KwPC_ohwYgoYs-IXzDozvBqFoDU-_lsYz3RoKFFUolTFeQXBQYH7W9uW1hwSLw94OgwHrwZY6bjgGlgetyAXaS6Fy2IlY7_hbCWFK-XB7ZVb8h3iJjgQnzzh5jHSwlPxlsLwTFrMRSRnu1Yw"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary/90 text-on-primary font-technical-sm text-technical-sm px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span> LIVE PREVIEW
+                            </span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Neural Sync V4</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@cyber_arch</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">1.2k views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- Card 2: Smart Factory -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A sleek technical schematic of an automated industrial factory floor shown in a glowing blue wireframe style. Moving light pulses represent data flow across the assembly lines. The atmosphere is professional and sophisticated, with a clean dark theme and high-contrast luminous elements that suggest advanced manufacturing technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk8a9WfxnEv8OSLDXJfylQdkmSCZ81Frp_ZBrg0P0QR9UCkodEuEhdcyqVjUFRqsbDajBjilEzPxj6vWaYExZRKLT9YXcozdqYXQheluVnQ619EKyTGIeel1Zr4iVH-5cZUV5maA3iagLyohCpXa-J-l-IBJlYUa-usKC8gq39b8NPv8A1anCkNpOis8GXWMjMpuqWwl_IwYqP9TkS_DFvjeGwn68rPgpJnrW-essmK9mCg616TjieDCAV5ZFLfmiR-OQWWcNJsxQ"/>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Smart Factory L1</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary-container"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@indus_flow</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">843 views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- Card 3: Quantum Logic -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="An abstract visualization of quantum computing gates and probability flows. The image features interlocking geometric crystalline structures that glow with a spectrum of violet and deep blue. The background is a velvety black space that makes the intricate, sharp-edged shapes stand out with absolute clarity and futuristic elegance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLNzehg4KlpDHDHvhZZq8bkpniLzzl7N5mDDlrpHPWG6_3fzQ7CKf5nqyjnP3THzgU99y662deLX93Z91cdgIXDLGMjpPP84YbM-CMMUM9bivLUxGIonOjXSPoyblOV6JQfxCdeOsiiEdt3fh1MU0OawWDSnzs8GWUe7ENHlLknCGhpVFqUvJ8upFcjiL-GB3oA_B-rPBzu54wJ816YhUIUnru2IEerrOvJn_A0S4E2s7JHL93o8ml7U8FeV6cwSiUEWl6PPlQJhc"/>
+<div class="absolute top-3 left-3">
+<span class="bg-primary/90 text-on-primary font-technical-sm text-technical-sm px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span> LIVE PREVIEW
+                            </span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Quantum Gate S1</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-container"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@qbit_master</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">2.5k views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-tertiary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- Card 4: Logistics Mesh -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A global network mesh visualization showing data traffic between continents on a dark world map. The lines of the network are thin and bright white, contrasting with the deep navy oceans. Small nodes at key cities pulse with a soft teal light, creating a sense of a living, breathing digital infrastructure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgCM3OR8wznUaX_4hAPMSj-FvE4SVk0h_96tO0FOcYsVNILO3nmFGRvP4rwgEO8CkK0s773kTTeGex1_ci67a6UslPUMwKXs6SY87BsgI6IhlAcApd5gajNAf4mkDqntoF-1rOuHbw3yyrgTSZ6WLYGnMd0Q5JtLn9VlizJ2Fs8YFdI8tYNdLBDMKBlWtdKqpUYGpBqr8Kjfxg-bdm_vnnctWo8sm4N3r5xmxAadX09C8jsIA8bcJz_yv1t_G6x4KUfof0GMbSThY"/>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Global Logistics</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@data_viz</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">3.1k views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- Card 5: Core Reactor -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A futuristic energy reactor core with interlocking mechanical parts and glowing plasma rings. The style is heavily technical and cinematic, with sharp shadows and bright highlights on metallic surfaces. The color palette is dominated by dark steel grays and vibrant cyan light, suggesting an advanced power source in a sci-fi setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyhH27Iq4RnQLMFPRf3XZNyqT4lxHXNHEM4bHzA8axFMW-krdfDaVJMvs_pCcpiuyseezCIOrZkvAA8TngYytWryEA6q9EhD9kpcYvNKBqHUlUxiySd4jxTbAJkZx8NGMgS6L6VNUfdc4WXbK3vMrCee0zSERax0dXzX-rGqrLQmj42NXHqCEeavJYjbq_8-91BviOfXpyp41Ux--bqKNURf95_7URzuEBbLQlP8KvisFDGLacSYveMnpe37CZUEqbCidipB78g7U"/>
+<div class="absolute top-3 left-3">
+<span class="bg-primary/90 text-on-primary font-technical-sm text-technical-sm px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span> LIVE PREVIEW
+                            </span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Core Flux R2</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-inverse-primary"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@flux_eng</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">5.2k views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<!-- Card 6: Biotech Map -->
+<div class="glass-panel rounded-xl overflow-hidden group shimmer-hover relative flex flex-col">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A detailed microscopic visualization of synthetic biological processes, rendered in a professional laboratory imaging style. The image uses a palette of emerald greens and deep charcoal, with glowing bio-nodes connected by luminous fibers. The aesthetic is clean, medical, and highly advanced, suggesting the future of biotechnology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdgIjtQqz73OnEq73wDf3Uf3cg3zsar8i0YMCp6LXjEXRYkUzGeC8N80BfpF7LP3ucp6QAHKCOy3J7OpHiS3EmHRNyYne0ux0QvHI1sJoiULXutuIa9RN3qPlvu_JYr-ZY-8c2SQciJz1Cnql_i1JdVUJFDJT80qpkpA32rZy8HfMsjjHvOfwI6Bczg4DgdAPF-_e_s68IGH4v09llDo6r3jCFwxMtcMSXxVlMWRUbqJSv0CMYhDcjXvk2gi8WNpVdrzlWXnBwin4"/>
+</div>
+<div class="p-4 flex flex-col flex-grow border-t border-white/5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Bio-Node Mesh</h3>
+<div class="flex gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-outline"></div>
+<span class="font-technical-sm text-technical-sm text-outline">@synth_bio</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary">1.1k views</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-[64px] px-margin-mobile pb-safe bg-surface-container-low/80 backdrop-blur-2xl dark:bg-surface-container-lowest/80 border-t border-white/5 md:hidden">
+<a class="flex flex-col items-center justify-center text-primary dark:text-secondary scale-110 transition-transform" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-[10px] mt-1">HOME</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-caps text-[10px] mt-1">SEARCH</span>
+</a>
+<div class="bg-primary p-2 rounded-lg -mt-8 shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-on-primary">add_box</span>
+</div>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-caps text-[10px] mt-1">LIKES</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-[10px] mt-1">PROFILE</span>
+</a>
+</nav>
+<!-- Hover Micro-interactions Script -->
+<script>
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const img = card.querySelector('img');
+                if(img) img.style.transform = 'scale(1.1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                const img = card.querySelector('img');
+                if(img) img.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple active state toggle for heart icons
+        document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
+            if(icon.textContent === 'favorite') {
+                icon.parentElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                    icon.style.fontVariationSettings = isFilled ? "'FILL' 0" : "'FILL' 1";
+                    icon.style.color = isFilled ? '' : '#3ee272';
+                });
+            }
+        });
+    </script>
+</body></html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>METRO HOLOGRAPHIC - Arkaios Ecosystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0d0e13;
+            color: #e3e1e9;
+            font-family: 'Inter', sans-serif;
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 15px rgba(72, 234, 121, 0.4);
+        }
+        .neon-border-cyan {
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1);
+        }
+        @keyframes pulse-cyan {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .scanline {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0, 212, 255, 0.3), transparent);
+            position: absolute;
+            animation: scan 6s linear infinite;
+        }
+        @keyframes scan {
+            from { top: 0%; }
+            to { top: 100%; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 2px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#121318",
+                    "primary": "#a8e8ff",
+                    "secondary": "#3ee272",
+                    "background": "#121318",
+                    "on-surface": "#e3e1e9",
+                    "on-surface-variant": "#bbc9cf",
+                    "surface-container": "#1e1f25",
+                    "surface-container-low": "#1a1b21",
+                    "surface-container-lowest": "#0d0e13",
+                    "outline": "#859398"
+            },
+            "spacing": {
+                    "margin-mobile": "12px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "label-caps": ["Inter"],
+                    "display-lg": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface h-screen flex flex-col overflow-hidden">
+<!-- TOPBAR: Sistema Identidad -->
+<header class="flex-none h-[52px] px-4 flex justify-between items-center bg-surface border-b border-white/5 z-20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">waves</span>
+<h1 class="font-display-lg text-[16px] tracking-widest text-primary uppercase">Metro Holographic</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-2 py-0.5 rounded border border-secondary/30 bg-secondary/5">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-technical-sm text-[9px] text-secondary">SYSTEM_OPTIMAL</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">settings_input_antenna</span>
+</div>
+</header>
+<!-- MAIN CONTENT SCROLLABLE AREA -->
+<main class="flex-grow overflow-y-auto custom-scrollbar flex flex-col gap-4 p-4">
+<!-- MODULE: Sacerdotisa (Aether Core) -->
+<section class="flex-none bg-surface-container rounded-xl border border-white/10 p-4 overflow-hidden relative">
+<div class="scanline"></div>
+<div class="flex gap-4 items-start relative z-10">
+<div class="flex-none">
+<div class="w-20 h-20 rounded-lg overflow-hidden border border-secondary/50 neon-glow-green relative">
+<img alt="Aether Priestess" class="w-full h-full object-cover grayscale brightness-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAX4a-uwvGkkQL1viSNk1I9M6nX5VtxYlDMmf2r0Co5bidgxUyjrdQwHfx8GxI48fCwTQCL4_XNbfTt5aou2F0asL6BTQqWwJlt32DHbDuiGu_gqSkSa4VhQRLtI71iwe3Z9zFQ3Jz6aPXYoyEhf9nOrk8-YKqFJsZosCrKuxgwOmWRmLZWq_TPNK0pOVMXB98EVh3OUiFtznaBUbAQGs6JXPxmrW5Q_fvES33gL4ZEkONnqxdbOKuWbKcQQqrLfDgWZj7g4YCcgU"/>
+<div class="absolute bottom-1 right-1 w-2.5 h-2.5 bg-secondary rounded-full border-2 border-surface-container"></div>
+</div>
+</div>
+<div class="flex-grow space-y-2">
+<div class="flex justify-between items-center">
+<h3 class="font-label-caps text-secondary text-[11px] tracking-widest uppercase">Aether Core / Sacerdotisa</h3>
+<span class="font-technical-sm text-[10px] text-on-surface-variant">v2.4.0-HOLO</span>
+</div>
+<div class="bg-black/20 p-3 rounded-lg border border-white/5">
+<p class="font-body-base text-on-surface text-[13px] leading-relaxed">
+                            "Analizando flujo de pasajeros en <span class="text-primary font-bold">Estación Pino Suárez</span>. Interconexión crítica entre Línea 1 y Línea 2. Se recomienda transbordo por túnel sur."
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- MODULE: Integridad & Logs Técnicos -->
+<section class="flex-grow min-h-[300px] flex flex-col gap-4">
+<!-- Visual Data / Map -->
+<div class="flex-grow bg-surface-container-low rounded-xl border border-primary/10 overflow-hidden relative flex items-center justify-center p-4">
+<div class="absolute inset-0 opacity-5 pointer-events-none">
+<div class="w-full h-full" style="background-image: radial-gradient(circle at 1px 1px, #00d4ff 1px, transparent 0); background-size: 20px 20px;"></div>
+</div>
+<div class="relative w-full h-full flex items-center justify-center">
+<img alt="Metro CDMX Map" class="max-w-full max-h-full object-contain opacity-60 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0IurRY96_0UAn5ZFmCiNcgEb3hYfIvkWwyaRJKsC7QlJVK80m6dJ-3Z3QOMmvk03OBGN-mfpyAJ1mRfb1oedShwlR7eih44brqfpYGQeeXLOxbw5JUWmIEHrul0lo0C23rD2kXT6AB_DzvRgk4AFe2axkNkAS4pmnpyelMh1Lh7gM2GxqgEY6_SZt72GTEJyLAkq6tThBhINQ5ZZINcJjJ-ZZIx4Wrt0k703qJuVqEwF0vE50Iq_7kKJnia61E9kbksL2Dc4AJ9k"/>
+<!-- Dynamic Node -->
+<div class="absolute top-[45%] left-[52%]">
+<div class="w-8 h-8 rounded-full border border-primary flex items-center justify-center bg-primary/10 animate-pulse">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-2 right-3 font-technical-sm text-[9px] text-primary/40 uppercase tracking-tighter">
+                    COORD_STREAM: 19.4273N | 99.1332W
+                </div>
+</div>
+<!-- Technical Logs -->
+<div class="flex-none h-32 bg-black/40 rounded-xl border border-white/5 p-3 font-technical-sm text-[10px] overflow-hidden flex flex-col">
+<div class="flex justify-between border-b border-white/5 pb-1 mb-2">
+<span class="text-on-surface-variant uppercase">Technical Logs</span>
+<span class="text-primary/60">INTEGRITY: 99.8%</span>
+</div>
+<div class="flex-grow space-y-1 opacity-70">
+<p class="text-secondary">[OK] SYNC_HOLOGRAPHIC_GRID_PRIMARY</p>
+<p class="text-primary">[INFO] SCANNING_PASSENGER_DENSITY_STATION_PS</p>
+<p class="text-on-surface-variant">[LOG] CACHE_CLEARED_SESSION_X882</p>
+<p class="text-on-surface-variant">[LOG] REDIRECTING_TRAFFIC_SECTOR_7</p>
+<p class="text-secondary">[OK] BUFFER_STABILIZED</p>
+</div>
+</div>
+</section>
+<!-- MODULE: Audio Guide / Player -->
+<section class="flex-none bg-surface-container rounded-xl border border-primary/20 p-4">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">audiotrack</span>
+<span class="font-technical-sm text-[10px] text-on-surface">ROUTE_AUDIO_GUIDE.mp3</span>
+</div>
+<span class="font-technical-sm text-[10px] text-primary">02:45 / 04:20</span>
+</div>
+<div class="h-1 w-full bg-white/5 rounded-full mb-4 overflow-hidden">
+<div class="h-full bg-primary w-[65%] shadow-[0_0_8px_#00d4ff]"></div>
+</div>
+<div class="flex items-center justify-center gap-10">
+<button class="material-symbols-outlined text-[24px] text-on-surface-variant hover:text-primary transition-colors">skip_previous</button>
+<button class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-[0_0_15px_#00d4ff44] transition-all active:scale-95" id="playBtn">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="material-symbols-outlined text-[24px] text-on-surface-variant hover:text-primary transition-colors">skip_next</button>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVIGATION: Limpia & Segregada -->
+<nav class="flex-none h-[72px] bg-surface border-t border-white/5 flex items-center justify-around px-2 z-20">
+<button class="flex flex-col items-center gap-1 group w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">motion_photos_on</span>
+<span class="text-[9px] font-label-caps text-on-surface-variant group-hover:text-primary uppercase tracking-widest">Feed</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-1/3 relative">
+<div class="absolute -top-[1px] left-1/2 -translate-x-1/2 w-8 h-[2px] bg-primary"></div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="text-[9px] font-label-caps text-primary uppercase tracking-widest">Mode</span>
+</button>
+<button class="flex flex-col items-center gap-1 group w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">replay</span>
+<span class="text-[9px] font-label-caps text-on-surface-variant group-hover:text-primary uppercase tracking-widest">Loop</span>
+</button>
+</nav>
+<script>
+        const playBtn = document.getElementById('playBtn');
+        let isPlaying = false;
+        
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            const icon = playBtn.querySelector('.material-symbols-outlined');
+            icon.innerText = isPlaying ? 'pause' : 'play_arrow';
+            
+            if (isPlaying) {
+                playBtn.classList.remove('bg-primary');
+                playBtn.classList.add('bg-secondary');
+                playBtn.style.boxShadow = '0 0 20px rgba(72, 234, 121, 0.4)';
+            } else {
+                playBtn.classList.remove('bg-secondary');
+                playBtn.classList.add('bg-primary');
+                playBtn.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4)';
+            }
+        });
+    </script>
+</body></html>

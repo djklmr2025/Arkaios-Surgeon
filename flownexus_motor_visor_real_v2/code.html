@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport"/>
+<title>FlowNexus — Visor Real v2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{
+    "background":"#0d0f17","surface":"#12141f","surface-container":"#1a1d2b",
+    "surface-container-high":"#222535","primary":"#a8e8ff","primary-container":"#00d4ff",
+    "on-primary":"#003642","on-primary-container":"#005870","secondary":"#3ee272",
+    "secondary-container":"#00c55a","on-surface":"#e3e1f0","on-surface-variant":"#9aa4b5",
+    "outline":"#3c4a5e","outline-variant":"#2a3344","tertiary":"#ffd5d6","error":"#ffb4ab"
+  }}}
+}
+</script>
+<style>
+  *{box-sizing:border-box;}
+  body{background:#0d0f17;overflow:hidden;margin:0;font-family:'Inter',sans-serif;}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;font-size:22px;}
+  .fill-icon{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
+
+  /* ── SVG STAGE ── */
+  #svg-stage{
+    position:absolute;inset:0;width:100%;height:100%;
+    overflow:hidden;touch-action:none;cursor:grab;
+  }
+  #svg-stage:active{cursor:grabbing;}
+  #svg-root{overflow:visible;}
+  .sticker{pointer-events:none;}
+
+  /* ── SCANLINE ── */
+  .scanline{
+    position:fixed;inset:0;pointer-events:none;z-index:200;
+    background:repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(168,232,255,.018) 4px);
+  }
+
+  /* ── STATUS TOAST ── */
+  #status-toast{
+    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:rgba(30,35,55,.95);border:1px solid rgba(168,232,255,.2);
+    color:#a8e8ff;font-size:12px;font-family:'JetBrains Mono',monospace;
+    padding:6px 16px;border-radius:100px;pointer-events:none;
+    opacity:0;transition:opacity .3s;z-index:500;white-space:nowrap;
+  }
+  #status-toast.show{opacity:1;}
+
+  /* ── PING DOT ── */
+  @keyframes ping{75%,100%{transform:scale(2);opacity:0;}}
+  .ping-dot::before{
+    content:'';position:absolute;inset:0;border-radius:50%;
+    background:inherit;animation:ping 1.5s cubic-bezier(0,0,.2,1) infinite;
+  }
+  .ping-dot{position:relative;}
+
+  /* ── HOLO GLOW ── */
+  .holo{text-shadow:0 0 10px rgba(168,232,255,.7),0 0 20px rgba(168,232,255,.3);}
+
+  /* ── FAB ── */
+  .fab{
+    width:48px;height:48px;border-radius:16px;display:flex;align-items:center;
+    justify-content:center;border:1px solid rgba(168,232,255,.15);
+    background:rgba(26,29,43,.9);backdrop-filter:blur(12px);
+    transition:all .2s;cursor:pointer;color:#a8e8ff;
+  }
+  .fab:hover{background:rgba(0,212,255,.15);border-color:rgba(168,232,255,.4);}
+  .fab:active{transform:scale(.93);}
+
+  /* ── INPUT PANEL ── */
+  #load-panel{
+    position:fixed;inset:0;z-index:999;background:rgba(13,15,23,.97);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    padding:32px;
+  }
+  #load-panel.hidden{display:none;}
+  .panel-input{
+    width:100%;max-width:480px;background:#1a1d2b;border:1.5px solid #3c4a5e;
+    color:#e3e1f0;font-family:'Inter',sans-serif;font-size:14px;
+    padding:12px 16px;border-radius:12px;outline:none;
+  }
+  .panel-input:focus{border-color:#a8e8ff;}
+  .panel-btn{
+    padding:13px 28px;border-radius:12px;border:none;font-family:'Inter',sans-serif;
+    font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;
+  }
+  .panel-btn-primary{background:linear-gradient(135deg,#a8e8ff,#3cd7ff);color:#003642;}
+  .panel-btn-primary:hover{box-shadow:0 6px 20px rgba(168,232,255,.35);}
+  .panel-btn-ghost{background:transparent;border:1.5px solid #3c4a5e;color:#9aa4b5;}
+  .panel-btn-ghost:hover{border-color:#a8e8ff;color:#a8e8ff;}
+
+  /* ── LIVE INDICATOR ── */
+  #live-dot{width:8px;height:8px;border-radius:50%;background:#3ee272;}
+  #live-dot.off{background:#ff4a4a;}
+</style>
+</head>
+<body class="text-on-surface">
+
+<!-- Scanline atmospheric -->
+<div class="scanline"></div>
+
+<!-- ═══════════════════════════════ LOAD PANEL ═══════════════════════════════ -->
+<div id="load-panel">
+  <div style="text-align:center;margin-bottom:8px;">
+    <p class="text-primary holo" style="font-size:22px;font-weight:800;letter-spacing:-.5px;">FlowNexus Viewer</p>
+    <p style="color:#9aa4b5;font-size:13px;margin-top:4px;">Motor real v2 — Flow Diagram Creator</p>
+  </div>
+
+  <input class="panel-input" id="inp-id" placeholder="ID del proyecto  (ej: 24a18b2cd7e3444b)" type="text"/>
+  <input class="panel-input" id="inp-url" placeholder="URL del JSON  (ej: https://...)" type="text"/>
+  <input class="panel-input" id="inp-listen" placeholder="Sesión en vivo  (ej: mi-sesion)" type="text"/>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    <button class="panel-btn panel-btn-primary" onclick="loadFromPanel()">▶ Cargar</button>
+    <button class="panel-btn panel-btn-ghost" onclick="loadDemo()">🗺 Demo Metro</button>
+  </div>
+
+  <p style="color:#3c4a5e;font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:8px;">
+    También puedes usar: ?id= · ?project= · ?listen= en la URL
+  </p>
+</div>
+
+<!-- ═══════════════════════════════ SVG STAGE ═══════════════════════════════ -->
+<svg id="svg-stage" xmlns="http://www.w3.org/2000/svg">
+  <defs id="svg-defs"></defs>
+  <g id="svg-world"></g>
+</svg>
+
+<!-- ═══════════════════════════════ TOP BAR ═══════════════════════════════ -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-4 h-[52px]"
+  style="background:rgba(13,15,23,.8);backdrop-filter:blur(16px);border-bottom:1px solid rgba(168,232,255,.08);">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary" style="font-size:20px;">hub</span>
+    <span class="holo font-bold text-primary" id="proj-name" style="font-size:15px;">FlowNexus</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2" id="live-section" style="display:none!important;">
+      <div class="ping-dot" id="live-dot"></div>
+      <span style="font-size:11px;color:#9aa4b5;font-family:'JetBrains Mono',monospace;">LIVE</span>
+    </div>
+    <button class="fab" style="width:36px;height:36px;border-radius:10px;" onclick="fitView()" title="Encuadrar">
+      <span class="material-symbols-outlined" style="font-size:18px;">fit_screen</span>
+    </button>
+    <button class="fab" style="width:36px;height:36px;border-radius:10px;" onclick="showLoadPanel()" title="Cargar proyecto">
+      <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ FABs ═══════════════════════════════ -->
+<div class="fixed right-4 z-40 flex flex-col gap-2" style="bottom:76px;">
+  <button class="fab" onclick="zoomIn()" title="Zoom +"><span class="material-symbols-outlined">add</span></button>
+  <button class="fab" onclick="zoomOut()" title="Zoom -"><span class="material-symbols-outlined">remove</span></button>
+</div>
+
+<!-- ═══════════════════════════════ BOTTOM NAV ═══════════════════════════════ -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16"
+  style="background:rgba(13,15,23,.9);backdrop-filter:blur(12px);border-top:1px solid rgba(168,232,255,.08);">
+  <button class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" onclick="fitView()">
+    <span class="material-symbols-outlined fill-icon text-primary">center_focus_strong</span>
+    <span style="font-size:9px;color:#9aa4b5;text-transform:uppercase;letter-spacing:.08em;">Encuadrar</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" onclick="showLoadPanel()">
+    <span class="material-symbols-outlined text-primary">folder_open</span>
+    <span style="font-size:9px;color:#9aa4b5;text-transform:uppercase;letter-spacing:.08em;">Cargar</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" onclick="shareUrl()">
+    <span class="material-symbols-outlined text-primary">share</span>
+    <span style="font-size:9px;color:#9aa4b5;text-transform:uppercase;letter-spacing:.08em;">Compartir</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════ STATUS TOAST ═══════════════════════════════ -->
+<div id="status-toast"></div>
+
+<!-- ═══════════════════════════════ ENGINE ═══════════════════════════════ -->
+<script>
+// ──────────────────────────────────────────────────────────────────────────────
+//  FLOWNEXUS VISOR REAL v2
+//  Motor idéntico a previewer-2.0 — adaptado para Google Stitch / Android WebView
+//  Fuentes de datos: ?id= | ?project= | ?listen= | panel manual
+// ──────────────────────────────────────────────────────────────────────────────
+
+const API_BASE = 'https://flow-diagram-creator.vercel.app';
+const DEMO_ID  = '24a18b2cd7e3444b'; // Metro CDMX
+
+// ─── DOM ─────────────────────────────────────────────────────────────────────
+const svgStage = document.getElementById('svg-stage');
+const svgWorld = document.getElementById('svg-world');
+const svgDefs  = document.getElementById('svg-defs');
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const S = {
+  project: { elements:[], camera:{x:0,y:0,zoom:1} },
+  panX:0, panY:0, zoom:1,
+  isPanning:false, panSX:0, panSY:0,
+  pinchDist:0,
+  gradCounter:0,
+  anim:{ rafId:0, lastTs:0, lineNodes:[], moverNodes:[], flat:[], byId:new Map() },
+  listenSession:'', listenTimer:null, listenLastDate:'',
+  currentId:''
+};
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+const svgEl = (tag, attrs={}) => {
+  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  Object.entries(attrs).forEach(([k,v]) => { if(v!=null) n.setAttribute(k,String(v)); });
+  return n;
+};
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+
+function showToast(msg, ms=2800){
+  const t = document.getElementById('status-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function q(sel){ return document.querySelector(sel); }
+function params(){ return new URLSearchParams(window.location.search); }
+
+// ─── GRADIENT FILL ───────────────────────────────────────────────────────────
+function gradFill(fillColor, grad){
+  if(!grad || typeof grad !== 'object') return fillColor || '#00bcd4';
+  const id = `g_${Date.now()}_${S.gradCounter++}`;
+  const lg = svgEl('linearGradient',{id, x1:grad.x1??0, y1:grad.y1??0, x2:grad.x2??1, y2:grad.y2??1, gradientUnits:'objectBoundingBox'});
+  const stops = Array.isArray(grad.stops) ? grad.stops : [];
+  if(!stops.length){
+    lg.appendChild(svgEl('stop',{offset:'0%','stop-color':fillColor||'#00bcd4'}));
+    lg.appendChild(svgEl('stop',{offset:'100%','stop-color':'#ffffff'}));
+  } else {
+    stops.forEach(s => lg.appendChild(svgEl('stop',{offset:`${clamp(Number(s.offset??0),0,1)*100}%`,'stop-color':s.color||'#00bcd4'})));
+  }
+  svgDefs.appendChild(lg);
+  return `url(#${id})`;
+}
+
+// ─── GEOMETRY ────────────────────────────────────────────────────────────────
+function getRectLike(e){ return { x:Number(e.x??0), y:Number(e.y??0), w:Number(e.width??e.w??0), h:Number(e.height??e.h??0) }; }
+function getPt(p){
+  if(!p) return null;
+  const x = typeof p.x==='number'?p.x:parseFloat(p.x)||0;
+  const y = typeof p.y==='number'?p.y:parseFloat(p.y)||0;
+  return {x,y};
+}
+function flatten(elements, out=[]){
+  (elements||[]).forEach(e => { if(!e) return; out.push(e); if(e.type==='group'&&Array.isArray(e.elements)) flatten(e.elements,out); });
+  return out;
+}
+function getCenter(e){
+  if(!e) return {x:0,y:0};
+  if(e.type==='line') return {x:(Number(e.x??0)+Number(e.endX??0))/2, y:(Number(e.y??0)+Number(e.endY??0))/2};
+  if((e.type==='path'||e.type==='polygon')&&Array.isArray(e.points)&&e.points.length){
+    let sx=0,sy=0,c=0;
+    e.points.forEach(p=>{ const pt=getPt(p); if(pt){sx+=pt.x;sy+=pt.y;c++;} });
+    if(c) return {x:sx/c,y:sy/c};
+  }
+  const {x,y,w,h}=getRectLike(e);
+  return {x:x+w/2,y:y+h/2};
+}
+
+// ─── ARC BUILDER ─────────────────────────────────────────────────────────────
+function buildArc(x1,y1,x2,y2,fraction,side){
+  const dx=x2-x1,dy=y2-y1,chord=Math.sqrt(dx*dx+dy*dy);
+  if(!(chord>0)) return [{x:x1,y:y1},{x:x2,y:y2}];
+  const theta=Math.max(0.0001,Math.min(Math.PI*2-0.0001,Math.PI*2*fraction));
+  const r=chord/(2*Math.sin(theta/2));
+  const h=Math.sqrt(Math.max(0,r*r-(chord/2)*(chord/2)));
+  const mx=(x1+x2)/2,my=(y1+y2)/2;
+  const sign=String(side||'left')==='right'?-1:1;
+  const cx=mx+(-dy/chord)*h*sign, cy=my+(dx/chord)*h*sign;
+  const a0=Math.atan2(y1-cy,x1-cx);
+  const candA=a0+theta,candB=a0-theta;
+  const dA=Math.hypot(cx+r*Math.cos(candA)-x2,cy+r*Math.sin(candA)-y2);
+  const dB=Math.hypot(cx+r*Math.cos(candB)-x2,cy+r*Math.sin(candB)-y2);
+  const dir=dA<=dB?1:-1;
+  const steps=Math.max(8,Math.round(72*fraction));
+  const pts=[];
+  for(let i=0;i<=steps;i++){ const a=a0+dir*theta*(i/steps); pts.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}); }
+  return pts;
+}
+
+function getRoutePts(e){
+  if(!e) return [];
+  if(e.type==='line'){
+    if(!Number.isFinite(e.x)||!Number.isFinite(e.endX)) return [];
+    const curve=e.routeCircular?'circle':String(e.routeCurve||'line').toLowerCase();
+    if(curve==='circle'){
+      const cx=(e.x+e.endX)/2,cy=(e.y+e.endY)/2;
+      const r=Math.max(2,Math.hypot(e.endX-e.x,e.endY-e.y)/2);
+      return Array.from({length:73},(_,i)=>({x:cx+r*Math.cos(Math.PI*2*i/72),y:cy+r*Math.sin(Math.PI*2*i/72)}));
+    }
+    if(curve==='semi') return buildArc(e.x,e.y,e.endX,e.endY,0.5,e.routeArcSide||'left');
+    if(curve==='quarter') return buildArc(e.x,e.y,e.endX,e.endY,0.25,e.routeArcSide||'left');
+    if(curve==='custom'){
+      const deg=Math.max(5,Math.min(355,Number(e.routeArcDegrees)||120));
+      return buildArc(e.x,e.y,e.endX,e.endY,deg/360,e.routeArcSide||'left');
+    }
+    return [{x:e.x,y:e.y},{x:e.endX,y:e.endY}];
+  }
+  if((e.type==='path'||e.type==='polygon')&&Array.isArray(e.points)){
+    const pts=e.points.map(p=>getPt(p)).filter(p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y));
+    if(e.type==='polygon'&&e.closed&&pts.length) pts.push({x:pts[0].x,y:pts[0].y});
+    return pts;
+  }
+  return [];
+}
+
+function polyLen(pts){
+  if(!pts||pts.length<2) return 0;
+  let t=0;
+  for(let i=1;i<pts.length;i++) t+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+  return t;
+}
+
+function ptOnPoly(pts,t){
+  if(!pts||!pts.length) return null;
+  if(pts.length===1) return {x:pts[0].x,y:pts[0].y,angle:0};
+  const total=polyLen(pts);
+  if(total<=0) return {x:pts[0].x,y:pts[0].y,angle:0};
+  const target=clamp(t,0,1)*total;
+  let acc=0;
+  for(let i=1;i<pts.length;i++){
+    const p0=pts[i-1],p1=pts[i];
+    const dx=p1.x-p0.x,dy=p1.y-p0.y,seg=Math.hypot(dx,dy);
+    if(seg<=0) continue;
+    if(acc+seg>=target||i===pts.length-1){
+      const local=clamp((target-acc)/seg,0,1);
+      return {x:p0.x+dx*local,y:p0.y+dy*local,angle:Math.atan2(dy,dx)};
+    }
+    acc+=seg;
+  }
+  const last=pts[pts.length-1],prev=pts[pts.length-2];
+  return {x:last.x,y:last.y,angle:Math.atan2(last.y-prev.y,last.x-prev.x)};
+}
+
+function isRoute(e){
+  if(!e) return false;
+  const t=String(e.type||'');
+  if(!(t==='line'||t==='path'||t==='polygon')) return false;
+  if(e.routeRole===true||e.isRoute||e.routeCircular) return true;
+  const n=String(e.name||'').toLowerCase();
+  return n.includes('ruta')||n.includes('via');
+}
+
+function findConnected(routeElem,atEnd,flat){
+  const pts=getRoutePts(routeElem);
+  if(pts.length<2) return null;
+  const pt=atEnd?pts[pts.length-1]:pts[0];
+  const THR=28;
+  let best=null,bestDist=Infinity;
+  flat.forEach(c=>{
+    if(!isRoute(c)||String(c.id)===String(routeElem.id)) return;
+    const opts=getRoutePts(c);
+    if(opts.length<2) return;
+    const dS=Math.hypot(opts[0].x-pt.x,opts[0].y-pt.y);
+    const dE=Math.hypot(opts[opts.length-1].x-pt.x,opts[opts.length-1].y-pt.y);
+    const d=Math.min(dS,dE);
+    if(d>THR) return;
+    if(d<bestDist){ bestDist=d; best=dS<=dE?{route:c,progress:0.0001,direction:'right'}:{route:c,progress:0.9999,direction:'left'}; }
+  });
+  return best;
+}
+
+// ─── ROUTE STATE ─────────────────────────────────────────────────────────────
+function resolveRoute(elem,dt,flat,byId){
+  if(!elem) return {x:0,y:0,angle:0,found:false};
+  const isMover=elem.type==='mover';
+  const def=getCenter(elem);
+  if(!isMover&&!elem.followRoute) return {x:def.x,y:def.y,angle:0,found:false};
+  const routeId=String(elem.routeId||elem.routePathId||'');
+  if(!routeId) return {x:def.x,y:def.y,angle:0,found:false};
+  let route=byId.get(routeId);
+  if(!route) return {x:def.x,y:def.y,angle:0,found:false};
+  let pts=getRoutePts(route);
+  if(pts.length<=1) return {x:def.x,y:def.y,angle:0,found:false};
+
+  const pKey=isMover?'progress':'routeProgress';
+  let progress=Number.isFinite(elem[pKey])?Number(elem[pKey]):0;
+  const dirRaw=isMover?elem.flowDirection:(elem.routeDirection||elem.flowDirection);
+  let dir=String(dirRaw||'right')==='left'?-1:1;
+  const mode=String(elem.routeMode||'loop');
+  const autoConn=Boolean(elem.autoConnectRoute||elem.autoConnect);
+
+  if(elem.active!==false){
+    const rawSpd=Number(isMover?elem.speed:(elem.routeSpeed||elem.speed));
+    const speed=Number.isFinite(rawSpd)?clamp(rawSpd,1,300):40;
+    let rem=dir*2.5*speed*dt;
+    let guard=0;
+    while(Math.abs(rem)>1e-6&&guard<16){
+      guard++;
+      const rLen=Math.max(1e-6,polyLen(pts));
+      const next=progress*rLen+rem;
+      if(next>=0&&next<=rLen){ progress=next/rLen; rem=0; break; }
+      if(next>rLen){
+        const ov=next-rLen;
+        if(autoConn){ const nx=findConnected(route,true,flat); if(nx&&nx.route){ route=nx.route; pts=getRoutePts(route); elem.routeId=String(route.id); dir=String(nx.direction||'right')==='left'?-1:1; if(isMover)elem.flowDirection=dir<0?'left':'right'; else elem.routeDirection=dir<0?'left':'right'; progress=Number(nx.progress)||0; rem=Math.abs(ov)*(dir<0?-1:1); continue; } }
+        if(mode==='stop'){progress=1;elem.active=false;}else{progress=(next%rLen)/rLen;}
+        rem=0; break;
+      }
+      const ov=-next;
+      if(autoConn){ const nx=findConnected(route,false,flat); if(nx&&nx.route){ route=nx.route; pts=getRoutePts(route); elem.routeId=String(route.id); dir=String(nx.direction||'right')==='left'?-1:1; if(isMover)elem.flowDirection=dir<0?'left':'right'; else elem.routeDirection=dir<0?'left':'right'; progress=Number(nx.progress)||0; rem=Math.abs(ov)*(dir<0?-1:1); continue; } }
+      if(mode==='stop'){progress=0;elem.active=false;}else{const rL=Math.max(1e-6,polyLen(pts));progress=(((next%rL)+rL)%rL)/rL;}
+      rem=0; break;
+    }
+  }
+  if(mode!=='stop') progress=((progress%1)+1)%1;
+  elem[pKey]=progress;
+  const p=ptOnPoly(pts,progress);
+  if(!p) return {x:def.x,y:def.y,angle:0,found:false};
+  return {x:p.x,y:p.y,angle:p.angle,found:true};
+}
+
+// ─── ANIMATION LOOP ───────────────────────────────────────────────────────────
+function startAnim(){
+  if(S.anim.rafId) return;
+  const flat=flatten(S.project.elements||[]);
+  S.anim.flat=flat;
+  S.anim.byId=new Map(flat.map(e=>[String(e.id||''),e]));
+
+  // Pre-position movers
+  S.anim.moverNodes.forEach(m=>{
+    const sp=resolveRoute(m.elem,0,S.anim.flat,S.anim.byId);
+    if(sp.found){ const ang=(sp.angle*180)/Math.PI;
+      if(m.isMover) m.node.setAttribute('transform',`translate(${sp.x} ${sp.y}) rotate(${ang})`);
+      else m.wrapper.setAttribute('transform',`translate(${sp.x-m.cx} ${sp.y-m.cy}) rotate(${ang} ${m.cx} ${m.cy})`);
+    }
+  });
+
+  S.anim.lastTs=0;
+  const tick=ts=>{
+    const last=S.anim.lastTs||ts;
+    const dt=clamp((ts-last)/1000,0.001,0.05);
+    S.anim.lastTs=ts;
+
+    S.anim.lineNodes.forEach(ln=>{ ln.offset-=dt*64*ln.speed; ln.node.setAttribute('stroke-dashoffset',String(ln.offset)); });
+
+    S.anim.moverNodes.forEach(m=>{
+      const cur=S.anim.byId.get(String(m.elem.id||''))||m.elem;
+      const sp=resolveRoute(cur,dt,S.anim.flat,S.anim.byId);
+      if(sp.found){ const ang=(sp.angle*180)/Math.PI;
+        if(m.isMover) m.node.setAttribute('transform',`translate(${sp.x} ${sp.y}) rotate(${ang})`);
+        else m.wrapper.setAttribute('transform',`translate(${sp.x-m.cx} ${sp.y-m.cy}) rotate(${ang} ${m.cx} ${m.cy})`);
+      }
+    });
+    S.anim.rafId=requestAnimationFrame(tick);
+  };
+  S.anim.rafId=requestAnimationFrame(tick);
+}
+function stopAnim(){ if(S.anim.rafId) cancelAnimationFrame(S.anim.rafId); S.anim.rafId=0; S.anim.lastTs=0; }
+
+// ─── RENDER ELEMENT ───────────────────────────────────────────────────────────
+function renderEl(elem,parent){
+  if(!elem||typeof elem!=='object'||elem.hidden===true) return;
+
+  if(elem.type==='group'&&Array.isArray(elem.elements)){
+    const g=svgEl('g',{'data-id':elem.id||'','class':'sticker'});
+    parent.appendChild(g);
+    elem.elements.forEach(c=>renderEl(c,g));
+    return;
+  }
+
+  const fill=gradFill(elem.fillColor||'transparent',elem.fillGradient);
+  const stroke=elem.strokeColor||'transparent';
+  const lw=Number(elem.lineWidth??elem.strokeWidth??2);
+  const isMover=elem.type==='mover';
+  const isFollower=elem.followRoute===true&&elem.routeId;
+  let node=null;
+
+  if(elem.type==='line'){
+    const curve=elem.routeCircular?'circle':String(elem.routeCurve||'line').toLowerCase();
+    if(curve!=='line'){
+      const pts=getRoutePts(elem);
+      node=svgEl('polyline',{points:pts.map(p=>`${p.x},${p.y}`).join(' '),fill:'none',stroke,'stroke-width':lw,'stroke-linecap':'round','stroke-dasharray':elem.active?'8 8':null});
+    } else {
+      const x1=Number(elem.x??elem.x1??0),y1=Number(elem.y??elem.y1??0);
+      const x2=Number(elem.endX??elem.x2??0),y2=Number(elem.endY??elem.y2??0);
+      node=svgEl('line',{x1,y1,x2,y2,stroke,'stroke-width':lw,'stroke-linecap':'round','stroke-dasharray':elem.active?'8 8':null});
+    }
+    if(elem.active) S.anim.lineNodes.push({node,speed:Math.max(0.2,Number(elem.speed)||1),offset:0});
+
+  } else if(elem.type==='rectangle'||elem.type==='rect'){
+    const {x,y,w,h}=getRectLike(elem);
+    node=svgEl('rect',{x,y,width:w,height:h,rx:Number(elem.radius??0),fill,stroke,'stroke-width':lw});
+
+  } else if(elem.type==='circle'){
+    const {x,y,w,h}=getRectLike(elem);
+    const r=Number(elem.radius??Math.min(w,h)/2);
+    const cx=Number(elem.cx??(x+(w||r*2)/2));
+    const cy=Number(elem.cy??(y+(h||r*2)/2));
+    node=svgEl('circle',{cx,cy,r,fill,stroke,'stroke-width':lw});
+
+  } else if(elem.type==='path'||elem.type==='polygon'){
+    const pts=Array.isArray(elem.points)?elem.points:[];
+    const pointsAttr=pts.map(p=>`${Number(p.x??0)},${Number(p.y??0)}`).join(' ');
+    if(pointsAttr) node=svgEl('polygon',{points:pointsAttr,fill,stroke,'stroke-width':lw});
+
+  } else if(elem.type==='image'){
+    const {x,y,w,h}=getRectLike(elem);
+    const src=elem.imageSrc||elem.imageData||'';
+    if(src) node=svgEl('image',{x,y,width:w,height:h,href:src,preserveAspectRatio:'xMidYMid meet',opacity:elem.opacity??1});
+
+  } else if(elem.type==='text'){
+    const x=Number(elem.x??0),y=Number(elem.y??0);
+    node=svgEl('text',{x,y,'font-size':Number(elem.fontSize??14),'font-family':elem.fontFamily||'Inter,sans-serif',fill:elem.fillColor||'#ffffff','text-anchor':elem.textAlign==='center'?'middle':elem.textAlign==='right'?'end':'start'});
+    node.textContent=String(elem.text||'');
+
+  } else if(isMover){
+    const {x,y,w,h}=getRectLike(elem);
+    const mw=Math.max(8,Number(w)||44),mh=Math.max(8,Number(h)||28);
+    const fillS=elem.fillColor||'#93c5fd',strokeS=elem.strokeColor||'#0b1027';
+    const g=svgEl('g');
+    const rx=-mw/2,ry=-mh/2;
+    g.appendChild(svgEl('rect',{x:rx,y:ry,width:mw,height:mh,rx:Math.max(3,Math.min(mw,mh)*.25),fill:fillS,stroke:strokeS,'stroke-width':Math.max(1,lw*.75)}));
+    g.appendChild(svgEl('rect',{x:rx+mw*.22,y:ry+mh*.3,width:mw*.56,height:mh*.4,rx:Math.max(2,mh*.12),fill:'#dbeafe',opacity:'0.9'}));
+    node=g;
+  }
+
+  if(!node) return;
+
+  if(Number.isFinite(elem.rotation)&&elem.rotation!==0&&!isMover){
+    const {x,y,w,h}=getRectLike(elem);
+    node.setAttribute('transform',`rotate(${elem.rotation} ${x+w/2} ${y+h/2})`);
+  }
+
+  node.classList.add('sticker');
+
+  if(isMover||isFollower){
+    node.style.transition='none';
+    const ctr=getCenter(elem);
+    if(isMover){
+      S.anim.moverNodes.push({node,elem,isMover:true,cx:ctr.x,cy:ctr.y});
+      if(elem.id) node.setAttribute('data-id',elem.id);
+      parent.appendChild(node);
+    } else {
+      const wr=svgEl('g');
+      if(elem.id) wr.setAttribute('data-id',elem.id);
+      wr.appendChild(node);
+      S.anim.moverNodes.push({wrapper:wr,node,elem,isMover:false,cx:ctr.x,cy:ctr.y});
+      parent.appendChild(wr);
+    }
+  } else {
+    if(elem.id) node.setAttribute('data-id',elem.id);
+    parent.appendChild(node);
+  }
+}
+
+// ─── RENDER PROJECT ───────────────────────────────────────────────────────────
+function renderProject(){
+  stopAnim();
+  svgWorld.innerHTML='';
+  svgDefs.innerHTML='';
+  S.anim.lineNodes=[];
+  S.anim.moverNodes=[];
+  const elems=Array.isArray(S.project.elements)?S.project.elements:[];
+  elems.forEach(e=>renderEl(e,svgWorld));
+  startAnim();
+}
+
+// ─── APPLY PROJECT ────────────────────────────────────────────────────────────
+function applyProject(data,source=''){
+  const resolved=resolvePayload(data);
+  if(!resolved){ showToast('⚠️ JSON sin elements[]'); return; }
+  S.project=resolved;
+  const cam=resolved.camera||{};
+  if(Number.isFinite(cam.zoom)) S.zoom=clamp(cam.zoom,0.05,20);
+  if(Number.isFinite(cam.x)) S.panX=0;
+  if(Number.isFinite(cam.y)) S.panY=0;
+  renderProject();
+  const name=String(resolved.name||source||'Proyecto');
+  document.getElementById('proj-name').textContent=name;
+  document.title=`FlowNexus — ${name}`;
+  showToast(`✅ ${(resolved.elements||[]).length} elementos · ${name}`);
+  fitView();
+}
+
+function resolvePayload(raw){
+  if(!raw||typeof raw!=='object') return null;
+  if(Array.isArray(raw.elements)) return raw;
+  for(const k of ['project','data','payload','result','value','diagram','flow']){
+    const v=raw[k];
+    if(v&&typeof v==='object'&&Array.isArray(v.elements)) return v;
+  }
+  return null;
+}
+
+// ─── CAMERA TRANSFORM ─────────────────────────────────────────────────────────
+function applyCamera(){
+  svgWorld.setAttribute('transform',`translate(${S.panX} ${S.panY}) scale(${S.zoom})`);
+}
+
+function fitView(){
+  const elems=S.project.elements||[];
+  if(!elems.length){ S.panX=0;S.panY=0;S.zoom=1;applyCamera();return; }
+  const flat=flatten(elems);
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  flat.forEach(e=>{
+    if(!e||typeof e!=='object') return;
+    const bounds=getBounds(e);
+    if(!bounds) return;
+    minX=Math.min(minX,bounds.x1);minY=Math.min(minY,bounds.y1);
+    maxX=Math.max(maxX,bounds.x2);maxY=Math.max(maxY,bounds.y2);
+  });
+  if(!Number.isFinite(minX)) return;
+  const W=svgStage.clientWidth||window.innerWidth;
+  const H=svgStage.clientHeight||window.innerHeight;
+  const pad=64;
+  const cw=maxX-minX||1,ch=maxY-minY||1;
+  const z=clamp(Math.min((W-pad*2)/cw,(H-pad*2)/ch),0.02,10);
+  S.zoom=z;
+  S.panX=W/2-((minX+cw/2)*z);
+  S.panY=H/2-((minY+ch/2)*z);
+  applyCamera();
+}
+
+function getBounds(e){
+  if(!e) return null;
+  if(e.type==='line'){
+    const x1=Number(e.x??0),y1=Number(e.y??0),x2=Number(e.endX??0),y2=Number(e.endY??0);
+    return {x1:Math.min(x1,x2),y1:Math.min(y1,y2),x2:Math.max(x1,x2),y2:Math.max(y1,y2)};
+  }
+  if(e.type==='path'||e.type==='polygon'){
+    const pts=Array.isArray(e.points)?e.points:[];
+    if(!pts.length) return null;
+    let mx=Infinity,my=Infinity,xx=-Infinity,xy=-Infinity;
+    pts.forEach(p=>{ const pt=getPt(p); if(pt){mx=Math.min(mx,pt.x);my=Math.min(my,pt.y);xx=Math.max(xx,pt.x);xy=Math.max(xy,pt.y);} });
+    return {x1:mx,y1:my,x2:xx,y2:xy};
+  }
+  if(e.type==='circle'&&Number.isFinite(e.radius)){
+    const r=Number(e.radius);
+    return {x1:Number(e.x??0)-r,y1:Number(e.y??0)-r,x2:Number(e.x??0)+r,y2:Number(e.y??0)+r};
+  }
+  const {x,y,w,h}=getRectLike(e);
+  if(!w&&!h) return null;
+  return {x1:x,y1:y,x2:x+w,y2:y+h};
+}
+
+function zoomIn(){ S.zoom=clamp(S.zoom*1.3,0.02,30); applyCamera(); }
+function zoomOut(){ S.zoom=clamp(S.zoom/1.3,0.02,30); applyCamera(); }
+
+// ─── TOUCH / PAN / PINCH ────────────────────────────────────────────────────
+let _panning=false,_px=0,_py=0,_pinching=false,_pinchD=0;
+
+svgStage.addEventListener('pointerdown',e=>{
+  svgStage.setPointerCapture(e.pointerId);
+  if(e.pointerType==='touch'&&e.isPrimary===false) return;
+  _panning=true; _px=e.clientX; _py=e.clientY;
+});
+svgStage.addEventListener('pointermove',e=>{
+  if(!_panning) return;
+  S.panX+=e.clientX-_px; S.panY+=e.clientY-_py;
+  _px=e.clientX; _py=e.clientY;
+  applyCamera();
+});
+svgStage.addEventListener('pointerup',()=>{ _panning=false; });
+
+// Pinch
+svgStage.addEventListener('touchstart',e=>{ if(e.touches.length===2) _pinchD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY); },{passive:true});
+svgStage.addEventListener('touchmove',e=>{
+  if(e.touches.length===2){
+    e.preventDefault();
+    const nd=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    if(_pinchD>0){ const ratio=nd/_pinchD; S.zoom=clamp(S.zoom*ratio,0.02,30); applyCamera(); }
+    _pinchD=nd;
+  }
+},{passive:false});
+
+// Wheel zoom
+svgStage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const factor=e.deltaY>0?0.85:1.18;
+  const rect=svgStage.getBoundingClientRect();
+  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  const wx=(mx-S.panX)/S.zoom, wy=(my-S.panY)/S.zoom;
+  S.zoom=clamp(S.zoom*factor,0.02,30);
+  S.panX=mx-wx*S.zoom; S.panY=my-wy*S.zoom;
+  applyCamera();
+},{passive:false});
+
+// ─── DATA LOADING ─────────────────────────────────────────────────────────────
+async function loadById(id){
+  S.currentId=id;
+  showToast(`⏳ Cargando ID: ${id}...`,8000);
+  const url=`${API_BASE}/api/project?id=${encodeURIComponent(id)}`;
+  const res=await fetch(url);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+async function loadByUrl(url){
+  showToast(`⏳ Cargando URL...`,8000);
+  const res=await fetch(url);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+async function startListen(session){
+  S.listenSession=session;
+  S.listenLastDate='';
+  const liveSec=document.getElementById('live-section');
+  liveSec.style.display='flex';
+  const dot=document.getElementById('live-dot');
+  const poll=async()=>{
+    try{
+      const url=`${API_BASE}/api/inject?session=${encodeURIComponent(session)}`;
+      const res=await fetch(url);
+      if(!res.ok) return;
+      const data=await res.json();
+      const resolved=resolvePayload(data)||data;
+      if(resolved&&resolved.date&&resolved.date!==S.listenLastDate){
+        S.listenLastDate=resolved.date;
+        applyProject(resolved,'LIVE');
+        dot.classList.remove('off');
+      }
+    }catch(e){ dot.classList.add('off'); }
+  };
+  await poll();
+  if(S.listenTimer) clearInterval(S.listenTimer);
+  S.listenTimer=setInterval(poll,2000);
+}
+
+async function tryAutoLoad(){
+  const p=params();
+  const id=p.get('id');
+  const proj=p.get('project');
+  const data=p.get('data');
+  const listen=p.get('listen');
+
+  if(listen){
+    hideLoadPanel();
+    await startListen(listen);
+    return;
+  }
+  if(id){
+    hideLoadPanel();
+    try{ const d=await loadById(id); applyProject(d,id); }catch(e){ showToast('⚠️ '+e.message); }
+    return;
+  }
+  if(proj){
+    hideLoadPanel();
+    try{ const d=await loadByUrl(proj); applyProject(d,'URL'); }catch(e){ showToast('⚠️ '+e.message); }
+    return;
+  }
+  if(data){
+    hideLoadPanel();
+    try{ const d=JSON.parse(decodeURIComponent(data)); applyProject(d,'?data'); }catch(e){ showToast('⚠️ JSON inválido'); }
+    return;
+  }
+  // No params — show panel
+}
+
+// ─── PANEL ────────────────────────────────────────────────────────────────────
+function showLoadPanel(){ document.getElementById('load-panel').classList.remove('hidden'); }
+function hideLoadPanel(){ document.getElementById('load-panel').classList.add('hidden'); }
+
+async function loadFromPanel(){
+  const id=q('#inp-id').value.trim();
+  const url=q('#inp-url').value.trim();
+  const listen=q('#inp-listen').value.trim();
+  hideLoadPanel();
+  try{
+    if(listen){ await startListen(listen); return; }
+    if(id){ const d=await loadById(id); applyProject(d,id); return; }
+    if(url){ const d=await loadByUrl(url); applyProject(d,'URL'); return; }
+    showToast('⚠️ Ingresa un ID, URL o sesión.');
+    showLoadPanel();
+  }catch(e){ showToast('⚠️ '+e.message); showLoadPanel(); }
+}
+
+async function loadDemo(){
+  hideLoadPanel();
+  try{ const d=await loadById(DEMO_ID); applyProject(d,'Metro CDMX'); }
+  catch(e){ showToast('⚠️ '+e.message); showLoadPanel(); }
+}
+
+function shareUrl(){
+  if(S.currentId){
+    const url=`${API_BASE}/?mode=sticker&id=${S.currentId}`;
+    navigator.clipboard?.writeText(url);
+    showToast(`📋 URL copiada: ${url}`);
+  } else {
+    showToast('Carga un proyecto primero para compartirlo.');
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+applyCamera();
+tryAutoLoad();
+</script>
+</body>
+</html>

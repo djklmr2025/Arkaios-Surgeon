@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002109",
+                        "secondary-container": "#00c55a",
+                        "surface-container-highest": "#34343a",
+                        "surface-container-low": "#1a1b21",
+                        "on-primary": "#003642",
+                        "primary-fixed": "#b4ebff",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary-container": "#a20532",
+                        "inverse-primary": "#00677e",
+                        "surface-dim": "#121318",
+                        "tertiary-fixed": "#ffdadb",
+                        "background": "#121318",
+                        "surface-container": "#1e1f25",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#003915",
+                        "on-primary-container": "#00586b",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#40000e",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface": "#121318",
+                        "surface-container-high": "#292a2f",
+                        "primary-container": "#00d4ff",
+                        "surface-bright": "#38393f",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-primary-fixed": "#001f27",
+                        "error-container": "#93000a",
+                        "surface-variant": "#34343a",
+                        "on-secondary-container": "#004a1d",
+                        "secondary-fixed": "#66ff8e",
+                        "secondary": "#3ee272",
+                        "tertiary-container": "#ffadb3",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-tertiary": "#67001c",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "inverse-on-surface": "#2f3036",
+                        "outline": "#859398",
+                        "surface-container-lowest": "#0d0e13",
+                        "tertiary": "#ffd5d6",
+                        "surface-tint": "#3cd7ff",
+                        "primary": "#a8e8ff",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "outline-variant": "#3c494e",
+                        "on-error": "#690005",
+                        "on-background": "#e3e1e9",
+                        "inverse-surface": "#e3e1e9",
+                        "on-surface": "#e3e1e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #050712; color: #e3e1e9; overflow-x: hidden; }
+        .glass-panel { backdrop-filter: blur(20px); background: rgba(22, 33, 62, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .neon-accent { position: relative; }
+        .neon-accent::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: #a8e8ff; box-shadow: 0 0 10px #a8e8ff; opacity: 0.5; }
+        .shimmer:hover { backdrop-filter: blur(32px); border-color: rgba(168, 232, 255, 0.4); transform: translateY(-2px); transition: all 0.3s ease; }
+        .active-tab-indicator { box-shadow: 0 0 12px rgba(255, 173, 179, 0.4); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .grid-mesh { background-image: radial-gradient(rgba(168, 232, 255, 0.05) 1px, transparent 1px); background-size: 32px 32px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="grid-mesh">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] md:text-display-lg tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)] uppercase">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-6 font-label-caps text-label-caps">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">LIBRARY</a>
+<a class="text-primary border-b-2 border-primary pb-1" href="#">AGENTS BANK</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">NETWORK</a>
+</nav>
+<button class="active:scale-95 duration-300 hover:bg-white/5 p-2 rounded">
+<span class="material-symbols-outlined text-primary" data-icon="settings_input_antenna">settings_input_antenna</span>
+</button>
+</div>
+</header>
+<!-- Side Navigation -->
+<aside class="hidden md:flex fixed inset-y-0 left-0 w-sidebar-width bg-surface-container/95 backdrop-blur-2xl border-r border-primary/20 flex-col p-gutter mt-[52px] z-40 shadow-[20px_0_60px_rgba(0,0,0,0.55)]">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 overflow-hidden">
+<img alt="Avatar" class="w-8 h-8" data-alt="A futuristic AI avatar profile image featuring a sleek, chrome robotic face with glowing cyan optical sensors and intricate micro-circuitry detailing. The background is a dark, abstract digital void with floating data streams in soft blues and magentas, creating a high-tech and professional ecosystem creator persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqni7g0XoiQGw7993N1eLp4wRTS6UCwfJuTfwKGBpApLDCZUclzUC_kP7hVZc26RS8ti8k9jkz-9Ts3ohulToP0n5cfYo1Nkj22aJfzZQ-e3RkFO15avE7teOAWi2hS1hNQD3WHOvWZ4fmYz10uvyWQI98ybv0LCKnP2eJpp91Li-usEOojDF7Wyf3WDZTGL149-jX8Sdf3GtY9xi491T6EPyT1FfQ2U7i5josmGIo7pOAzO-hqGlHoeq_YvzpSof2uBTd7QtMrAQ"/>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-secondary">AETHER CORE</p>
+<p class="font-body-base text-body-base text-on-surface-variant text-[11px]">Ecosystem Creator</p>
+</div>
+</div>
+<nav class="space-y-2">
+<button class="w-full flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg font-body-base text-body-base">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                Network Map
+            </button>
+<button class="w-full flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base text-body-base">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+                Schedules
+            </button>
+<button class="w-full flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base text-body-base">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                Tourist Info
+            </button>
+<button class="w-full flex items-center gap-3 p-3 text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all rounded-lg font-body-base text-body-base">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+                Emergency
+            </button>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5">
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/40">v2.4.0-HOLO</p>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-[72px] pb-24 md:pl-[304px] px-margin-mobile md:pr-margin-desktop min-h-screen">
+<!-- Header Section -->
+<section class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="font-display-lg text-display-lg text-primary mb-2">Banco de Creaciones</h2>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-2xl">Gestione la biblioteca visual de flujos generados. Optimice modelos base para nuevas peticiones con procesamiento oculto de IA.</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-secondary/10 border border-secondary/30 text-secondary rounded font-label-caps text-label-caps">LIVE SYNC</span>
+<span class="px-3 py-1 bg-tertiary/10 border border-tertiary/30 text-tertiary rounded font-label-caps text-label-caps">AETHER CORE ACTIVE</span>
+</div>
+</section>
+<!-- Categories / Filter Ribbon -->
+<section class="mb-8 flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+<button class="flex-shrink-0 px-6 py-2 rounded-full bg-primary text-on-primary font-body-bold text-body-base">Todos los Flujos</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full glass-panel hover:border-primary/50 text-on-surface font-body-base text-body-base">Transporte</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full glass-panel hover:border-primary/50 text-on-surface font-body-base text-body-base">Proyectos Industriales</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full glass-panel hover:border-primary/50 text-on-surface font-body-base text-body-base">Flujos de Ayuda</button>
+<button class="flex-shrink-0 px-6 py-2 rounded-full glass-panel hover:border-primary/50 text-on-surface font-body-base text-body-base">Arquitectura</button>
+</section>
+<!-- Bento Grid of Agent Creations -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Main Featured Item -->
+<div class="md:col-span-8 group relative glass-panel rounded-xl overflow-hidden shimmer neon-accent">
+<div class="aspect-[16/9] w-full relative">
+<img class="w-full h-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105" data-alt="A complex, animated 3D blueprint of a futuristic metropolitan transportation hub. Translucent holographic lines and glowing nodes map out transit paths in vibrant cyan and electric violet. The scene is set against a deep obsidian background with floating technical data and monospaced labels, reflecting a high-performance cybernetic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXpJM6lhBPDqze0AnaKiS69-ZHtFoQR_kLVCuhLa3i4eVyyFuRYNAFAi9mtdzOtsGq6ihp3bcLYO7XLKIYSSDq5J1m2zCXcCE2mjjuoEbFHp5iFlLhX7yTr42rfvEKKh_rCOAptU5taoukOVgtsvhPf-Z9y-JTEX-C5GWNjkUJu6wOT7dh0wLbpNOWf4BsHkE-u_5NxaFqFDoWb2rpbaTsSazPWtQUBPqr013FinzkhGSUAlRLU2482jWz0RYGj5JpFmd5hMo0TAw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-2 py-1 bg-primary text-on-primary font-technical-sm text-[10px] rounded">MODELO BASE FIJADO</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface uppercase mb-1">Hub de Tránsito Metropolitano v4</h3>
+<p class="font-body-base text-body-base text-on-surface-variant">Optimización de flujo para 1.2M de agentes diarios.</p>
+</div>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 px-4 py-2 rounded font-label-caps text-label-caps">AJUSTAR MODELO</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-4">
+<div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/60">Eficiencia de Tokens</p>
+<p class="font-body-bold text-body-base text-secondary">98.4% (Ultra High)</p>
+</div>
+<div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/60">Ajuste de Edición</p>
+<p class="font-body-bold text-body-base text-tertiary-container">Interno (Oculto)</p>
+</div>
+<div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/60">Latencia de Red</p>
+<p class="font-body-bold text-body-base">4.2ms</p>
+</div>
+<div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/60">ID Proceso</p>
+<p class="font-body-bold text-body-base text-primary">#TRX-990</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Items Column -->
+<div class="md:col-span-4 flex flex-col gap-6">
+<!-- Card 2 -->
+<div class="glass-panel rounded-xl overflow-hidden shimmer p-4">
+<div class="aspect-video bg-surface-container-high rounded-lg mb-4 overflow-hidden">
+<img class="w-full h-full object-cover opacity-50" data-alt="A detailed digital diagram of an industrial assembly process using glowing neon orange and crisp white lines. The style is technical and precision-engineered, featuring monospaced font labels and circuit-like pathways against a dark navy glassmorphic background. The lighting is moody and focused, emphasizing efficiency and high-tech manufacturing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhCuSYdqPTpYn6OIww3Gm3PNlgtmuG4rUdjO0W3810RF1J3VgmBvRBuaF9dXx_3qg13OVQ9syLhI-X6hk65r0259IbTLJRjpwCXGjkhtWFMsF3FIvuYvV74w4gpWQpNq2xSCLrgGHEtxDU1FlY38HFXxZ4ha_rooTRCW6oGlhGWOfOaPgZ-bhXLz4gZxzeuLmJBIqdylTcvRBBW8rHZC_ih-mzHCpvkTcJculzaUa7VEyKJaOIlH9ZK9TmppkJWiYb8os7pma4swg"/>
+</div>
+<h4 class="font-body-bold text-body-base mb-1">Célula de Manufactura Nanotech</h4>
+<div class="flex justify-between items-center text-[11px] font-technical-sm">
+<span class="text-on-surface-variant">Tokens: 4.2k</span>
+<span class="text-secondary">Ajuste: +0.2%</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel rounded-xl overflow-hidden shimmer p-4">
+<div class="aspect-video bg-surface-container-high rounded-lg mb-4 overflow-hidden">
+<img class="w-full h-full object-cover opacity-50" data-alt="A global network visualization showing data flows across continents in brilliant blues and soft pinks. The design features a delicate web of light connecting major nodes, rendered in a 2.5D holographic style on a dark cyber void canvas. Subtle lens flares and a deep backdrop blur create a sense of vast digital space and global scale." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBue27GFaGnLhDjR5YOk-O8_eRolh_Ahcu37GHEPOyx2b-wORNqzDHeO1s-S2n6928cUpCKXkIKFLxReHgE_8-nZqrH3x9luRk2z_dMVzMeGBzpW9PF_3TVRN3G1rYkuUYb1xYe2YfDMBHHoslnkZwGWCVZBah2UHPdV-BPd0xtkKEk8LwBtEhO-OxGxfDZrMGCejHlARIsrTzIee8Ze34b0u3UcIXpET96-OF60_93ahScAoTXz4lxpyJz9w4ztQmnD7t80fJGWDY"/>
+</div>
+<h4 class="font-body-bold text-body-base mb-1">Red de Ayuda Humanitaria G-Alpha</h4>
+<div class="flex justify-between items-center text-[11px] font-technical-sm">
+<span class="text-on-surface-variant">Tokens: 12.8k</span>
+<span class="text-secondary">Ajuste: Automático</span>
+</div>
+</div>
+</div>
+<!-- More Cards in 3 Columns -->
+<div class="md:col-span-4 glass-panel rounded-xl p-4 shimmer border-b-2 border-primary/20">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-primary" data-icon="token">token</span>
+<span class="font-label-caps text-label-caps text-primary">EFICIENCIA DE TOKENS</span>
+</div>
+<div class="h-32 flex items-end gap-2 px-2">
+<div class="flex-1 bg-primary/20 h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[80%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-[95%] rounded-t-sm border-t-2 border-primary"></div>
+<div class="flex-1 bg-primary/20 h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-[85%] rounded-t-sm"></div>
+</div>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant mt-4">Optimización media de sesión: 12.4% superior al estándar.</p>
+</div>
+<div class="md:col-span-4 glass-panel rounded-xl overflow-hidden shimmer p-4 flex flex-col justify-between">
+<div>
+<h4 class="font-body-bold text-body-base text-tertiary mb-2">Ajuste de Edición Interna</h4>
+<p class="font-body-base text-body-base text-on-surface-variant text-[13px]">Procesamiento Aether ejecutando cambios en segundo plano. El usuario final visualizará la versión consolidada.</p>
+</div>
+<div class="flex items-center gap-2 mt-4">
+<div class="h-2 flex-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-3/4 animate-pulse"></div>
+</div>
+<span class="font-technical-sm text-technical-sm text-tertiary">RUNNING</span>
+</div>
+</div>
+<div class="md:col-span-4 glass-panel rounded-xl overflow-hidden shimmer flex items-center justify-center border-dashed border-2 border-white/10 hover:border-primary/40 transition-colors cursor-pointer group">
+<div class="text-center">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="add_circle">add_circle</span>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">NUEVA RUTA DE IA</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 flex justify-around items-center h-16 pb-safe shadow-[0_-10px_40px_rgba(0,197,90,0.15)] rounded-t-full">
+<a class="flex flex-col items-center text-on-surface-variant opacity-60 font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+            Live Feed
+        </a>
+<a class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] font-label-caps text-label-caps animate-pulse-slow" href="#">
+<span class="material-symbols-outlined" data-icon="touch_app" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+            Interactive
+        </a>
+<a class="flex flex-col items-center text-on-surface-variant opacity-60 font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+            Demo Loop
+        </a>
+</nav>
+<!-- Interactive FAB (Contextual) -->
+<button class="fixed bottom-20 right-6 md:bottom-10 md:right-10 w-14 h-14 bg-primary text-on-primary rounded-xl shadow-[0_0_20px_rgba(168,232,255,0.4)] flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</button>
+<script>
+        // Simple Interaction logic for card hovering and visual effects
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Toggle Active State Logic
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Simplified active state toggle
+                navItems.forEach(nav => {
+                    nav.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                    nav.classList.add('text-on-surface-variant');
+                });
+                item.classList.add('text-primary', 'border-b-2', 'border-primary');
+                item.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

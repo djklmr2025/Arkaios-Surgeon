@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-glow-bottom {
+            box-shadow: 0 4px 15px -3px rgba(168, 232, 255, 0.2);
+            border-bottom: 1px solid #a8e8ff;
+        }
+        .cyber-grid {
+            background-image: radial-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(168, 232, 255, 0.1);
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            from { top: 0%; }
+            to { top: 100%; }
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 232, 255, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00c55a",
+                        "on-secondary-container": "#004a1d",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#005321",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container": "#1e1f25",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-highest": "#34343a",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-secondary": "#003915",
+                        "on-surface": "#e3e1e9",
+                        "secondary": "#3ee272",
+                        "primary-container": "#00d4ff",
+                        "inverse-surface": "#e3e1e9",
+                        "inverse-primary": "#00677e",
+                        "on-primary-container": "#00586b",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "secondary-fixed": "#66ff8e",
+                        "on-tertiary-fixed": "#40000e",
+                        "background": "#121318",
+                        "tertiary": "#ffd5d6",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#002109",
+                        "inverse-on-surface": "#2f3036",
+                        "surface": "#121318",
+                        "on-primary": "#003642",
+                        "surface-dim": "#121318",
+                        "outline": "#859398",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-background": "#e3e1e9",
+                        "outline-variant": "#3c494e",
+                        "surface-tint": "#3cd7ff",
+                        "on-surface-variant": "#bbc9cf",
+                        "surface-bright": "#38393f",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-tertiary": "#67001c",
+                        "surface-variant": "#34343a",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-container": "#a20532",
+                        "primary-fixed": "#b4ebff",
+                        "on-primary-fixed": "#001f27",
+                        "surface-container-high": "#292a2f",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#ffadb3",
+                        "surface-container-low": "#1a1b21"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "unit": "4px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-bold": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-base selection:bg-primary-container selection:text-on-primary-container overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">waves</span>
+<h1 class="font-display-lg text-[20px] leading-none tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">ARKAIOS CORE</h1><div class="flex items-center gap-1.5 ml-4 bg-secondary/10 px-2 py-0.5 rounded-full border border-secondary/30"><div class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div><span class="font-label-caps text-[9px] text-secondary">CONNECTED</span></div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded active:scale-95 duration-300">settings_input_antenna</span>
+</div>
+</header>
+<main class="flex-1 mt-[52px] mb-16 overflow-hidden relative cyber-grid"><div class="scanline pointer-events-none"></div><div class="p-margin-mobile flex flex-col gap-4 h-full overflow-y-auto"><div class="flex flex-col mb-2"><span class="font-label-caps text-secondary uppercase tracking-widest text-[10px]">FlowNexus</span><h2 class="font-headline-md-mobile text-headline-md-mobile text-primary">Arkaios Orchestrator Node</h2></div><div class="grid grid-cols-1 gap-4"><!-- Power 1: PUBLISH --><div class="glass-panel rounded-xl p-4 border-l-4 border-primary shadow-[0_0_20px_rgba(168,232,255,0.1)]"><div class="flex justify-between items-center mb-4"><h3 class="font-body-bold text-primary flex items-center gap-2"><span class="material-symbols-outlined text-[20px]">public</span> PUBLISH POWER</h3><span class="font-label-caps text-[9px] text-on-surface-variant/60">JSON ➔ PUBLIC URL</span></div><div class="bg-surface-container-low rounded p-3 mb-3 border border-white/5 font-technical-sm text-[12px]"><div class="flex items-center gap-3 justify-center py-4"><div class="p-2 bg-primary/10 rounded border border-primary/30">{ JSON }</div><span class="material-symbols-outlined text-primary/40 animate-pulse">arrow_forward</span><div class="p-2 bg-secondary/10 rounded border border-secondary/30">https://flow.arkaios.io/...</div></div></div><div class="flex flex-col gap-1"><span class="font-label-caps text-[9px] text-on-surface-variant">SECURE FLOW TOKEN</span><div class="flex items-center gap-2 bg-black/40 p-2 rounded border border-white/10"><span class="material-symbols-outlined text-secondary text-[16px]">lock</span><span class="font-technical-sm text-on-surface text-[11px] flex-1">arkaios-flow-secret-2026</span><span class="material-symbols-outlined text-on-surface-variant text-[16px] cursor-pointer">content_copy</span></div></div></div><!-- Power 2: INJECT --><div class="glass-panel rounded-xl p-4 border-l-4 border-secondary shadow-[0_0_20px_rgba(0,197,90,0.1)]"><div class="flex justify-between items-center mb-4"><h3 class="font-body-bold text-secondary flex items-center gap-2"><span class="material-symbols-outlined text-[20px]">input</span> INJECT POWER</h3><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-secondary"></div><span class="font-label-caps text-[9px] text-secondary">SESSION ACTIVE</span></div></div><div class="flex flex-col gap-3"><div class="flex flex-col gap-1"><span class="font-label-caps text-[9px] text-on-surface-variant">SESSION ID</span><input class="bg-black/40 border-white/10 rounded font-technical-sm text-primary text-[12px] px-3 py-2 focus:ring-secondary/50 focus:border-secondary" readonly="" type="text" value="SES_992_ARK_01"/></div><div class="flex items-center justify-between bg-surface-container-high/30 p-2 rounded border border-secondary/20"><div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-secondary animate-ping"></div><span class="text-[11px] font-body-base">Syncing to Canvas...</span></div><span class="material-symbols-outlined text-secondary text-[18px]">sync_alt</span></div></div></div><!-- Power 3: GATEWAY --><div class="glass-panel rounded-xl p-4 border-l-4 border-tertiary-container shadow-[0_0_20px_rgba(255,173,179,0.1)]"><div class="flex justify-between items-center mb-4"><h3 class="font-body-bold text-tertiary-container flex items-center gap-2"><span class="material-symbols-outlined text-[20px]">hub</span> GATEWAY POWER</h3><span class="font-label-caps text-[9px] text-on-surface-variant/60">N8N INTEGRATION</span></div><div class="bg-black/40 rounded p-3 font-technical-sm text-[10px] leading-relaxed h-32 overflow-y-auto border border-white/5"><div class="text-tertiary-container">[14:22:01] ➔ INITIALIZING N8N_GATEWAY</div><div class="text-secondary">[14:22:05] ✓ HANDSHAKE SUCCESSFUL</div><div class="text-primary">[14:23:45] ↑ DIAGRAM_PUBLISHED: CID_8821</div><div class="text-on-surface">[14:23:48] ↑ AGENT_ACTION: VALIDATE_LOGIC</div><div class="text-primary">[14:24:12] ↑ DIAGRAM_PUBLISHED: CID_8822</div><div class="text-on-surface-variant/50">[14:25:00] • Awaiting gateway instruction...</div></div></div></div><div class="text-center py-6"><p class="font-label-caps text-on-surface-variant/40 text-[9px] uppercase tracking-[0.2em]">Ecosistema Inteligente firmado por Stitch AI Assistant</p></div></div></main>
+<!-- Bottom Navigation Bar (Contextual) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex items-center h-12 pb-safe bg-surface-container-lowest/95 backdrop-blur-md border-t border-white/10 shadow-2xl"><div class="flex items-center justify-between w-full px-6"><div class="flex items-center gap-3"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-secondary"></div><span class="font-label-caps text-[10px] text-on-surface">LOG CENTRAL STATUS: OK</span></div><span class="text-on-surface-variant/30 text-[10px]">|</span><span class="font-technical-sm text-[10px] text-on-surface-variant">THROUGHPUT: 1.4 GB/S</span></div><div class="flex gap-4"><span class="material-symbols-outlined text-primary text-[18px]">terminal</span><span class="material-symbols-outlined text-on-surface-variant/60 text-[18px]">analytics</span><span class="material-symbols-outlined text-on-surface-variant/60 text-[18px]">history</span></div></div></nav>
+<script>
+        let currentMode = 'engine';
+
+        function toggleSystemMode() {
+            const toggleBg = document.getElementById('toggleBg');
+            if (currentMode === 'engine') {
+                currentMode = 'rest';
+                toggleBg.style.left = '4px';
+                toggleBg.style.width = '48%';
+                // Mock behavior: reduce animation frequency
+                document.querySelector('.scanline').style.animationDuration = '10s';
+                console.log("System Status: REST MODE (MP4 VIDEO)");
+            } else {
+                currentMode = 'engine';
+                toggleBg.style.left = 'calc(50% - 2px)';
+                toggleBg.style.width = '48%';
+                document.querySelector('.scanline').style.animationDuration = '4s';
+                console.log("System Status: PROJECT MODE (JSON ENGINE)");
+            }
+        }
+
+        // Initialize state
+        window.onload = () => {
+            const toggleBg = document.getElementById('toggleBg');
+            toggleBg.style.left = 'calc(50% - 2px)';
+        }
+    </script>
+</body></html>

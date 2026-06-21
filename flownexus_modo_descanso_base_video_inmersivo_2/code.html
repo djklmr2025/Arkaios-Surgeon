@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Metro Holographic - Modo Descanso</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Circular Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple-animation 1.2s cubic-bezier(0, 0.2, 0.4, 1);
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(0, 212, 255, 0.1) 40%, transparent 70%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        @keyframes ripple-animation {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+        }
+
+        /* Neon Breathing Effect */
+        @keyframes neon-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.2);
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 25px rgba(0, 212, 255, 0.9), 0 0 40px rgba(0, 212, 255, 0.5);
+                opacity: 0.9;
+                transform: scale(1.01);
+            }
+        }
+
+        .animate-neon-pulse {
+            animation: neon-pulse 4s infinite ease-in-out;
+        }
+
+        /* AI Awakening Animation */
+        @keyframes ai-wake {
+            0% { filter: brightness(0.2) contrast(1.5) blur(10px); opacity: 0.3; transform: scale(0.95); }
+            100% { filter: brightness(1) contrast(1) blur(0px); opacity: 1; transform: scale(1); }
+        }
+        .ai-active {
+            animation: ai-wake 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .cyber-void-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 24, 0.9) 100%);
+        }
+
+        body {
+            background-color: #0d0e13;
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism Slider */
+        .mode-switch {
+            background: rgba(30, 31, 37, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Background Video Container */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            object-fit: cover;
+            filter: brightness(0.4) saturate(0.8);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#003915",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container-low": "#1a1b21",
+                        "secondary": "#3ee272",
+                        "on-surface": "#e3e1e9",
+                        "on-primary": "#003642",
+                        "secondary-fixed-dim": "#3ee272",
+                        "secondary-fixed": "#66ff8e",
+                        "on-tertiary": "#67001c",
+                        "on-surface-variant": "#bbc9cf",
+                        "inverse-surface": "#e3e1e9",
+                        "on-background": "#e3e1e9",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#3c494e",
+                        "surface-container-high": "#292a2f",
+                        "outline": "#859398",
+                        "inverse-on-surface": "#2f3036",
+                        "tertiary-fixed": "#ffdadb",
+                        "secondary-container": "#00c55a",
+                        "on-secondary-fixed": "#002109",
+                        "surface-tint": "#00d4ff",
+                        "tertiary": "#ffd5d6",
+                        "on-tertiary-fixed": "#40000e",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-container": "#a20532",
+                        "on-secondary-container": "#004a1d",
+                        "surface-variant": "#34343a",
+                        "surface": "#121318",
+                        "on-primary-container": "#00586b",
+                        "primary": "#a8e8ff",
+                        "error-container": "#93000a",
+                        "surface-dim": "#121318",
+                        "surface-container-highest": "#34343a",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "inverse-primary": "#00677e",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface-container": "#1e1f25",
+                        "surface-bright": "#38393f",
+                        "on-primary-fixed": "#001f27",
+                        "background": "#121318",
+                        "primary-fixed": "#b4ebff",
+                        "tertiary-container": "#ffadb3",
+                        "primary-fixed-dim": "#00d4ff",
+                        "on-error": "#690005",
+                        "primary-container": "#00d4ff",
+                        "on-primary-fixed-variant": "#004e5f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-base": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex flex-col h-screen w-screen relative overflow-hidden" onclick="handleScreenTouch(event)">
+<!-- Immersive Background Video -->
+<div class="fixed inset-0 z-0">
+<!-- Placeholder for background video -->
+<img alt="Fondo Ciudades del Futuro" class="video-bg" src="https://lh3.googleusercontent.com/aida/ADBb0ugGYcLBWbbiWGXKcvs_jdMtgpfCGYFI1DJwd2ZUqn_UgGiI-1_tZCvEWxN7DIyxfrjel_WaJxPH-gWGllpAvdJpEn_5InXT0AW6Je4QEwvTJv_wwGF9R-cKY4VfQDzujCmkU7YBxpyIaCzZFW_wmXVR7v9tdyh9-lZ5_WLeMx5WQvfkpK_PoQ8mXiHltN61i1llCYSBiTiaOfTRK0jTTbhCnE-YSnjopGwsQB6yBDq2nK6fiiBiOHRPf0s"/>
+<div class="absolute inset-0 cyber-void-overlay backdrop-blur-[1px]"></div>
+</div>
+<!-- Top App Bar (Visible but minimal) -->
+<header class="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-md border-b border-white/5 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container text-2xl">lens_blur</span>
+<h1 class="font-display-lg text-[18px] tracking-[0.2em] text-on-surface/80">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-2">
+<!-- Configuration options from Screen 63 logic -->
+<div class="mode-switch rounded-full p-1 flex items-center gap-1">
+<button class="px-3 py-1 rounded-full text-[9px] font-label-caps transition-all bg-primary-container text-on-primary" id="btn-libre" onclick="setSystemMode('libre', event)">PUBLIC</button>
+<button class="px-3 py-1 rounded-full text-[9px] font-label-caps transition-all text-on-surface-variant hover:text-primary-container" id="btn-corp" onclick="setSystemMode('corp', event)">CORP</button>
+</div>
+</div>
+</header>
+<!-- Main Content: AI Presence (Priestess of Arkaios) -->
+<main class="relative z-10 flex-grow flex flex-col items-center justify-center pointer-events-none" id="main-attract">
+<div class="text-center space-y-12">
+<!-- AI Entity Placeholder (Holographic Priestess Appearance) -->
+<div class="relative w-64 h-64 mx-auto transition-all duration-1000 opacity-40 grayscale" id="ai-entity-container">
+<div class="absolute -inset-8 border border-primary-container/10 rounded-full animate-[spin_20s_linear_infinite] opacity-30"></div>
+<img alt="Priestess of Arkaios" class="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(0,212,255,0.2)]" src="https://lh3.googleusercontent.com/aida/ADBb0uhA9MvVsc32V1vV6fU3W5z9hW7Y0q8T8R_1F-0O_6hI4eUq5l0oF-0o9p0e9R8S-0T=s1024"/>
+</div>
+<div class="space-y-4">
+<h2 class="font-headline-md text-on-surface/60 tracking-[0.4em] animate-neon-pulse uppercase text-sm" id="welcome-text">
+                Protocolo de Espera Activo
+            </h2>
+<div class="flex justify-center gap-4 items-center">
+<div class="h-[1px] w-8 bg-gradient-to-r from-transparent to-primary-container/40"></div>
+<span class="font-technical-sm text-on-surface-variant text-[9px] tracking-widest uppercase" id="status-tag">Arkaios Core v.04</span>
+<div class="h-[1px] w-8 bg-gradient-to-l from-transparent to-primary-container/40"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Interaction UI (Emerges after touch) -->
+<div class="fixed inset-0 z-30 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-700" id="interaction-overlay">
+<div class="w-full max-w-lg px-6 flex flex-col items-center text-center">
+<span class="font-label-caps text-primary-container text-[11px] mb-2 tracking-widest">SISTEMA DESPIERTO</span>
+<h3 class="font-display-lg text-on-surface text-2xl mb-8">¿En qué puedo asistirte?</h3>
+<div class="grid grid-cols-2 gap-4 w-full">
+<button class="bg-surface-container-high/40 backdrop-blur-xl border border-primary-container/30 p-6 rounded-xl text-left group hover:bg-primary-container/10 transition-all pointer-events-auto">
+<span class="material-symbols-outlined text-primary-container mb-3">explore</span>
+<p class="font-body-bold text-on-surface text-sm">Explorar Red</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">Acceso a nodos públicos</p>
+</button>
+<button class="bg-surface-container-high/40 backdrop-blur-xl border border-secondary/30 p-6 rounded-xl text-left group hover:bg-secondary/10 transition-all pointer-events-auto">
+<span class="material-symbols-outlined text-secondary mb-3">terminal</span>
+<p class="font-body-bold text-on-surface text-sm">Consola Arkaios</p>
+<p class="font-technical-sm text-on-surface-variant text-[10px]">Interacción directa</p>
+</button>
+</div>
+<button class="mt-12 flex items-center gap-2 text-on-surface-variant hover:text-primary-container transition-colors pointer-events-auto" onclick="resetUI(event)">
+<span class="material-symbols-outlined text-sm">power_settings_new</span>
+<span class="font-label-caps text-[10px] tracking-widest">VOLVER A MODO DESCANSO</span>
+</button>
+</div>
+</div>
+<!-- Corporate Persistence Info (from Screen 63) -->
+<div class="fixed bottom-24 right-6 z-20 pointer-events-none transition-all duration-1000 opacity-0 transform translate-y-4" id="corp-info">
+<div class="bg-surface-container-lowest/80 backdrop-blur-xl border border-primary-container/20 p-4 rounded-lg flex flex-col items-end gap-1 shadow-2xl">
+<span class="font-label-caps text-primary-container text-[9px] tracking-widest">PERSISTENCIA ACTIVA</span>
+<span class="font-body-bold text-on-surface text-[10px] italic opacity-80">Sesión: Proyecto Alpha v.4</span>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Minimalist) -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-16 pb-safe bg-surface/20 backdrop-blur-xl border-t border-white/5">
+<div class="flex flex-col items-center text-on-surface-variant/40">
+<span class="material-symbols-outlined text-xl">dataset</span>
+<span class="font-label-caps text-[8px] mt-1">Data</span>
+</div>
+<div class="flex flex-col items-center text-primary-container drop-shadow-[0_0_8px_rgba(0,212,255,0.4)]">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">vitals</span>
+<span class="font-label-caps text-[8px] mt-1">Core Status</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant/40">
+<span class="material-symbols-outlined text-xl">settings_input_antenna</span>
+<span class="font-label-caps text-[8px] mt-1">Feed</span>
+</div>
+</nav>
+<script>
+    let isAwake = false;
+    let systemMode = 'libre';
+
+    function createRipple(x, y) {
+        const body = document.body;
+        const ripple = document.createElement("div");
+        ripple.classList.add("ripple");
+        const size = 120;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        body.appendChild(ripple);
+        ripple.addEventListener("animationend", () => ripple.remove());
+    }
+
+    function handleScreenTouch(event) {
+        if (event.target.closest('button') || event.target.closest('nav')) return;
+        
+        createRipple(event.clientX, event.clientY);
+        
+        if (!isAwake) {
+            wakeUpSystem();
+            isAwake = true;
+        }
+    }
+
+    function wakeUpSystem() {
+        // UI Transitions
+        const attract = document.getElementById('main-attract');
+        const overlay = document.getElementById('interaction-overlay');
+        const entity = document.getElementById('ai-entity-container');
+        const welcome = document.getElementById('welcome-text');
+        
+        // Priestess "Wakes Up"
+        entity.classList.remove('opacity-40', 'grayscale');
+        entity.classList.add('ai-active');
+        
+        // Text changes
+        welcome.innerText = "SISTEMA DESPIERTO";
+        welcome.classList.remove('animate-neon-pulse');
+        welcome.classList.add('text-primary-container');
+
+        // Reveal Interaction UI
+        setTimeout(() => {
+            attract.classList.add('opacity-0', 'scale-110');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            
+            if (systemMode === 'corp') {
+                const corpInfo = document.getElementById('corp-info');
+                corpInfo.classList.remove('opacity-0', 'translate-y-4');
+            }
+        }, 600);
+    }
+
+    function setSystemMode(mode, event) {
+        event.stopPropagation();
+        systemMode = mode;
+        const btnLibre = document.getElementById('btn-libre');
+        const btnCorp = document.getElementById('btn-corp');
+        const statusTag = document.getElementById('status-tag');
+
+        if (mode === 'libre') {
+            btnLibre.className = "px-3 py-1 rounded-full text-[9px] font-label-caps transition-all bg-primary-container text-on-primary";
+            btnCorp.className = "px-3 py-1 rounded-full text-[9px] font-label-caps transition-all text-on-surface-variant hover:text-primary-container";
+            statusTag.innerText = "Arkaios Core v.04";
+        } else {
+            btnCorp.className = "px-3 py-1 rounded-full text-[9px] font-label-caps transition-all bg-primary-container text-on-primary";
+            btnLibre.className = "px-3 py-1 rounded-full text-[9px] font-label-caps transition-all text-on-surface-variant hover:text-primary-container";
+            statusTag.innerText = "Corp Identity Verified";
+        }
+    }
+
+    function resetUI(event) {
+        event.stopPropagation();
+        isAwake = false;
+        
+        const attract = document.getElementById('main-attract');
+        const overlay = document.getElementById('interaction-overlay');
+        const entity = document.getElementById('ai-entity-container');
+        const welcome = document.getElementById('welcome-text');
+        const corpInfo = document.getElementById('corp-info');
+
+        attract.classList.remove('opacity-0', 'scale-110');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        corpInfo.classList.add('opacity-0', 'translate-y-4');
+        
+        entity.classList.remove('ai-active');
+        entity.classList.add('opacity-40', 'grayscale');
+        
+        welcome.innerText = "Protocolo de Espera Activo";
+        welcome.classList.add('animate-neon-pulse');
+        welcome.classList.remove('text-primary-container');
+    }
+</script>
+</body></html>

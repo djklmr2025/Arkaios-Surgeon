@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Information Slide Viewer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --cyber-void: #050712;
+      --glass-surface: rgba(22, 33, 62, 0.96);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --neon-primary: #3cd7ff;
+    }
+
+    body {
+      background-color: var(--cyber-void);
+      color: #e3e1e9;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .glass-panel {
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    }
+
+    .neon-accent-bottom {
+      position: relative;
+    }
+    .neon-accent-bottom::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--neon-primary);
+      box-shadow: 0 0 8px var(--neon-primary);
+    }
+
+    .canvas-dot {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .canvas-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .shimmer-effect:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(22, 33, 62, 0.98);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* 2.5D Canvas Grid Background */
+    .cyber-grid {
+      background-image: 
+        linear-gradient(rgba(60, 215, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90px, rgba(60, 215, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      perspective: 1000px;
+    }
+
+    /* Iframe Transition Overlay */
+    #iframe-overlay {
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-tint": "#3cd7ff",
+                  "primary": "#a8e8ff",
+                  "on-primary-container": "#00586b",
+                  "tertiary-container": "#ffadb3",
+                  "surface-container-low": "#1a1b21",
+                  "primary-fixed-dim": "#3cd7ff",
+                  "on-tertiary-container": "#a20532",
+                  "on-surface": "#e3e1e9",
+                  "on-background": "#e3e1e9",
+                  "tertiary-fixed-dim": "#ffb2b7",
+                  "on-tertiary": "#67001c",
+                  "on-surface-variant": "#bbc9cf",
+                  "inverse-on-surface": "#2f3036",
+                  "primary-container": "#00d4ff",
+                  "on-secondary-container": "#004a1d",
+                  "primary-fixed": "#b4ebff",
+                  "surface-container-lowest": "#0d0e13",
+                  "on-primary": "#003642",
+                  "on-secondary": "#003915",
+                  "surface": "#121318",
+                  "on-secondary-fixed": "#002109",
+                  "on-tertiary-fixed-variant": "#91002b",
+                  "surface-variant": "#34343a",
+                  "surface-container-high": "#292a2f",
+                  "inverse-primary": "#00677e",
+                  "surface-container-highest": "#34343a",
+                  "on-error": "#690005",
+                  "error-container": "#93000a",
+                  "tertiary": "#ffd5d6",
+                  "secondary-fixed": "#66ff8e",
+                  "secondary-container": "#00c55a",
+                  "background": "#121318",
+                  "on-primary-fixed-variant": "#004e5f",
+                  "on-primary-fixed": "#001f27",
+                  "outline": "#859398",
+                  "on-error-container": "#ffdad6",
+                  "surface-dim": "#121318",
+                  "error": "#ffb4ab",
+                  "tertiary-fixed": "#ffdadb",
+                  "surface-bright": "#38393f",
+                  "inverse-surface": "#e3e1e9",
+                  "secondary-fixed-dim": "#3ee272",
+                  "on-secondary-fixed-variant": "#005321",
+                  "secondary": "#3ee272",
+                  "outline-variant": "#3c494e",
+                  "surface-container": "#1e1f25",
+                  "on-tertiary-fixed": "#40000e"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "spacing": {
+                  "gutter": "16px",
+                  "sidebar-width": "280px",
+                  "margin-mobile": "12px",
+                  "margin-desktop": "24px",
+                  "unit": "4px",
+                  "topbar-height": "52px"
+          },
+          "fontFamily": {
+                  "body-base": ["Inter"],
+                  "headline-md-mobile": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "technical-sm": ["JetBrains Mono"],
+                  "label-caps": ["Inter"],
+                  "display-lg": ["Inter"],
+                  "body-bold": ["Inter"]
+          },
+          "fontSize": {
+                  "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                  "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                  "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<!-- Top Navigation Header -->
+<header class="fixed top-0 left-0 w-full h-[52px] flex items-center justify-between px-margin-desktop bg-surface/90 backdrop-blur-md z-50 border-b border-white/10">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary">FlowNexus</h1>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="font-technical-sm text-technical-sm text-outline uppercase">Module:</span>
+<span class="font-body-bold text-body-bold text-on-surface">Information Slide Viewer</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Overview</a>
+<a class="text-on-surface-variant font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Documentation</a>
+<a class="text-on-surface-variant font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Analytics</a>
+</nav>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-body-bold text-body-base hover:opacity-90 active:scale-95 transition-all">
+        Publicar
+      </button>
+</div>
+</header>
+<!-- Main Viewport Canvas -->
+<main class="relative w-screen h-screen pt-[52px] flex overflow-hidden">
+<!-- 2.5D Interactive Canvas (Left/Center) -->
+<section class="relative flex-1 bg-surface-container-lowest overflow-hidden bg-[#080a14]">
+<!-- Background Image (Interactive Model Scene) -->
+<div class="absolute inset-0 z-0 flex items-center justify-center pointer-events-none"><div class="relative w-[85%] h-[85%] flex items-center justify-center">
+<div class="absolute w-[80%] h-[20%] bg-black/40 blur-[60px] rounded-full bottom-[-10%] scale-x-125"></div>
+<img alt="Studio Model" class="w-full h-full object-contain drop-shadow-[0_0_50px_rgba(60,215,255,0.15)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVAIRsRTe7d2MLkGCI5jU8zSF3NZwtPjhc3NHjRYmR9d6jebSr4g-xqq2wpDBGAfaoicG5Awt_7qoz2oNQeP3hNnEpCMo_GIPGVGxXsO4AzLpdWxlW9aOqs_eZt6TDzWwqFtQOx7yrUOTI2OWCUw9Spnyg6xcs6YrVJuWYvHONSp47WB9ezzJ5LdgzPUm9bhk1sQmxIkmlO6xjt9PP--_Xi6KCIUslF6FdJctRldumvqvmSuNE6gnSY7ajImBgJAljs3w-6bdLNLE"/>
+</div></div>
+<!-- Information Points (Interactive Overlay) -->
+<div class="absolute inset-0 z-10 p-24">
+<!-- Point 1 -->
+<button class="canvas-dot absolute top-[30%] left-[40%] group flex flex-col items-center" onclick="updateInfoPanel(1)">
+<div class="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_rgba(60,215,255,1)] animate-pulse"></div>
+<div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0">
+<span class="font-technical-sm text-technical-sm text-primary">CORE_PROCESSOR</span>
+</div>
+</button>
+<!-- Point 2 -->
+<button class="canvas-dot absolute top-[55%] left-[25%] group flex flex-col items-center" onclick="updateInfoPanel(2)">
+<div class="w-4 h-4 rounded-full bg-secondary shadow-[0_0_15px_rgba(62,226,114,1)] animate-pulse"></div>
+<div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0">
+<span class="font-technical-sm text-technical-sm text-secondary">DATA_RESERVOIR</span>
+</div>
+</button>
+<!-- Point 3 -->
+<button class="canvas-dot absolute top-[45%] left-[65%] group flex flex-col items-center" onclick="updateInfoPanel(3)">
+<div class="w-4 h-4 rounded-full bg-tertiary shadow-[0_0_15px_rgba(255,213,214,1)] animate-pulse"></div>
+<div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0">
+<span class="font-technical-sm text-technical-sm text-tertiary">NEURAL_INTERFACE</span>
+</div>
+</button>
+</div>
+<!-- Internal Content Iframe Layer -->
+<div class="absolute inset-0 z-20 pointer-events-none opacity-0 scale-95 flex items-center justify-center p-12" id="iframe-overlay">
+<div class="w-full h-full glass-panel rounded-xl overflow-hidden pointer-events-auto border-primary/30 flex flex-col">
+<div class="h-10 bg-surface-container-high flex items-center justify-between px-4 border-b border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase" id="iframe-title">Remote Diagnostic View</span>
+</div>
+<button class="hover:text-primary" onclick="closeIframe()">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex-1 bg-white/5 flex items-center justify-center">
+<div class="text-center p-10">
+<span class="material-symbols-outlined text-display-lg text-primary opacity-50 mb-4" data-icon="captive_portal">captive_portal</span>
+<p class="font-headline-md text-headline-md mb-2">Secure Link Preview</p>
+<p class="text-on-surface-variant text-body-base max-w-md">Accessing protected node data. For demonstration, this frame represents an embedded web service or technical manual.</p>
+<button class="mt-6 border border-primary text-primary px-6 py-2 rounded-lg font-body-bold text-body-base hover:bg-primary/10 transition-colors">
+                  Authorize Connection
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Controls -->
+<!-- Slide Navigation -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 glass-panel rounded-full px-8 py-4 flex items-center gap-10 z-30 border border-primary/20 shadow-[0_0_30px_rgba(0,212,255,0.1)]"><button class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Previous Point</span>
+</button>
+<div class="flex items-center gap-4">
+<div class="flex gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#00d4ff]"></span>
+<span class="w-2 h-2 rounded-full bg-white/20"></span>
+<span class="w-2 h-2 rounded-full bg-white/20"></span>
+</div>
+<div class="h-4 w-[1px] bg-white/10"></div>
+<span class="font-technical-sm text-primary font-bold tracking-widest">01 / 03</span>
+</div>
+<button class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-all">
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Next Point</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button></div>
+</section>
+<!-- Information Panel (Right Side) -->
+<aside class="w-[420px] h-full glass-panel border-l border-white/10 z-40 flex flex-col">
+<!-- Header -->
+<div class="p-6 border-b border-white/5">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em]">Operational Intel</span>
+<span class="font-technical-sm text-technical-sm px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">LIVE_FEED</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2" id="info-title">System Node Analysis</h2>
+<p class="font-body-base text-body-base text-on-surface-variant" id="info-desc">Select a glowing node on the 2.5D visualizer to access specific operational data and architectural telemetry for this slide.</p>
+</div>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Technical Specs Card -->
+<div class="space-y-4">
+<h3 class="font-label-caps text-label-caps text-outline uppercase">Subsystem Parameters</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1">STABILITY</p>
+<p class="font-body-bold text-body-bold text-secondary">99.84%</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1">THROUGHPUT</p>
+<p class="font-body-bold text-body-bold text-primary">4.2 TB/s</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1">LATENCY</p>
+<p class="font-body-bold text-body-bold text-tertiary">0.02ms</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1">UPTIME</p>
+<p class="font-body-bold text-body-bold text-on-surface">1,420H</p>
+</div>
+</div>
+</div>
+<!-- Dynamic Content Section -->
+<div class="space-y-4 pt-4 border-t border-white/5" id="dynamic-content"><div class="space-y-4">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<p class="font-body-base text-body-base italic">Waiting for input...</p>
+</div>
+<div class="aspect-video w-full rounded-lg bg-surface-container border border-white/5 overflow-hidden hidden" id="media-slot">
+<div class="w-full h-full flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-4xl">play_circle</span>
+</div>
+</div>
+</div></div>
+<!-- Embedded Action -->
+<div class="pt-6">
+<button class="w-full bg-primary/10 border border-primary/30 hover:bg-primary/20 text-primary py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-[0_4px_20px_rgba(0,212,255,0.1)]" id="open-link-btn" onclick="openIframe('Global Node Diagnostics')">
+<span class="material-symbols-outlined text-[20px]" data-icon="open_in_new">open_in_new</span>
+<span class="font-body-bold text-body-bold">Open Full Analysis</span>
+</button>
+</div>
+</div>
+<!-- Footer Metadata -->
+<div class="p-6 bg-surface-container-lowest border-t border-white/5">
+<div class="flex items-center justify-between font-technical-sm text-technical-sm text-outline-variant">
+<span>FNX_SYS_V4.0.2</span>
+<span>© 2024 FLOW_NEXUS</span>
+</div>
+</div>
+</aside>
+</main>
+<script>
+    const infoData = {
+      1: {
+        title: "Core Processor Unit",
+        desc: "The heartbeat of the nexus. Manages high-density data packets and distributes holographic rendering tasks across the grid.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-primary/5 border-l-2 border-primary rounded-r">
+              <p class="font-body-base text-body-base text-primary mb-1">Heat Signature: Stable</p>
+              <p class="text-xs text-on-surface-variant">Operating at 42°C under 85% load.</p>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-on-surface text-body-base">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Quantum Core Integration
+              </li>
+              <li class="flex items-center gap-2 text-on-surface text-body-base">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Real-time Geometry Solver
+              </li>
+            </ul>
+          </div>
+        `,
+        linkText: "View Processor Logic"
+      },
+      2: {
+        title: "Data Reservoir Alpha",
+        desc: "Massive storage array utilizing localized molecular memory. Current capacity is at 12% usage with triple redundancy active.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-secondary/5 border-l-2 border-secondary rounded-r">
+              <p class="font-body-base text-body-base text-secondary mb-1">Integrity: Verified</p>
+              <p class="text-xs text-on-surface-variant">No corrupted fragments detected in last sweep.</p>
+            </div>
+            <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+              <div class="h-full bg-secondary w-[12%]"></div>
+            </div>
+            <p class="text-xs text-outline text-right">12.4 PB / 100 PB</p>
+          </div>
+        `,
+        linkText: "Browse Data Blocks"
+      },
+      3: {
+        title: "Neural Interface Plate",
+        desc: "The primary touch-point for human-machine interaction. Facilitates the 2.5D visual translation and haptic feedback loops.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-tertiary/5 border-l-2 border-tertiary rounded-r">
+              <p class="font-body-base text-body-base text-tertiary mb-1">Haptic Engine: Active</p>
+              <p class="text-xs text-on-surface-variant">User synchronization at 0.04ms offset.</p>
+            </div>
+            <div class="flex gap-2">
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">GSR_SENSOR</span>
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">OCULAR_TRACK</span>
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">EEG_SYNC</span>
+            </div>
+          </div>
+        `,
+        linkText: "Calibrate Interface"
+      }
+    };
+
+    function updateInfoPanel(id) {
+      const data = infoData[id];
+      const titleEl = document.getElementById('info-title');
+      const descEl = document.getElementById('info-desc');
+      const contentEl = document.getElementById('dynamic-content');
+      const btnTextEl = document.querySelector('#open-link-btn span.font-body-bold');
+
+      // Animate transition
+      titleEl.style.opacity = '0';
+      contentEl.style.opacity = '0';
+      
+      setTimeout(() => {
+        titleEl.textContent = data.title;
+        descEl.textContent = data.desc;
+        contentEl.innerHTML = data.content;
+        btnTextEl.textContent = data.linkText;
+        
+        titleEl.style.opacity = '1';
+        contentEl.style.opacity = '1';
+      }, 200);
+    }
+
+    function openIframe(title = "External Diagnostic") {
+      const overlay = document.getElementById('iframe-overlay');
+      const titleEl = document.getElementById('iframe-title');
+      titleEl.textContent = title;
+      overlay.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+      overlay.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
+    }
+
+    function closeIframe() {
+      const overlay = document.getElementById('iframe-overlay');
+      overlay.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+      overlay.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+  </script>
+</body></html>

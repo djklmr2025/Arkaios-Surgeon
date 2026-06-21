@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Aether Core Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#0d0e13",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "on-surface": "#e3e1e9",
+                    "inverse-on-surface": "#2f3036",
+                    "surface-dim": "#121318",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-primary": "#003642",
+                    "on-error": "#690005",
+                    "surface-variant": "#34343a",
+                    "secondary": "#3ee272",
+                    "on-background": "#e3e1e9",
+                    "primary-fixed": "#b4ebff",
+                    "on-surface-variant": "#bbc9cf",
+                    "tertiary-fixed": "#ffdadb",
+                    "tertiary-container": "#ffadb3",
+                    "outline": "#859398",
+                    "surface-bright": "#38393f",
+                    "primary": "#a8e8ff",
+                    "surface": "#121318",
+                    "on-secondary-container": "#004a1d",
+                    "primary-container": "#00d4ff",
+                    "secondary-fixed": "#66ff8e",
+                    "outline-variant": "#3c494e",
+                    "on-tertiary-container": "#a20532",
+                    "tertiary": "#ffd5d6",
+                    "on-secondary-fixed": "#002109",
+                    "surface-tint": "#3cd7ff",
+                    "secondary-container": "#00c55a",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "surface-container": "#1e1f25",
+                    "on-tertiary-fixed": "#40000e",
+                    "surface-container-high": "#292a2f",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-container": "#00586b",
+                    "on-secondary": "#003915",
+                    "error": "#ffb4ab",
+                    "surface-container-highest": "#34343a",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "background": "#121318",
+                    "on-primary-fixed": "#001f27",
+                    "inverse-primary": "#00677e",
+                    "surface-container-low": "#1a1b21",
+                    "on-tertiary": "#67001c",
+                    "error-container": "#93000a",
+                    "inverse-surface": "#e3e1e9",
+                    "on-secondary-fixed-variant": "#005321"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "12px",
+                    "gutter": "16px",
+                    "sidebar-width": "280px",
+                    "unit": "4px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px"
+            },
+            "fontFamily": {
+                    "headline-md-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #050712; color: #e3e1e9; overflow-x: hidden; }
+        .cyber-grid {
+            background-image: linear-gradient(rgba(168, 232, 255, 0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(168, 232, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .neon-border-cyan { border: 1px solid rgba(168, 232, 255, 0.3); box-shadow: 0 0 10px rgba(168, 232, 255, 0.15); }
+        .neon-border-green { border: 1px solid rgba(62, 226, 114, 0.3); box-shadow: 0 0 10px rgba(62, 226, 114, 0.15); }
+        .glass-panel { backdrop-filter: blur(20px); background: rgba(22, 33, 62, 0.8); }
+        .animate-pulse-slow { animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .wave-container { display: flex; align-items: center; gap: 3px; height: 24px; }
+        .wave-bar { background: #ffd5d6; width: 3px; border-radius: 2px; animation: wave 1.2s infinite ease-in-out; }
+        @keyframes wave { 0%, 100% { height: 4px; } 50% { height: 20px; } }
+        .scanline {
+            width: 100%; height: 2px; background: rgba(168, 232, 255, 0.2);
+            position: absolute; top: 0; left: 0; pointer-events: none;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Shared TopAppBar -->
+<header class="fixed top-0 w-full bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex justify-between items-center h-[52px] px-margin-mobile z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">waves</span>
+<h1 class="font-display-lg text-[20px] leading-tight tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="font-technical-sm text-secondary animate-pulse">LIVE_SYNCC</div>
+<span class="material-symbols-outlined text-primary hover:bg-white/5 transition-colors p-1 rounded cursor-pointer active:scale-95 duration-300">settings_input_antenna</span>
+</div>
+</header>
+<main class="flex-1 mt-[52px] mb-16 flex flex-col">
+<!-- Section 1: Top HD Viewer (Complex Diagram) -->
+<section class="relative h-[353px] w-full overflow-hidden bg-black border-b border-white/5">
+<div class="absolute inset-0 cyber-grid opacity-20"></div>
+<img alt="Complex Metro Map UI" class="w-full h-full object-cover opacity-40 mix-blend-screen" data-alt="A hyper-detailed digital blueprint of a metropolitan transit network rendered as a neon holographic map. The aesthetic is cybernetic with intricate nodes, glowing circuit-like paths in electric blue and vibrant cyan, and floating metadata labels. The lighting is low-key, focused on the luminescence of the map itself against a deep obsidian void, creating a high-performance military-grade command center atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwd6lhjmlf5VlcJbeUrK8lEVNMIjoy1wO-g6zYb5Ua94dkC4KFK0s1fIwkEAvbhQIBs3tNZWKuA9wbt6RMFDGB6UVijS-y7puhCP7K6ZakTU6AcuscpCDeLDB7Tq_lWqpGkhrWUWJ1dzXO8rZmik1dAsCJOJhCdP_h1qisr6mqpMx-Wm38SkmCSUqsHyStzJuQRAnvjmnWUokzpAQPiLnTc04I-JYG7jfU8Xr6EqEg-cTvZllLLfwxve3uV0RyAh-Ig0e9W-2fHoM"/>
+<!-- ROI Selector Overlay -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-48 h-48 neon-border-cyan relative bg-primary/5">
+<div class="absolute -top-6 left-0 font-technical-sm text-primary bg-surface/80 px-1">ROI_SECTOR_7X</div>
+<div class="absolute -bottom-6 right-0 font-technical-sm text-primary bg-surface/80 px-1">800% ZOOM</div>
+<!-- Tactical Markers -->
+<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+<div class="scanline"></div>
+</div>
+</div>
+<!-- AI Drawing Overlay (Faux Neon Lines) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-80" viewbox="0 0 400 400">
+<path class="animate-pulse" d="M50 50 L150 120 L250 80 L350 180" fill="none" stroke="#3ee272" stroke-dasharray="4 2" stroke-width="1.5"></path>
+<circle cx="150" cy="120" fill="#3ee272" r="4"></circle>
+<circle cx="250" cy="80" fill="#3ee272" r="4"></circle>
+</svg>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/20 text-primary font-label-caps px-2 py-0.5 rounded text-[10px] border border-primary/30">ANALYZING_CORE</span>
+</div>
+</section>
+<!-- Section 2: Infinite Creative Canvas -->
+<section class="flex-1 min-h-[300px] relative bg-surface-container-low overflow-hidden border-b border-white/5 p-margin-mobile">
+<div class="absolute inset-0 cyber-grid opacity-10"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-on-surface">FLOW_GENERATOR</h2>
+<div class="flex gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<div class="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+</div>
+</div>
+<!-- Bento Grid Layout for Floating Blocks -->
+<div class="grid grid-cols-2 gap-3">
+<div class="glass-panel neon-border-cyan p-3 rounded-lg flex flex-col gap-2 col-span-2">
+<div class="font-label-caps text-primary text-[10px]">ACTIVE_PROMPT</div>
+<p class="font-body-base text-on-surface-variant italic">"Synthesize metro throughput data with real-time FIFA transit spikes..."</p>
+</div>
+<div class="glass-panel p-3 rounded-lg border border-white/5 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl">hub</span>
+<div class="font-technical-sm mt-2 text-on-surface">NODE_A1</div>
+</div>
+<div class="glass-panel p-3 rounded-lg border border-white/5 flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl">psychology</span>
+<div class="font-technical-sm mt-2 text-on-surface">COG_SYNC</div>
+</div>
+</div>
+<!-- Floating Canvas Markers -->
+<div class="mt-8 flex flex-col gap-4">
+<div class="w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+<div class="flex justify-center">
+<button class="bg-primary text-on-primary font-label-caps py-2 px-6 rounded-lg active:scale-95 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                            GENERATE_BRANCH
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Live Insight & Integration -->
+<section class="bg-surface-container-lowest p-margin-mobile flex flex-col gap-4">
+<!-- FIFA Widget -->
+<div class="glass-panel neon-border-green rounded-xl overflow-hidden flex items-center p-3 gap-4">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Football Match Thumbnail" class="w-full h-full object-cover" data-alt="A high-action soccer match captured from a low stadium angle, showing players in vibrant kits sprinting across a perfectly manicured green pitch under powerful stadium floodlights. The atmosphere is electric and high-stakes. The visual style is cinematic and crisp, utilizing deep blacks in the shadows and bright, saturated greens and whites, perfectly fitting a professional sports broadcast aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjQ3QYOQRD49Goj2qlACOdWkYT0Yj3nCBe2dZ4Wk9VTjsPt0q8_Bdqw2PbIuYo6ePAwzOOMZUE6rnWdRxBc1JOB-Z7hEe919XBW37ZIpI9kgu8p1vjERS8NeA0lxseUSLKMesi8T-2ZHLGN0urkJSgOM0OnNuZtJQ2d5eu8Qf2_dwVzwgxuSNEjnhaPLPXy-_5-GZJvON8SgRTd_CB3eG1zsIaHjPeqeFfg6byPJsC16jtCFgSBBa4meM-v2AnLiUFEjb2ILlt3TY"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl bg-black/40 rounded-full p-1">play_arrow</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-caps text-secondary text-[10px]">LIVE_MATCH</span>
+<span class="font-technical-sm text-error">88'</span>
+</div>
+<div class="font-body-bold text-on-surface flex items-center gap-2">
+                        MEX <span class="text-primary">1 - 0</span> GER
+                    </div>
+<div class="font-technical-sm text-on-surface-variant text-[10px]">FIFA World Cup - Group Stage</div>
+</div>
+</div>
+<!-- Voice Wave Widget -->
+<div class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-tertiary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">blur_on</span>
+</div>
+<div class="font-label-caps text-tertiary">AETHER_CORE_VOICE</div>
+</div>
+<div class="font-technical-sm text-on-surface-variant">LISTENING...</div>
+</div>
+<div class="wave-container justify-center py-2">
+<div class="wave-bar" style="animation-delay: 0.1s"></div>
+<div class="wave-bar" style="animation-delay: 0.3s"></div>
+<div class="wave-bar" style="animation-delay: 0.5s"></div>
+<div class="wave-bar" style="animation-delay: 0.2s"></div>
+<div class="wave-bar" style="animation-delay: 0.4s"></div>
+<div class="wave-bar" style="animation-delay: 0.6s"></div>
+<div class="wave-bar" style="animation-delay: 0.1s"></div>
+<div class="wave-bar" style="animation-delay: 0.3s"></div>
+<div class="wave-bar" style="animation-delay: 0.5s"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- Shared BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 shadow-[0_-10px_40px_rgba(0,197,90,0.15)] rounded-t-full">
+<div class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">motion_photos_on</span>
+<span class="font-label-caps text-[9px] mt-1">Live Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] cursor-pointer animate-pulse-slow">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="font-label-caps text-[9px] mt-1">Interactive Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">replay</span>
+<span class="font-label-caps text-[9px] mt-1">Demo Loop</span>
+</div>
+</nav>
+<!-- Floating Action Logic Indicator -->
+<div class="fixed bottom-20 right-4 z-40">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+</div>
+<script>
+        // Micro-interactions for wave heights
+        const bars = document.querySelectorAll('.wave-bar');
+        setInterval(() => {
+            bars.forEach(bar => {
+                const height = Math.floor(Math.random() * 24) + 4;
+                bar.style.height = height + 'px';
+            });
+        }, 150);
+
+        // Simple zoom indicator simulation
+        let zoom = 800;
+        const zoomEl = document.querySelector('.font-technical-sm.text-primary.bg-surface\\/80.px-1');
+        if(zoomEl) {
+            setInterval(() => {
+                const drift = (Math.random() - 0.5) * 2;
+                zoom = (800 + drift).toFixed(1);
+                zoomEl.innerText = `${zoom}% ZOOM`;
+            }, 2000);
+        }
+    </script>
+</body></html>

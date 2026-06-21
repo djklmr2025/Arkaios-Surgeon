@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Muro de Proyectos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#292a2f",
+                        "on-tertiary-fixed": "#40000e",
+                        "tertiary-container": "#ffadb3",
+                        "surface-dim": "#121318",
+                        "surface-bright": "#38393f",
+                        "secondary-container": "#00c55a",
+                        "surface-variant": "#34343a",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-primary-fixed": "#001f27",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#66ff8e",
+                        "on-background": "#e3e1e9",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-low": "#1a1b21",
+                        "secondary": "#3ee272",
+                        "surface-tint": "#3cd7ff",
+                        "surface-container": "#1e1f25",
+                        "on-secondary": "#003915",
+                        "on-primary-container": "#00586b",
+                        "inverse-on-surface": "#2f3036",
+                        "error-container": "#93000a",
+                        "on-surface": "#e3e1e9",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface-container-highest": "#34343a",
+                        "on-tertiary-container": "#a20532",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "inverse-surface": "#e3e1e9",
+                        "error": "#ffb4ab",
+                        "tertiary": "#ffd5d6",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "primary-fixed": "#b4ebff",
+                        "primary-container": "#00d4ff",
+                        "on-surface-variant": "#bbc9cf",
+                        "outline-variant": "#3c494e",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#004a1d",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "primary": "#a8e8ff",
+                        "outline": "#859398",
+                        "surface": "#121318",
+                        "on-secondary-fixed": "#002109",
+                        "on-tertiary": "#67001c",
+                        "inverse-primary": "#00677e",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-primary": "#003642",
+                        "background": "#121318"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "unit": "4px",
+                        "sidebar-width": "280px",
+                        "margin-desktop": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "technical-sm": ["JetBrains Mono"],
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        :root { --cyber-void: #0d0e13; }
+        body { background-color: var(--cyber-void); color: #e3e1e9; }
+        .segregated-panel { background: rgba(30, 31, 37, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .neon-glow-primary { box-shadow: 0 0 10px rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff; }
+        .neon-glow-secondary { box-shadow: 0 0 10px rgba(62, 226, 114, 0.1); border: 1px solid #3ee272; }
+        .ascii-overlay { font-family: 'JetBrains Mono', monospace; pointer-events: none; opacity: 0.4; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #34343a; border-radius: 2px; }
+    </style>
+</head>
+<body class="font-body-base text-body-base antialiased overflow-hidden h-screen flex flex-col">
+<!-- ZONE 1: HEADER (Segregated) -->
+<header class="h-topbar-height w-full bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-margin-mobile md:px-margin-desktop flex-shrink-0 z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="gesture">gesture</span>
+<h1 class="font-display-lg text-[20px] md:text-display-lg text-primary tracking-tighter">FlowNexus</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end mr-4">
+<span class="font-technical-sm text-[9px] text-secondary uppercase tracking-widest">SYSTEM READY</span>
+<span class="font-technical-sm text-[9px] text-on-surface-variant uppercase tracking-widest">K_V.1.1</span>
+</div>
+<div class="h-8 w-8 rounded-full border border-primary/30 overflow-hidden bg-surface-container-highest">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhuVt5m8rNLm3yzGYvtVNulf3iv1O5XqETxtWQeTPgPJlwg9VQroORnXzrobeMcOqTC93vZdkoQ_V9x2cDPpUDfmG83j3mQeqiP-3E_6E2Cp5EOpvMemvi65Y1JKqyxFQkFhInfyjBE88HA9wfiq5qk0A-5a2vG7z2pObDywLUojbLyNPlADqrcMp4jz2Fb5g_Uxz1p5dogz1dA55gYp5-kbYs5GILNYpkbIOHe6sgImPsQZM90x7BSKec"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- ZONE 2: SIDEBAR (Desktop Only - Segregated) -->
+<aside class="hidden md:flex flex-col w-sidebar-width bg-surface-container-low border-r border-white/5 p-gutter flex-shrink-0">
+<div class="mb-8">
+<h2 class="font-label-caps text-secondary uppercase mb-1">Navigation Hub</h2>
+<div class="h-px w-full bg-gradient-to-r from-secondary/50 to-transparent"></div>
+</div>
+<nav class="space-y-2 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary/10 text-secondary border border-secondary/20" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="font-body-bold">Wall</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="timeline">timeline</span>
+<span>Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="schema">schema</span>
+<span>Nodes</span>
+</a>
+</nav>
+<!-- Priestess Docked Status Area (Non-overlapping) -->
+<div class="mt-auto segregated-panel rounded-xl p-4 border-l-2 border-primary">
+<div class="flex items-center gap-3 mb-3">
+<div class="relative w-10 h-10 rounded-lg overflow-hidden border border-primary/30">
+<img alt="Priestess" class="w-full h-full object-cover grayscale opacity-80" src="https://lh3.googleusercontent.com/aida/ADBb0uhuVt5m8rNLm3yzGYvtVNulf3iv1O5XqETxtWQeTPgPJlwg9VQroORnXzrobeMcOqTC93vZdkoQ_V9x2cDPpUDfmG83j3mQeqiP-3E_6E2Cp5EOpvMemvi65Y1JKqyxFQkFhInfyjBE88HA9wfiq5qk0A-5a2vG7z2pObDywLUojbLyNPlADqrcMp4jz2Fb5g_Uxz1p5dogz1dA55gYp5-kbYs5GILNYpkbIOHe6sgImPsQZM90x7BSKec"/>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<div>
+<p class="font-technical-sm text-primary text-[10px] leading-tight">ARKAIOS_GUIDE</p>
+<p class="font-body-bold text-white text-[12px]">Integrated AI</p>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant">
+<span>SYNC_STATUS</span>
+<span class="text-secondary">ACTIVE</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[92%] shadow-[0_0_8px_#3ee272]"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- ZONE 3: MAIN CANVAS (Scrollable) -->
+<main class="flex-1 overflow-y-auto custom-scrollbar bg-surface-container-lowest/30">
+<!-- Priestess Mobile Floating Status (Dedicated Top Bar for Mobile) -->
+<div class="md:hidden sticky top-0 z-40 bg-surface-container-high/90 backdrop-blur-md px-margin-mobile py-3 border-b border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img alt="Guide" class="w-8 h-8 rounded-full border border-primary/40 object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhuVt5m8rNLm3yzGYvtVNulf3iv1O5XqETxtWQeTPgPJlwg9VQroORnXzrobeMcOqTC93vZdkoQ_V9x2cDPpUDfmG83j3mQeqiP-3E_6E2Cp5EOpvMemvi65Y1JKqyxFQkFhInfyjBE88HA9wfiq5qk0A-5a2vG7z2pObDywLUojbLyNPlADqrcMp4jz2Fb5g_Uxz1p5dogz1dA55gYp5-kbYs5GILNYpkbIOHe6sgImPsQZM90x7BSKec"/>
+<span class="font-technical-sm text-[10px] text-primary">ARKAIOS_PRIESTESS ACTIVE</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="sensors">sensors</span>
+</div>
+<div class="max-w-7xl mx-auto p-margin-mobile md:p-margin-desktop space-y-gutter">
+<!-- Terminal Search Header -->
+<section class="segregated-panel rounded-xl p-6 border-b-2 border-primary/30">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-1">
+<label class="font-label-caps text-[10px] text-primary/70 uppercase">Terminal Query</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-primary/50 text-[20px]" data-icon="terminal">terminal</span>
+<input class="w-full md:w-[400px] bg-transparent border-none focus:ring-0 text-on-surface pl-8 placeholder:text-on-surface-variant/40" placeholder="search_active_nodes..." type="text"/>
+</div>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-1">
+<button class="px-4 py-1.5 rounded-full border border-primary/30 text-primary font-label-caps text-[10px] bg-primary/5">CLOUD_NODES</button>
+<button class="px-4 py-1.5 rounded-full border border-white/10 text-on-surface-variant font-label-caps text-[10px] hover:bg-white/5">VECTORS</button>
+</div>
+</div>
+</section>
+<!-- Project Quadrant Grid -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Quadrant (Large Card) -->
+<article class="md:col-span-8 segregated-panel rounded-xl overflow-hidden flex flex-col group border-b-2 border-primary">
+<div class="relative h-[250px] md:h-[400px] overflow-hidden">
+<img alt="Metro CDMX" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdEhxXCVT7oB4uK8tWuoSG8OFmaHxGVFWEMjwf8BlnTYRBensWXum37rREwVTsJCGdCOowOMHJ6PsRsiolLMrQNAMeRtDRa9Lim5SsXeCsJBV8HDizsvckhAlxT8wGR3CWbtyTxOkfHJ_Pcf9WrrYqVdVkqzfacWKG4n2JCzPw0CNpn4SAuBKKkAlF-Fn3xLk4dBe7lQ5tyV5F9SNxTJ7hx3MViAg9BfF7VBkKpa3gqNCbRxfs3Hl030_dvgxguKSTZIHrcokXY8A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim to-transparent opacity-60"></div>
+<div class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur px-3 py-1 rounded-md border border-white/10">
+<span class="font-technical-sm text-primary text-[9px]">ID: CDMX-772-NODE</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container/60 flex-1">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-display-lg text-white mb-1">Metro CDMX</h3>
+<p class="font-body-base text-on-surface-variant line-clamp-2 max-w-xl">Holographic transit redesign integrating kinetic telemetry and urban-futurist wayfinding.</p>
+</div>
+<div class="text-right">
+<span class="font-technical-sm text-secondary text-[10px]">SYNC: 100%</span>
+<p class="font-technical-sm text-on-surface-variant text-[9px]">DATE: 2024.08.12</p>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] font-technical-sm border border-primary/20">ACTIVE_NODE</span>
+<span class="bg-white/5 text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-technical-sm border border-white/10">H-FIDELITY</span>
+</div>
+</div>
+</article>
+<!-- Status Quadrant (Vertical Info) -->
+<article class="md:col-span-4 segregated-panel rounded-xl overflow-hidden border-b-2 border-secondary flex flex-col">
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-8">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="hub">hub</span>
+<span class="font-technical-sm text-on-surface-variant text-[10px]">NODE_022</span>
+</div>
+<h3 class="font-headline-md text-white mb-4">Neural Graph Mapping</h3>
+<div class="flex-1 flex items-center justify-center p-4">
+<div class="ascii-overlay text-center text-[10px] leading-tight text-secondary/60">
+                                ( . ) ( . )<br/>
+                                )  (  (  )<br/>
+                                (_/ \_)<br/>
+                                _|_|_<br/>
+<span class="text-secondary animate-pulse">CONNECTING_DATALINK...</span>
+</div>
+</div>
+<div class="mt-6 space-y-3">
+<div class="flex justify-between text-[11px] font-technical-sm">
+<span class="text-on-surface-variant">OPTIMIZATION_LEVEL</span>
+<span class="text-secondary">84%</span>
+</div>
+<div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[84%] shadow-[0_0_10px_#3ee272]"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant/60 font-technical-sm">LAST_SYNC: 2m AGO</p>
+</div>
+</div>
+</article>
+<!-- Grid Row Quadrants -->
+<article class="md:col-span-4 segregated-panel rounded-xl overflow-hidden group border-b-2 border-white/10 hover:border-primary/50 transition-colors">
+<div class="aspect-square relative">
+<img alt="Kernel Overdrive" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWJcB4vmExhqn17rDEso9Ttj40XU5YthTjw5nryR5La-jqA4YHTgi8OVurbjVSK6sD_B_83cGEa4eoAPiP-X2z-N-l4nXOsm0BP7z0MOSP01_edFGn_U0yNLqBJOoVrqn0la8CvhOykEwBFVbxCK-fpz8zwVaNKWvjyX60vBwWd8LKWGliuqergtjoIZTc-N9HOd7OUwrFS91Ndu_PpqEv0onqlcM3Ir9I6z9tdNbuxW5pTQKO1GU8hdDG4eZLM7tC5uk62THT1wU"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="bg-surface-dim/80 backdrop-blur text-primary text-[9px] px-2 py-0.5 rounded font-technical-sm border border-primary/20">K_OPT_01</span>
+<span class="material-symbols-outlined text-white/50 text-xl" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<div>
+<h4 class="font-body-bold text-white mb-1">Kernel Overdrive</h4>
+<div class="flex justify-between items-center text-[10px] font-technical-sm text-on-surface-variant">
+<span>V_CORE: 1.2</span>
+<span class="text-secondary">STABLE</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="md:col-span-4 segregated-panel rounded-xl overflow-hidden group border-b-2 border-white/10 hover:border-primary/50 transition-colors">
+<div class="aspect-square relative">
+<img alt="Prism Vectors" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl4cIK3iPvXROFM8LQ9JMasePP-u4IEi5rFK2Adoay2FRWNm11-MR8KILjxZnWucfynzqYi-TrRVf5jbKV8PaIl1S1T4ALL8Ojb-duynQJH3ZFFPGmzLPWwiFXOi7qLwq-uIkBTs3vkupFjWqjVF0QwQmxrzRIvQTuk9lZdq0k26DaUj_S-Z6MzJbQDR8C42BAURgHO_f2rj-AR_6j0_SMWx-3ZaxLlrOVD0x5XLV54spKvV4h2KOyyqIeteci6XZQW-DJNvVGzug"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="bg-surface-dim/80 backdrop-blur text-primary text-[9px] px-2 py-0.5 rounded font-technical-sm border border-primary/20">GEOM_ENG</span>
+<span class="material-symbols-outlined text-white/50 text-xl" data-icon="polyline">polyline</span>
+</div>
+<div>
+<h4 class="font-body-bold text-white mb-1">Prism Vectors</h4>
+<div class="flex justify-between items-center text-[10px] font-technical-sm text-on-surface-variant">
+<span>VECTORS: 1.2M</span>
+<span class="text-secondary">RENDERED</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="md:col-span-4 segregated-panel rounded-xl overflow-hidden group border-b-2 border-white/10 hover:border-primary/50 transition-colors">
+<div class="aspect-square relative">
+<img alt="Global Flow" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDRSwvlZudClBxCpVpRwJaG00EcNmXDdG5J7N_AqD6KqLmL4edugoTwwS3XdK1BDVtbvydnKNJH6lwZejMG1fMp-kAmu7wRuArBvgD_KYt-IGdTfj5HkufgYvaRm5jMcxjSY2_cG2KVEnmItUiMDZ5IRHg27Ttp7oM27FMxRLfxV8qUVudErSzwu61IojqMcXYFuuh1AvsFtRXAStL5v6FGemtMBT40-RHBVPeDm7Aj477ma2Uxho_4dJVpLR-HfR6tDFhQBlf6Wk"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="bg-surface-dim/80 backdrop-blur text-primary text-[9px] px-2 py-0.5 rounded font-technical-sm border border-primary/20">GLOB_SYNC</span>
+<span class="material-symbols-outlined text-white/50 text-xl" data-icon="language">language</span>
+</div>
+<div>
+<h4 class="font-body-bold text-white mb-1">Global Flow</h4>
+<div class="flex justify-between items-center text-[10px] font-technical-sm text-on-surface-variant">
+<span>LATENCY: 12ms</span>
+<span class="text-secondary">OPTIMAL</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+</section>
+</div>
+</main>
+</div>
+<!-- ZONE 4: NAVIGATION (Segregated Footer) -->
+<!-- Mobile Bottom Bar -->
+<nav class="md:hidden h-[72px] bg-surface-container-highest/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-around px-margin-mobile flex-shrink-0">
+<button class="text-on-surface-variant p-2"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+<button class="text-on-surface-variant p-2"><span class="material-symbols-outlined" data-icon="brush">brush</span></button>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(168,232,255,0.4)]"><span class="material-symbols-outlined" data-icon="layers">layers</span></button>
+<button class="text-on-surface-variant p-2"><span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span></button>
+<button class="text-on-surface-variant p-2"><span class="material-symbols-outlined" data-icon="play_circle">play_circle</span></button>
+</nav>
+<!-- Desktop Control Bar -->
+<div class="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+<div class="bg-surface-container-highest/90 backdrop-blur-lg border border-white/10 shadow-2xl rounded-2xl flex items-center gap-1 p-2">
+<div class="flex items-center gap-1 border-r border-white/10 pr-2 mr-1">
+<button class="p-3 rounded-xl hover:bg-white/10 text-primary transition-all"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all"><span class="material-symbols-outlined" data-icon="brush">brush</span></button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all"><span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span></button>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-3 rounded-xl bg-primary text-on-primary shadow-[0_0_20px_rgba(168,232,255,0.3)] transition-all"><span class="material-symbols-outlined" data-icon="layers">layers</span></button>
+<button class="p-3 rounded-xl hover:bg-white/10 text-on-surface-variant transition-all"><span class="material-symbols-outlined" data-icon="play_circle">play_circle</span></button>
+</div>
+</div>
+</div>
+</body></html>

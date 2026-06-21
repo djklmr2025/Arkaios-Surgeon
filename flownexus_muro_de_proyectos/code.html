@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport"/>
+<title>FlowNexus — Muro de Proyectos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#050712",
+        "surface": "#12141f",
+        "surface-container": "#1a1d2b",
+        "surface-container-high": "#222535",
+        "primary": "#a8e8ff",
+        "primary-container": "#00d4ff",
+        "on-primary": "#003642",
+        "secondary": "#3ee272",
+        "secondary-container": "#00c55a",
+        "on-surface": "#e3e1f0",
+        "on-surface-variant": "#9aa4b5",
+        "outline": "#3c4a5e",
+        "error": "#ffb4ab",
+        "error-container": "#93000a"
+      }
+    }
+  }
+}
+</script>
+<style>
+  body {
+    background-color: #050712;
+    color: #e3e1f0;
+    font-family: 'Inter', sans-serif;
+  }
+  .glass-panel {
+    background: rgba(22, 33, 62, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(168, 232, 255, 0.1);
+  }
+  .cyber-glow:hover {
+    box-shadow: 0 0 20px rgba(168, 232, 255, 0.2);
+    border-color: rgba(168, 232, 255, 0.3);
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+  .card-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #090a12;
+    border-top: 1px solid rgba(168, 232, 255, 0.08);
+    border-bottom: 1px solid rgba(168, 232, 255, 0.08);
+  }
+  .card-svg {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  /* Modal glassmorphism */
+  .modal-overlay {
+    background: rgba(5, 7, 18, 0.85);
+    backdrop-filter: blur(16px);
+  }
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050712;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1a1d2b;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3c4a5e;
+  }
+</style>
+</head>
+<body class="min-h-screen pb-24 pt-[56px] text-on-surface">
+
+<!-- TOP APP BAR -->
+<header class="fixed top-0 left-0 w-full h-14 flex items-center justify-between px-4 bg-background/80 backdrop-blur-md z-40 border-b border-primary/10 shadow-lg">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary text-[24px]">hub</span>
+    <span class="font-extrabold text-lg tracking-tight text-primary">FlowNexus</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <button onclick="openPublishModal()" class="bg-primary/10 border border-primary/30 text-primary px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center gap-1.5 active:scale-95">
+      <span class="material-symbols-outlined text-[16px]">add_box</span>
+      Publicar
+    </button>
+    <div class="w-8 h-8 rounded-full border border-primary/20 overflow-hidden bg-surface-container">
+      <img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ4nXu45eHlGXxxK37C1g_JLBODXrIT8Sh1XnkcPF4u2n0Zr0D-LF54vjFeGcrFjYH_HB1rzbl81ll47clJCXFK_z9KIzhCP-iS_K7HHTj4OG7rNlz24FheXlzGEIontmL-AxlqelvS-TS1ZhuLKPXe6hjtM5iTmLpO6Uo-KjsMIhfsA7sdLnMBYkU6gx4vpG1qaRGR68mfEboOKPwDNAW-xv6npubC19tVvs8cvk7hhq0YGvMlKXwJGOaXYrXIchT3arEHR5mi90"/>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<main class="max-w-[500px] mx-auto px-3 py-6 flex flex-col gap-6" id="feed-container">
+  <!-- Dynamic cards injected here -->
+  <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
+    <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+    <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
+  </div>
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-16 bg-background/90 backdrop-blur-lg border-t border-primary/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+  <a href="#" class="flex flex-col items-center gap-1 text-primary">
+    <span class="material-symbols-outlined fill-icon">home</span>
+    <span class="text-[9px] font-bold uppercase tracking-wider">Feed</span>
+  </a>
+  <button onclick="openPublishModal()" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+    <div class="bg-primary/15 p-2.5 rounded-xl border border-primary/30 -translate-y-2 shadow-lg">
+      <span class="material-symbols-outlined text-primary text-[22px]">add</span>
+    </div>
+  </button>
+  <a href="https://flow-diagram-creator.vercel.app" target="_blank" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+    <span class="material-symbols-outlined">edit_square</span>
+    <span class="text-[9px] font-bold uppercase tracking-wider">Editor</span>
+  </a>
+</nav>
+
+<!-- PUBLISH MODAL -->
+<div id="publish-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-overlay hidden px-4">
+  <div class="bg-surface border border-primary/20 w-full max-w-[460px] rounded-2xl p-6 flex flex-col gap-4 shadow-2xl relative">
+    <button onclick="closePublishModal()" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div>
+      <h3 class="text-lg font-bold text-primary">Publicar en el Muro</h3>
+      <p class="text-xs text-on-surface-variant">Comparte tu diagrama de Flow Diagram Creator con la comunidad.</p>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <div>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Nombre del Proyecto</label>
+        <input type="text" id="pub-name" placeholder="Ej: Red de Metro Animada" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors"/>
+      </div>
+      
+      <div>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Creador / Autor</label>
+        <input type="text" id="pub-author" placeholder="Tu nombre o alias" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors" value="Diseñador Autónomo"/>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Archivo JSON del Proyecto</label>
+        <div id="drop-zone" class="border-2 border-dashed border-outline/40 hover:border-primary/60 rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors">
+          <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
+          <p class="text-xs text-on-surface-variant text-center" id="drop-text">Arrastra tu archivo .json aquí o haz click para seleccionar</p>
+          <input type="file" id="file-input" accept=".json" class="hidden"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 mt-2">
+      <button onclick="closePublishModal()" class="px-4 py-2 border border-outline/30 rounded-xl text-xs hover:border-primary transition-colors">Cancelar</button>
+      <button id="btn-submit" onclick="submitProject()" class="px-5 py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-xs hover:shadow-lg hover:shadow-primary/20 transition-all">Publicar Diagrama</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE TOAST -->
+<div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-surface border border-primary/30 text-primary text-xs font-mono px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
+
+<!-- SYSTEM ENGINE AND LOGIC -->
+<script>
+const API_BASE = 'https://flow-diagram-creator.vercel.app';
+let projectsList = [];
+let animators = [];
+let globalRaf = null;
+
+// Notification helper
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.style.opacity = '0', 3000);
+}
+
+// Modal actions
+function openPublishModal() { document.getElementById('publish-modal').classList.remove('hidden'); }
+function closePublishModal() {
+  document.getElementById('publish-modal').classList.add('hidden');
+  document.getElementById('pub-name').value = '';
+  document.getElementById('drop-text').textContent = 'Arrastra tu archivo .json aquí o haz click para seleccionar';
+  selectedProjectData = null;
+}
+
+// File Drag & Drop
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+let selectedProjectData = null;
+
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => handleFileSelect(e.target.files[0]));
+
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-primary'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-primary'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('border-primary');
+  handleFileSelect(e.dataTransfer.files[0]);
+});
+
+function handleFileSelect(file) {
+  if (!file) return;
+  if (!file.name.endsWith('.json')) {
+    showToast('⚠️ Solo se admiten archivos .json');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data.elements)) {
+        showToast('⚠️ El JSON no tiene un formato válido de Flow Diagram');
+        return;
+      }
+      selectedProjectData = data;
+      document.getElementById('drop-text').textContent = `✅ ${file.name} listo para subir`;
+      if (!document.getElementById('pub-name').value) {
+        document.getElementById('pub-name').value = data.name || file.name.replace('.json', '');
+      }
+    } catch(err) {
+      showToast('⚠️ Error al leer JSON');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Publish payload
+async function submitProject() {
+  if (!selectedProjectData) {
+    showToast('⚠️ Por favor selecciona un archivo .json');
+    return;
+  }
+  const name = document.getElementById('pub-name').value.trim() || 'Proyecto sin nombre';
+  const author = document.getElementById('pub-author').value.trim() || 'Anónimo';
+  const btn = document.getElementById('btn-submit');
+  
+  btn.disabled = true;
+  btn.textContent = 'Subiendo...';
+  
+  const payload = {
+    name: name,
+    folder: 'community',
+    elements: selectedProjectData.elements,
+    camera: selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }
+  };
+  
+  // Guardar metadatos en un elemento dummy text si quisiéramos autoría
+  payload.elements.push({
+    type: 'text',
+    text: `Autor: ${author}`,
+    x: -99999,
+    y: -99999,
+    fontSize: 1,
+    hidden: true
+  });
+
+  try {
+    const res = await fetch(`${API_BASE}/api/publish-project`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+    if (result.ok) {
+      showToast('🎉 ¡Proyecto publicado con éxito!');
+      closePublishModal();
+      loadFeed();
+    } else {
+      showToast(`⚠️ Error: ${result.error || 'No se pudo subir'}`);
+    }
+  } catch(e) {
+    showToast('⚠️ Error en la red');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Publicar Diagrama';
+  }
+}
+
+// FETCH AND RENDER THE FEED
+async function loadFeed() {
+  stopGlobalAnimation();
+  const container = document.getElementById('feed-container');
+  container.innerHTML = `
+    <div class="flex flex-col items-center justify-center py-16 gap-3">
+      <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+      <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/library?scope=projects`);
+    const data = await res.json();
+    if (!data.ok || !data.blobs || !data.blobs.length) {
+      container.innerHTML = `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
+      return;
+    }
+
+    // Ordenar de más recientes a más antiguos
+    const sortedBlobs = data.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+    
+    container.innerHTML = '';
+    
+    // Cargar detalles de los primeros 10 proyectos
+    for (const blob of sortedBlobs.slice(0, 10)) {
+      try {
+        const pRes = await fetch(`${API_BASE}/api/project?id=${encodeURIComponent(blob.pathname)}`);
+        const project = await pRes.json();
+        
+        // Buscar metadatos de autoría si existen
+        let author = 'Comunidad';
+        const dummyText = project.elements?.find(e => e.type === 'text' && String(e.text).startsWith('Autor: '));
+        if (dummyText) {
+          author = dummyText.text.replace('Autor: ', '');
+          // Remover el dummy text del render
+          project.elements = project.elements.filter(e => e !== dummyText);
+        }
+
+        renderProjectCard(container, blob.pathname, project, author);
+      } catch(err) {
+        console.error('Error cargando detalles:', err);
+      }
+    }
+    
+    startGlobalAnimation();
+  } catch(e) {
+    container.innerHTML = `<div class="text-center py-12 text-error text-sm">Error cargando el feed.</div>`;
+  }
+}
+
+// CARD RENDERER WITH LIGHTWEIGHT SVG PREVIEW ENGINE
+function renderProjectCard(container, id, project, author) {
+  const card = document.createElement('article');
+  card.className = 'glass-panel rounded-2xl overflow-hidden flex flex-col shadow-2xl cyber-glow transition-all duration-300';
+  
+  // Header
+  const dateStr = new Date(project.date || Date.now()).toLocaleDateString('es-ES', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  const viewUrl = `../flownexus_motor_visor_real_v2/code.html?id=${encodeURIComponent(id)}`;
+  
+  card.innerHTML = `
+    <div class="p-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+          <span class="material-symbols-outlined text-primary text-[20px]">person</span>
+        </div>
+        <div>
+          <p class="font-bold text-sm text-on-surface leading-none">${author}</p>
+          <p class="text-[10px] text-on-surface-variant font-mono mt-1">${dateStr}</p>
+        </div>
+      </div>
+      <a href="${viewUrl}" target="_blank" class="text-primary hover:text-primary-container transition-colors" title="Abrir en pantalla completa">
+        <span class="material-symbols-outlined">open_in_new</span>
+      </a>
+    </div>
+    
+    <!-- SVG Interactive Viewport -->
+    <div class="card-stage">
+      <svg class="card-svg" id="svg-card-${id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
+        <defs></defs>
+        <g class="world-group"></g>
+      </svg>
+    </div>
+    
+    <!-- Meta and Footer -->
+    <div class="p-4 flex flex-col gap-2 bg-background/30">
+      <div class="flex items-center justify-between">
+        <h4 class="font-bold text-sm text-primary">${project.name || 'Proyecto sin Nombre'}</h4>
+        <span class="text-[10px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-mono font-semibold uppercase">Real SVG</span>
+      </div>
+      <p class="text-xs text-on-surface-variant leading-relaxed">
+        Contiene <span class="text-primary font-bold font-mono">${(project.elements || []).length}</span> elementos vectoriales animados. Clic en el botón superior para explorar e interactuar en pantalla completa.
+      </p>
+    </div>
+  `;
+  
+  container.appendChild(card);
+  
+  // Render del SVG
+  const svg = document.getElementById(`svg-card-${id.replace(/\//g, '-')}`);
+  if (svg) {
+    setupPreviewEngine(svg, project);
+  }
+}
+
+// PREVIEW RENDER SYSTEM
+function setupPreviewEngine(svg, project) {
+  const defs = svg.querySelector('defs');
+  const world = svg.querySelector('.world-group');
+  
+  const state = {
+    elements: project.elements || [],
+    lineNodes: [],
+    moverNodes: [],
+    flat: [],
+    byId: new Map()
+  };
+  
+  state.flat = flatten(state.elements);
+  state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
+  
+  // Render all elements
+  state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
+  
+  // Auto zoom/fit preview inside card
+  fitCardView(svg, world, state.elements);
+  
+  animators.push(state);
+}
+
+// Render SVG element inside preview card
+function renderPreviewEl(elem, parent, defs, state) {
+  if (!elem || elem.hidden === true) return;
+
+  if (elem.type === 'group' && Array.isArray(elem.elements)) {
+    const g = svgEl('g', { 'data-id': elem.id || '' });
+    parent.appendChild(g);
+    elem.elements.forEach(c => renderPreviewEl(c, g, defs, state));
+    return;
+  }
+
+  const fill = gradFill(elem.fillColor || 'transparent', elem.fillGradient, defs);
+  const stroke = elem.strokeColor || 'transparent';
+  const lw = Number(elem.lineWidth ?? elem.strokeWidth ?? 2);
+  const isMover = elem.type === 'mover';
+  const isFollower = elem.followRoute === true && elem.routeId;
+  let node = null;
+
+  if (elem.type === 'line') {
+    const curve = elem.routeCircular ? 'circle' : String(elem.routeCurve || 'line').toLowerCase();
+    if (curve !== 'line') {
+      const pts = getRoutePts(elem);
+      node = svgEl('polyline', { points: pts.map(p => `${p.x},${p.y}`).join(' '), fill: 'none', stroke, 'stroke-width': lw, 'stroke-linecap': 'round', 'stroke-dasharray': elem.active ? '5 5' : null });
+    } else {
+      const x1 = Number(elem.x ?? 0), y1 = Number(elem.y ?? 0);
+      const x2 = Number(elem.endX ?? 0), y2 = Number(elem.endY ?? 0);
+      node = svgEl('line', { x1, y1, x2, y2, stroke, 'stroke-width': lw, 'stroke-linecap': 'round', 'stroke-dasharray': elem.active ? '5 5' : null });
+    }
+    if (elem.active) state.lineNodes.push({ node, speed: Math.max(0.2, Number(elem.speed) || 1), offset: 0 });
+
+  } else if (elem.type === 'rectangle' || elem.type === 'rect') {
+    const { x, y, w, h } = getRectLike(elem);
+    node = svgEl('rect', { x, y, width: w, height: h, rx: Number(elem.radius ?? 0), fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'circle') {
+    const { x, y, w, h } = getRectLike(elem);
+    const r = Number(elem.radius ?? Math.min(w, h) / 2);
+    const cx = Number(elem.cx ?? (x + (w || r * 2) / 2));
+    const cy = Number(elem.cy ?? (y + (h || r * 2) / 2));
+    node = svgEl('circle', { cx, cy, r, fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'path' || elem.type === 'polygon') {
+    const pts = Array.isArray(elem.points) ? elem.points : [];
+    const pointsAttr = pts.map(p => `${Number(p.x ?? 0)},${Number(p.y ?? 0)}`).join(' ');
+    if (pointsAttr) node = svgEl('polygon', { points: pointsAttr, fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'image') {
+    const { x, y, w, h } = getRectLike(elem);
+    const src = elem.imageSrc || elem.imageData || '';
+    if (src) node = svgEl('image', { x, y, width: w, height: h, href: src, preserveAspectRatio: 'xMidYMid meet' });
+
+  } else if (elem.type === 'text') {
+    const x = Number(elem.x ?? 0), y = Number(elem.y ?? 0);
+    node = svgEl('text', { x, y, 'font-size': Math.max(8, Number(elem.fontSize ?? 12)), 'font-family': 'Inter,sans-serif', fill: elem.fillColor || '#ffffff', 'text-anchor': 'middle' });
+    node.textContent = String(elem.text || '');
+  } else if (isMover) {
+    const { x, y, w, h } = getRectLike(elem);
+    const mw = Math.max(6, Number(w) * 0.7 || 28), mh = Math.max(6, Number(h) * 0.7 || 18);
+    const fillS = elem.fillColor || '#93c5fd', strokeS = elem.strokeColor || '#0b1027';
+    const g = svgEl('g');
+    g.appendChild(svgEl('rect', { x: -mw/2, y: -mh/2, width: mw, height: mh, rx: 3, fill: fillS, stroke: strokeS, 'stroke-width': 1 }));
+    node = g;
+  }
+
+  if (!node) return;
+
+  if (Number.isFinite(elem.rotation) && elem.rotation !== 0 && !isMover) {
+    const { x, y, w, h } = getRectLike(elem);
+    node.setAttribute('transform',`rotate(${elem.rotation} ${x+w/2} ${y+h/2})`);
+  }
+
+  if (isMover || isFollower) {
+    const ctr = getCenter(elem);
+    if (isMover) {
+      state.moverNodes.push({ node, elem, isMover: true, cx: ctr.x, cy: ctr.y });
+      parent.appendChild(node);
+    } else {
+      const wr = svgEl('g');
+      wr.appendChild(node);
+      state.moverNodes.push({ wrapper: wr, node, elem, isMover: false, cx: ctr.x, cy: ctr.y });
+      parent.appendChild(wr);
+    }
+  } else {
+    parent.appendChild(node);
+  }
+}
+
+// Helpers card viewport fitting
+function fitCardView(svg, world, elements) {
+  if (!elements.length) return;
+  const flat = flatten(elements);
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  flat.forEach(e => {
+    if (!e) return;
+    const bounds = getBounds(e);
+    if (!bounds) return;
+    minX = Math.min(minX, bounds.x1); minY = Math.min(minY, bounds.y1);
+    maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
+  });
+  if (!Number.isFinite(minX)) return;
+  const cw = maxX - minX || 1, ch = maxY - minY || 1;
+  const size = 320; // Stage aspect is 1:1, viewport matches standard card width
+  const pad = 24;
+  const z = Math.max(0.01, Math.min((size - pad*2)/cw, (size - pad*2)/ch));
+  const px = size/2 - ((minX + cw/2)*z);
+  const py = size/2 - ((minY + ch/2)*z);
+  
+  world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
+}
+
+// CARD ANIMATION TICK LOOP
+function startGlobalAnimation() {
+  let lastTs = 0;
+  const tick = ts => {
+    const dt = Math.max(0.001, Math.min(0.05, (ts - (lastTs || ts))/1000));
+    lastTs = ts;
+    
+    animators.forEach(state => {
+      // Lines dashes
+      state.lineNodes.forEach(ln => {
+        ln.offset -= dt * 45 * ln.speed;
+        ln.node.setAttribute('stroke-dashoffset', String(ln.offset));
+      });
+      // Movers path following
+      state.moverNodes.forEach(m => {
+        const cur = state.byId.get(String(m.elem.id || '')) || m.elem;
+        const sp = resolveRoute(cur, dt, state.flat, state.byId);
+        if (sp.found) {
+          const ang = (sp.angle * 180) / Math.PI;
+          if (m.isMover) m.node.setAttribute('transform', `translate(${sp.x} ${sp.y}) rotate(${ang})`);
+          else m.wrapper.setAttribute('transform', `translate(${sp.x - m.cx} ${sp.y - m.cy}) rotate(${ang} ${m.cx} ${m.cy})`);
+        }
+      });
+    });
+    
+    globalRaf = requestAnimationFrame(tick);
+  };
+  globalRaf = requestAnimationFrame(tick);
+}
+
+function stopGlobalAnimation() {
+  if (globalRaf) cancelAnimationFrame(globalRaf);
+  animators = [];
+}
+
+// ─── GEOMETRY AND HELPER FUNCTIONS ───────────────────────────────────────────
+const svgEl = (tag, attrs={}) => {
+  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  Object.entries(attrs).forEach(([k,v]) => { if(v!=null) n.setAttribute(k,String(v)); });
+  return n;
+};
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+function gradFill(fillColor, grad, defs) {
+  if (!grad || typeof grad !== 'object') return fillColor || '#00bcd4';
+  const id = `g_card_${Math.random().toString(36).slice(2, 9)}`;
+  const lg = svgEl('linearGradient', { id, x1: grad.x1??0, y1: grad.y1??0, x2: grad.x2??1, y2: grad.y2??1 });
+  const stops = Array.isArray(grad.stops) ? grad.stops : [];
+  if (!stops.length) {
+    lg.appendChild(svgEl('stop', { offset: '0%', 'stop-color': fillColor || '#00bcd4' }));
+    lg.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#ffffff' }));
+  } else {
+    stops.forEach(s => lg.appendChild(svgEl('stop', { offset: `${clamp(Number(s.offset??0),0,1)*100}%`, 'stop-color': s.color || '#00bcd4' })));
+  }
+  defs.appendChild(lg);
+  return `url(#${id})`;
+}
+function getRectLike(e) { return { x: Number(e.x??0), y: Number(e.y??0), w: Number(e.width??e.w??0), h: Number(e.height??e.h??0) }; }
+function getPt(p) {
+  if (!p) return null;
+  return { x: typeof p.x === 'number' ? p.x : parseFloat(p.x)||0, y: typeof p.y === 'number' ? p.y : parseFloat(p.y)||0 };
+}
+function flatten(elements, out=[]) {
+  (elements || []).forEach(e => { if (e) { out.push(e); if (e.type === 'group' && Array.isArray(e.elements)) flatten(e.elements, out); } });
+  return out;
+}
+function getCenter(e) {
+  if (!e) return { x: 0, y: 0 };
+  if (e.type === 'line') return { x: (Number(e.x??0)+Number(e.endX??0))/2, y: (Number(e.y??0)+Number(e.endY??0))/2 };
+  if ((e.type === 'path' || e.type === 'polygon') && Array.isArray(e.points) && e.points.length) {
+    let sx = 0, sy = 0, c = 0;
+    e.points.forEach(p => { const pt = getPt(p); if (pt) { sx += pt.x; sy += pt.y; c++; } });
+    if (c) return { x: sx/c, y: sy/c };
+  }
+  const { x, y, w, h } = getRectLike(e);
+  return { x: x + w/2, y: y + h/2 };
+}
+function buildArc(x1, y1, x2, y2, fraction, side) {
+  const dx = x2 - x1, dy = y2 - y1, chord = Math.sqrt(dx*dx + dy*dy);
+  if (!(chord > 0)) return [{ x: x1, y: y1 }, { x: x2, y: y2 }];
+  const theta = Math.max(0.0001, Math.min(Math.PI*2 - 0.0001, Math.PI*2 * fraction));
+  const r = chord / (2 * Math.sin(theta/2));
+  const h = Math.sqrt(Math.max(0, r*r - (chord/2)*(chord/2)));
+  const mx = (x1 + x2)/2, my = (y1 + y2)/2;
+  const sign = String(side || 'left') === 'right' ? -1 : 1;
+  const cx = mx + (-dy/chord)*h*sign, cy = my + (dx/chord)*h*sign;
+  const a0 = Math.atan2(y1 - cy, x1 - cx);
+  const candA = a0 + theta, candB = a0 - theta;
+  const dA = Math.hypot(cx + r*Math.cos(candA) - x2, cy + r*Math.sin(candA) - y2);
+  const dB = Math.hypot(cx + r*Math.cos(candB) - x2, cy + r*Math.sin(candB) - y2);
+  const dir = dA <= dB ? 1 : -1;
+  const steps = Math.max(8, Math.round(72 * fraction));
+  const pts = [];
+  for (let i = 0; i <= steps; i++) { const a = a0 + dir*theta*(i/steps); pts.push({ x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) }); }
+  return pts;
+}
+function getRoutePts(e) {
+  if (!e) return [];
+  if (e.type === 'line') {
+    if (!Number.isFinite(e.x) || !Number.isFinite(e.endX)) return [];
+    const curve = e.routeCircular ? 'circle' : String(e.routeCurve || 'line').toLowerCase();
+    if (curve === 'circle') {
+      const cx = (e.x + e.endX)/2, cy = (e.y + e.endY)/2;
+      const r = Math.max(2, Math.hypot(e.endX - e.x, e.endY - e.y)/2);
+      return Array.from({ length: 73 }, (_, i) => ({ x: cx + r*Math.cos(Math.PI*2 * i/72), y: cy + r*Math.sin(Math.PI*2 * i/72) }));
+    }
+    if (curve === 'semi') return buildArc(e.x, e.y, e.endX, e.endY, 0.5, e.routeArcSide || 'left');
+    if (curve === 'quarter') return buildArc(e.x, e.y, e.endX, e.endY, 0.25, e.routeArcSide || 'left');
+    if (curve === 'custom') {
+      const deg = Math.max(5, Math.min(355, Number(e.routeArcDegrees) || 120));
+      return buildArc(e.x, e.y, e.endX, e.endY, deg/360, e.routeArcSide || 'left');
+    }
+    return [{ x: e.x, y: e.y }, { x: e.endX, y: e.endY }];
+  }
+  if ((e.type === 'path' || e.type === 'polygon') && Array.isArray(e.points)) {
+    const pts = e.points.map(p => getPt(p)).filter(p => p && Number.isFinite(p.x) && Number.isFinite(p.y));
+    if (e.type === 'polygon' && e.closed && pts.length) pts.push({ x: pts[0].x, y: pts[0].y });
+    return pts;
+  }
+  return [];
+}
+function polyLen(pts) {
+  if (!pts || pts.length < 2) return 0;
+  let t = 0;
+  for (let i = 1; i < pts.length; i++) t += Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+  return t;
+}
+function ptOnPoly(pts, t) {
+  if (!pts || !pts.length) return null;
+  if (pts.length === 1) return { x: pts[0].x, y: pts[0].y, angle: 0 };
+  const total = polyLen(pts);
+  if (total <= 0) return { x: pts[0].x, y: pts[0].y, angle: 0 };
+  const target = clamp(t, 0, 1) * total;
+  let acc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const p0 = pts[i-1], p1 = pts[i];
+    const dx = p1.x - p0.x, dy = p1.y - p0.y, seg = Math.hypot(dx, dy);
+    if (seg <= 0) continue;
+    if (acc + seg >= target || i === pts.length - 1) {
+      const local = clamp((target - acc)/seg, 0, 1);
+      return { x: p0.x + dx*local, y: p0.y + dy*local, angle: Math.atan2(dy, dx) };
+    }
+    acc += seg;
+  }
+  const last = pts[pts.length-1], prev = pts[pts.length-2];
+  return { x: last.x, y: last.y, angle: Math.atan2(last.y - prev.y, last.x - prev.x) };
+}
+function isRoute(e) {
+  if (!e) return false;
+  const t = String(e.type || '');
+  if (!(t === 'line' || t === 'path' || t === 'polygon')) return false;
+  if (e.routeRole === true || e.isRoute || e.routeCircular) return true;
+  const n = String(e.name || '').toLowerCase();
+  return n.includes('ruta') || n.includes('via');
+}
+function findConnected(routeElem, atEnd, flat) {
+  const pts = getRoutePts(routeElem);
+  if (pts.length < 2) return null;
+  const pt = atEnd ? pts[pts.length-1] : pts[0];
+  const THR = 28;
+  let best = null, bestDist = Infinity;
+  flat.forEach(c => {
+    if (!isRoute(c) || String(c.id) === String(routeElem.id)) return;
+    const opts = getRoutePts(c);
+    if (opts.length < 2) return;
+    const dS = Math.hypot(opts[0].x - pt.x, opts[0].y - pt.y);
+    const dE = Math.hypot(opts[opts.length-1].x - pt.x, opts[opts.length-1].y - pt.y);
+    const d = Math.min(dS, dE);
+    if (d > THR) return;
+    if (d < bestDist) { bestDist = d; best = dS <= dE ? { route: c, progress: 0.0001, direction: 'right' } : { route: c, progress: 0.9999, direction: 'left' }; }
+  });
+  return best;
+}
+function resolveRoute(elem, dt, flat, byId) {
+  if (!elem) return { x: 0, y: 0, angle: 0, found: false };
+  const isMover = elem.type === 'mover';
+  const def = getCenter(elem);
+  if (!isMover && !elem.followRoute) return { x: def.x, y: def.y, angle: 0, found: false };
+  const routeId = String(elem.routeId || elem.routePathId || '');
+  if (!routeId) return { x: def.x, y: def.y, angle: 0, found: false };
+  let route = byId.get(routeId);
+  if (!route) return { x: def.x, y: def.y, angle: 0, found: false };
+  let pts = getRoutePts(route);
+  if (pts.length <= 1) return { x: def.x, y: def.y, angle: 0, found: false };
+
+  const pKey = isMover ? 'progress' : 'routeProgress';
+  let progress = Number.isFinite(elem[pKey]) ? Number(elem[pKey]) : 0;
+  const dirRaw = isMover ? elem.flowDirection : (elem.routeDirection || elem.flowDirection);
+  let dir = String(dirRaw || 'right') === 'left' ? -1 : 1;
+  const mode = String(elem.routeMode || 'loop');
+  const autoConn = Boolean(elem.autoConnectRoute || elem.autoConnect);
+
+  if (elem.active !== false) {
+    const rawSpd = Number(isMover ? elem.speed : (elem.routeSpeed || elem.speed));
+    const speed = Number.isFinite(rawSpd) ? clamp(rawSpd, 1, 300) : 40;
+    let rem = dir * 2.5 * speed * dt;
+    let guard = 0;
+    while (Math.abs(rem) > 1e-6 && guard < 16) {
+      guard++;
+      const rLen = Math.max(1e-6, polyLen(pts));
+      const next = progress * rLen + rem;
+      if (next >= 0 && next <= rLen) { progress = next/rLen; rem = 0; break; }
+      if (next > rLen) {
+        const ov = next - rLen;
+        if (autoConn) { const nx = findConnected(route, true, flat); if (nx && nx.route) { route = nx.route; pts = getRoutePts(route); elem.routeId = String(route.id); dir = String(nx.direction || 'right') === 'left' ? -1 : 1; if (isMover) elem.flowDirection = dir < 0 ? 'left' : 'right'; else elem.routeDirection = dir < 0 ? 'left' : 'right'; progress = Number(nx.progress) || 0; rem = Math.abs(ov)*(dir < 0 ? -1 : 1); continue; } }
+        if (mode === 'stop') { progress = 1; elem.active = false; } else { progress = (next % rLen) / rLen; }
+        rem = 0; break;
+      }
+      const ov = -next;
+      if (autoConn) { const nx = findConnected(route, false, flat); if (nx && nx.route) { route = nx.route; pts = getRoutePts(route); elem.routeId = String(route.id); dir = String(nx.direction || 'right') === 'left' ? -1 : 1; if (isMover) elem.flowDirection = dir < 0 ? 'left' : 'right'; else elem.routeDirection = dir < 0 ? 'left' : 'right'; progress = Number(nx.progress) || 0; rem = Math.abs(ov)*(dir < 0 ? -1 : 1); continue; } }
+      if (mode === 'stop') { progress = 0; elem.active = false; } else { const rL = Math.max(1e-6, polyLen(pts)); progress = (((next % rL) + rL) % rL) / rL; }
+      rem = 0; break;
+    }
+  }
+  if (mode !== 'stop') progress = ((progress % 1) + 1) % 1;
+  elem[pKey] = progress;
+  const p = ptOnPoly(pts, progress);
+  if (!p) return { x: def.x, y: def.y, angle: 0, found: false };
+  return { x: p.x, y: p.y, angle: p.angle, found: true };
+}
+function getBounds(e) {
+  if (!e) return null;
+  if (e.type === 'line') {
+    const x1 = Number(e.x??0), y1 = Number(e.y??0), x2 = Number(e.endX??0), y2 = Number(e.endY??0);
+    return { x1: Math.min(x1, x2), y1: Math.min(y1, y2), x2: Math.max(x1, x2), y2: Math.max(y1, y2) };
+  }
+  if (e.type === 'path' || e.type === 'polygon') {
+    const pts = Array.isArray(e.points) ? e.points : [];
+    if (!pts.length) return null;
+    let mx = Infinity, my = Infinity, xx = -Infinity, xy = -Infinity;
+    pts.forEach(p => { const pt = getPt(p); if (pt) { mx = Math.min(mx, pt.x); my = Math.min(my, pt.y); xx = Math.max(xx, pt.x); xy = Math.max(xy, pt.y); } });
+    return { x1: mx, y1: my, x2: xx, y2: xy };
+  }
+  if (e.type === 'circle' && Number.isFinite(e.radius)) {
+    const r = Number(e.radius);
+    return { x1: Number(e.x??0) - r, y1: Number(e.y??0) - r, x2: Number(e.x??0) + r, y2: Number(e.y??0) + r };
+  }
+  const { x, y, w, h } = getRectLike(e);
+  if (!w && !h) return null;
+  return { x1: x, y1: y, x2: x + w, y2: y + h };
+}
+
+// INITIALIZE
+loadFeed();
+</script>
+</body>
+</html>

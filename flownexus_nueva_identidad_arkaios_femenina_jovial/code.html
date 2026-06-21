@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Architect | Presence Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 212, 255, 0.1);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @keyframes scrolling-hex {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        .hex-stream {
+            animation: scrolling-hex 20s linear infinite;
+        }
+
+        @keyframes mouth-talk {
+            0%, 100% { content: "---"; }
+            20% { content: "-o-"; }
+            40% { content: "-O-"; }
+            60% { content: "(_)"; }
+            80% { content: "-v-"; }
+        }
+        .ascii-mouth::after {
+            content: "---";
+            display: inline-block;
+            min-width: 2em;
+        }
+        .is-talking .ascii-mouth::after {
+            animation: mouth-talk 0.15s steps(1) infinite;
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: #00d4ff;
+            border-radius: 99px;
+            height: 4px;
+            transition: height 0.1s ease;
+        }
+
+        .neural-bg {
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 103, 126, 0.1) 0%, transparent 70%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#a8e8ff",
+                        "secondary": "#3ee272",
+                        "surface": "#121318",
+                        "background": "#121318",
+                        "on-surface": "#e3e1e9",
+                        "on-surface-variant": "#bbc9cf",
+                        "surface-container-low": "#1a1b21",
+                        "surface-container-high": "#292a2f",
+                        "surface-container-lowest": "#0d0e13",
+                        "primary-container": "#00d4ff",
+                        "on-primary": "#003642"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "margin-desktop": "24px",
+                        "topbar-height": "52px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-base overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Background Layers -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute inset-0 opacity-20 neural-bg"></div>
+<!-- Scrolling Hex Stream Background -->
+<div class="absolute right-4 top-0 h-full w-24 opacity-5 font-technical-sm text-[8px] leading-tight hex-stream" style="animation: scrolling-hex 40s linear infinite; opacity: 0.08;">
+        0x4A 0x21 0xBC 0x99<br/>0xFF 0x00 0x12 0x88<br/>0xCC 0xDD 0xEE 0xAA<br/>0x11 0x22 0x33 0x44<br/>
+        0x4A 0x21 0xBC 0x99<br/>0xFF 0x00 0x12 0x88<br/>0xCC 0xDD 0xEE 0xAA<br/>0x11 0x22 0x33 0x44<br/>
+        0x4A 0x21 0xBC 0x99<br/>0xFF 0x00 0x12 0x88<br/>0xCC 0xDD 0xEE 0xAA<br/>0x11 0x22 0x33 0x44<br/>
+        0x4A 0x21 0xBC 0x99<br/>0xFF 0x00 0x12 0x88<br/>0xCC 0xDD 0xEE 0xAA<br/>0x11 0x22 0x33 0x44<br/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/90 via-transparent to-surface-container-lowest/95"></div>
+</div>
+<main class="relative z-10 h-screen w-full flex flex-col items-center justify-between p-gutter scanline-effect">
+<!-- Top Header -->
+<header class="w-full flex justify-between items-start pt-margin-mobile">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_#3ee272] animate-pulse"></div>
+<span class="font-label-caps text-[10px] text-secondary tracking-widest uppercase">Stealth Presence</span>
+</div>
+<h1 class="font-display-lg text-[24px] text-primary leading-none">ARCHITECT_CORE</h1>
+</div>
+<!-- Smaller AI Presence (Miniaturized VIKI) -->
+<div class="glass-panel p-3 rounded-xl flex items-center gap-4 transition-all duration-500" id="ai-face-container" style="background: rgba(18, 19, 24, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(168, 232, 255, 0.2);">
+<div class="relative w-12 h-12 bg-surface-container-high rounded-full overflow-hidden border border-primary/40 shadow-[0_0_15px_rgba(0,212,255,0.2)]"><img alt="AI Presence" class="w-full h-full object-cover opacity-90" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-[10px] text-primary">AGENT_01</span>
+<span class="font-technical-sm text-[8px] text-on-surface-variant uppercase tracking-tighter" id="status-text">Monitoring...</span>
+</div>
+</div>
+</header>
+<!-- Central Minimal Workspace Area -->
+<div class="relative flex-1 w-full flex items-center justify-center pointer-events-none">
+<div class="opacity-30 text-center scale-150 animate-pulse transition-all duration-[3000ms]"><div class="w-48 h-48 rounded-full overflow-hidden border-2 border-primary/20 shadow-[0_0_60px_rgba(0,212,255,0.15)]"><img alt="Central Core" class="w-full h-full object-cover filter saturate-[0.8]" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/></div></div>
+</div>
+<!-- Voice Visualizer & Controls -->
+<div class="w-full max-w-lg flex flex-col items-center gap-6 pb-12">
+<!-- Root Access Terminal (Subtle Sidebar Position) -->
+<div class="absolute left-6 bottom-32 glass-panel p-3 rounded-lg w-48 border-l border-primary/30 opacity-60" style="background: rgba(18, 19, 24, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(168, 232, 255, 0.2);">
+<div class="font-technical-sm text-[9px] text-primary flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary/40 rounded-full"></span>
+<span>SECURE_THREAD_01</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-primary/40 rounded-full"></span>
+<span>ENV_SCAN_COMPLETE</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-secondary/40 rounded-full"></span>
+<span>ACTIVE_LISTENING</span>
+</div>
+</div>
+</div>
+<!-- Voice Visualizer -->
+<div class="flex items-center gap-1.5 h-8 opacity-70" id="visualizer">
+<div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div>
+<div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div>
+<div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div>
+<div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div><div class="wave-bar" style="background: #a8e8ff; box-shadow: 0 0 8px rgba(168,232,255,0.5);"></div>
+</div>
+<!-- Interaction Button -->
+<button class="group relative px-8 py-3.5 bg-primary text-on-primary rounded-full font-body-bold flex items-center gap-3 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.4)] transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(168,232,255,0.3)] backdrop-blur-sm" id="talk-trigger">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" data-icon="keyboard_voice">keyboard_voice</span>
+<span id="button-label">Connect with Core</span>
+</button>
+</div>
+<!-- Grid Overlay -->
+<div class="fixed inset-0 border border-white/5 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 32px 32px;"></div>
+</main>
+<!-- Close Button -->
+<button class="fixed top-6 right-6 z-50 w-8 h-8 rounded-full glass-panel flex items-center justify-center text-on-surface-variant hover:text-white transition-colors" style="background: rgba(18, 19, 24, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(168, 232, 255, 0.2);">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+<script>
+    const talkBtn = document.getElementById('talk-trigger');
+    const faceContainer = document.getElementById('ai-face-container');
+    const statusText = document.getElementById('status-text');
+    const buttonLabel = document.getElementById('button-label');
+    const visualizerBars = document.querySelectorAll('.wave-bar');
+    
+    let isSpeaking = false;
+    let animationFrame;
+
+    function updateVisualizer() {
+        if (!isSpeaking) {
+            visualizerBars.forEach(bar => bar.style.height = '4px');
+            return;
+        }
+
+        visualizerBars.forEach(bar => {
+            const h = 4 + Math.random() * 24;
+            bar.style.height = `${h}px`;
+        });
+        animationFrame = requestAnimationFrame(updateVisualizer);
+    }
+
+    talkBtn.addEventListener('click', () => {
+        isSpeaking = !isSpeaking;
+        
+        if (isSpeaking) {
+            faceContainer.classList.add('is-talking', 'ring-1', 'ring-primary/40');
+            statusText.innerText = "Transmitting...";
+            buttonLabel.innerText = "End Transmission";
+            updateVisualizer();
+        } else {
+            faceContainer.classList.remove('is-talking', 'ring-1', 'ring-primary/40');
+            statusText.innerText = "Monitoring...";
+            buttonLabel.innerText = "Initiate Verbal Sync";
+            cancelAnimationFrame(animationFrame);
+            visualizerBars.forEach(bar => bar.style.height = '4px');
+        }
+    });
+
+    // Randomize background activity pulses
+    setInterval(() => {
+        const bgHex = document.querySelector('.hex-stream');
+        if (bgHex) bgHex.style.opacity = (Math.random() * 0.05 + 0.02).toString();
+    }, 2000);
+</script>
+</body></html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus | Visor de Láminas de Información</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --cyber-void: #050712;
+      --glass-surface: rgba(22, 33, 62, 0.96);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --neon-primary: #3cd7ff;
+    }
+
+    body {
+      background-color: var(--cyber-void);
+      color: #e3e1e9;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      /* Optimized for 1920x1080 landscape */
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .glass-panel {
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    }
+
+    .neon-accent-bottom {
+      position: relative;
+    }
+    .neon-accent-bottom::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--neon-primary);
+      box-shadow: 0 0 8px var(--neon-primary);
+    }
+
+    .canvas-dot {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .canvas-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .shimmer-effect:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(22, 33, 62, 0.98);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .cyber-grid {
+      background-image: 
+        linear-gradient(rgba(60, 215, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90px, rgba(60, 215, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      perspective: 1000px;
+    }
+
+    /* Video Overlay to prevent external clicks */
+    .video-shield {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px; /* Shields title/top bar links */
+      background: transparent;
+      z-index: 10;
+    }
+    
+    .video-shield-bottom {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100px;
+      height: 40px; /* Shields YouTube logo/button */
+      background: transparent;
+      z-index: 10;
+    }
+
+    #iframe-overlay {
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Fixed focus state for dots */
+    .canvas-dot.active .dot-core {
+      transform: scale(1.5);
+      outline: 2px solid white;
+      outline-offset: 4px;
+    }
+  </style>
+<style>.fade-transition { transition: opacity 0.3s ease-in-out; } .canvas-dot.active .dot-core { transform: scale(1.8); box-shadow: 0 0 25px currentColor; animation: pulse-intense 1.5s infinite; } @keyframes pulse-intense { 0% { box-shadow: 0 0 10px currentColor; } 50% { box-shadow: 0 0 30px currentColor; } 100% { box-shadow: 0 0 10px currentColor; } }</style></head>
+<body class="bg-background text-on-background">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-tint": "#3cd7ff",
+                  "primary": "#a8e8ff",
+                  "on-primary-container": "#00586b",
+                  "tertiary-container": "#ffadb3",
+                  "surface-container-low": "#1a1b21",
+                  "primary-fixed-dim": "#3cd7ff",
+                  "on-tertiary-container": "#a20532",
+                  "on-surface": "#e3e1e9",
+                  "on-background": "#e3e1e9",
+                  "tertiary-fixed-dim": "#ffb2b7",
+                  "on-tertiary": "#67001c",
+                  "on-surface-variant": "#bbc9cf",
+                  "inverse-on-surface": "#2f3036",
+                  "primary-container": "#00d4ff",
+                  "on-secondary-container": "#004a1d",
+                  "primary-fixed": "#b4ebff",
+                  "surface-container-lowest": "#0d0e13",
+                  "on-primary": "#003642",
+                  "on-secondary": "#003915",
+                  "surface": "#121318",
+                  "on-secondary-fixed": "#002109",
+                  "on-tertiary-fixed-variant": "#91002b",
+                  "surface-variant": "#34343a",
+                  "surface-container-high": "#292a2f",
+                  "inverse-primary": "#00677e",
+                  "surface-container-highest": "#34343a",
+                  "on-error": "#690005",
+                  "error-container": "#93000a",
+                  "tertiary": "#ffd5d6",
+                  "secondary-fixed": "#66ff8e",
+                  "secondary-container": "#00c55a",
+                  "background": "#121318",
+                  "on-primary-fixed-variant": "#004e5f",
+                  "on-primary-fixed": "#001f27",
+                  "outline": "#859398",
+                  "on-error-container": "#ffdad6",
+                  "surface-dim": "#121318",
+                  "error": "#ffb4ab",
+                  "tertiary-fixed": "#ffdadb",
+                  "surface-bright": "#38393f",
+                  "inverse-surface": "#e3e1e9",
+                  "secondary-fixed-dim": "#3ee272",
+                  "on-secondary-fixed-variant": "#005321",
+                  "secondary": "#3ee272",
+                  "outline-variant": "#3c494e",
+                  "surface-container": "#1e1f25",
+                  "on-tertiary-fixed": "#40000e"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "spacing": {
+                  "gutter": "16px",
+                  "sidebar-width": "280px",
+                  "margin-mobile": "12px",
+                  "margin-desktop": "24px",
+                  "unit": "4px",
+                  "topbar-height": "52px"
+          },
+          "fontFamily": {
+                  "body-base": ["Inter"],
+                  "headline-md-mobile": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "technical-sm": ["JetBrains Mono"],
+                  "label-caps": ["Inter"],
+                  "display-lg": ["Inter"],
+                  "body-bold": ["Inter"]
+          },
+          "fontSize": {
+                  "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                  "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                  "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                  "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<header class="fixed top-0 left-0 w-full h-[52px] flex items-center justify-between px-margin-desktop bg-surface/90 backdrop-blur-md z-50 border-b border-white/10 neon-accent-bottom">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary">FlowNexus</h1>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="font-technical-sm text-technical-sm text-outline uppercase">Módulo:</span>
+<span class="font-body-bold text-body-bold text-on-surface">Visor de Láminas Informativas</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Resumen</a>
+<a class="text-on-surface-variant font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Documentación</a>
+<a class="text-on-surface-variant font-body-base text-body-base transition-opacity hover:opacity-80" href="#">Métricas</a>
+</nav>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-lg font-body-bold text-body-base hover:opacity-90 active:scale-95 transition-all">
+        Publicar
+      </button>
+</div>
+</header>
+<main class="relative w-screen h-screen pt-[52px] flex overflow-hidden">
+<section class="relative flex-1 bg-surface-container-lowest cyber-grid overflow-hidden"><div class="absolute top-0 left-0 w-full p-4 z-30">
+<div class="max-w-4xl mx-auto glass-panel rounded-full h-12 flex items-center px-6 gap-4 border-primary/20">
+<span class="font-label-caps text-label-caps text-primary uppercase">Progreso de Láminas</span>
+<div class="flex-1 h-1.5 bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-1/4 bg-primary shadow-[0_0_10px_rgba(60,215,255,1)] transition-all duration-500"></div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-1"><button class="w-6 h-6 rounded-full bg-primary text-[10px] flex items-center justify-center text-on-primary font-bold hover:scale-110 transition-transform" onclick="updateInfoPanel(1, document.querySelector('[data-point=\'1\']'))">01</button><button class="w-6 h-6 rounded-full bg-primary text-[10px] flex items-center justify-center text-on-primary font-bold hover:scale-110 transition-transform" onclick="updateInfoPanel(2, document.querySelector('[data-point=\'2\']'))">02</button><button class="w-6 h-6 rounded-full bg-surface-container-high text-[10px] flex items-center justify-center text-on-surface-variant font-bold hover:scale-110 transition-transform" onclick="updateInfoPanel(3, document.querySelector('[data-point=\'3\']'))">03</button><span class="w-6 h-6 rounded-full bg-surface-container-high text-[10px] flex items-center justify-center text-on-surface-variant font-bold text-opacity-30">...</span><span class="w-6 h-6 rounded-full bg-surface-container-high text-[10px] flex items-center justify-center text-on-surface-variant font-bold">08</span></div>
+</div>
+</div>
+</div>
+<!-- Background Image (Interactive Model Scene) -->
+<div class="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+<div class="relative w-[80%] h-[80%] transform-gpu perspective-[2000px] rotate-y-[-10deg] rotate-x-[5deg]">
+<img alt="Futuristic architectural blueprint" class="w-full h-full object-cover rounded-xl opacity-60 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVAIRsRTe7d2MLkGCI5jU8zSF3NZwtPjhc3NHjRYmR9d6jebSr4g-xqq2wpDBGAfaoicG5Awt_7qoz2oNQeP3hNnEpCMo_GIPGVGxXsO4AzLpdWxlW9aOqs_eZt6TDzWwqFtQOx7yrUOTI2OWCUw9Spnyg6xcs6YrVJuWYvHONSp47WB9ezzJ5LdgzPUm9bhk1sQmxIkmlO6xjt9PP--_Xi6KCIUslF6FdJctRldumvqvmSuNE6gnSY7ajImBgJAljs3w-6bdLNLE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest to-transparent opacity-40"></div>
+</div>
+</div>
+<!-- Information Points -->
+<div class="absolute inset-0 z-10 p-24" id="points-container"><button class="canvas-dot absolute top-[30%] left-[40%] group flex flex-col items-center" data-point="1" onclick="updateInfoPanel(1, this)"><div class="dot-core w-5 h-5 rounded-full bg-primary shadow-[0_0_15px_rgba(60,215,255,1)] flex items-center justify-center text-[8px] text-on-primary font-bold">1</div><div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0"><span class="font-technical-sm text-technical-sm text-primary">PROCESADOR_NÚCLEO</span></div></button><button class="canvas-dot absolute top-[55%] left-[25%] group flex flex-col items-center active" data-point="2" onclick="updateInfoPanel(2, this)"><div class="dot-core w-5 h-5 rounded-full bg-secondary shadow-[0_0_15px_rgba(62,226,114,1)] flex items-center justify-center text-[8px] text-on-secondary font-bold">2</div><div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0"><span class="font-technical-sm text-technical-sm text-secondary">RESERVA_DE_DATOS</span></div></button><button class="canvas-dot absolute top-[45%] left-[65%] group flex flex-col items-center" data-point="3" onclick="updateInfoPanel(3, this)"><div class="dot-core w-5 h-5 rounded-full bg-tertiary shadow-[0_0_15px_rgba(255,213,214,1)] flex items-center justify-center text-[8px] text-on-tertiary font-bold">3</div><div class="mt-2 glass-panel px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity transform -translate-y-2 group-hover:translate-y-0"><span class="font-technical-sm text-technical-sm text-tertiary">INTERFAZ_NEURAL</span></div></button></div>
+<!-- Internal Navigation / Controls -->
+<div class="absolute bottom-8 left-8 flex items-center gap-3 z-30">
+<div class="glass-panel rounded-lg p-1 flex gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded hover:bg-white/10 active:scale-95 transition-all text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="zoom_in">zoom_in</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded hover:bg-white/10 active:scale-95 transition-all text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="zoom_out">zoom_out</span>
+</button>
+</div>
+<div class="glass-panel rounded-lg p-1">
+<button class="flex items-center gap-2 px-3 h-10 rounded hover:bg-white/10 active:scale-95 transition-all text-on-surface-variant hover:text-primary" onclick="toggleFullscreen()">
+<span class="material-symbols-outlined" data-icon="fullscreen">fullscreen</span>
+<span class="font-label-caps text-[10px] uppercase">Pantalla Completa</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-8 right-8 glass-panel rounded-full px-6 py-3 flex items-center gap-6 z-30 neon-accent-bottom">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+<span class="font-label-caps text-label-caps uppercase">Anterior</span>
+</button>
+<div class="flex items-center gap-2">
+<span class="font-body-bold text-body-bold text-primary">02</span>
+<span class="text-outline">/</span>
+<span class="font-body-bold text-body-bold text-on-surface-variant">08</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2">
+<span class="font-label-caps text-label-caps uppercase">Siguiente</span>
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Side Information Panel -->
+<aside class="w-[420px] h-full glass-panel border-l border-white/10 z-40 flex flex-col relative">
+<!-- Fixed header -->
+<div class="p-6 border-b border-white/5">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-[0.2em]">Centro de Información Técnica</span>
+<span class="font-technical-sm text-technical-sm px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">DATOS_VIVO</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2" id="info-title">Detalles del Subsistema: Nodo Central</h2>
+<p class="font-body-base text-body-base text-on-surface-variant" id="info-desc">Seleccione un punto de información en el lienzo para descifrar subsistemas y telemetría operativa.</p>
+</div>
+<!-- Scrollable content -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6" id="info-scroll-container">
+<div class="space-y-4">
+<h3 class="font-label-caps text-label-caps text-outline uppercase">Telemetría y Análisis</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1 uppercase">Estabilidad</p>
+<p class="font-body-bold text-body-bold text-secondary">99.84%</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1 uppercase">Rendimiento</p>
+<p class="font-body-bold text-body-bold text-primary">4.2 TB/s</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1 uppercase">Latencia</p>
+<p class="font-body-bold text-body-bold text-tertiary">0.02ms</p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-white/5 shimmer-effect transition-all">
+<p class="font-technical-sm text-technical-sm text-outline mb-1 uppercase">Tiempo Activo</p>
+<p class="font-body-bold text-body-bold text-on-surface">1,420H</p>
+</div>
+</div>
+</div>
+<div class="space-y-4" id="media-preview">
+<div class="relative aspect-video rounded-lg overflow-hidden border border-white/10 bg-black/40 group">
+<div class="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-4xl text-primary">videocam</span>
+</div>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[10px] font-technical-sm text-primary uppercase">Video de Referencia</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="aspect-square rounded-lg bg-surface-container-high border border-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">image</span>
+</div>
+<div class="aspect-square rounded-lg bg-surface-container-high border border-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">schema</span>
+</div>
+</div>
+</div><div class="space-y-4 pt-4 border-t border-white/5 fade-transition" id="dynamic-content">
+<div class="flex items-center gap-3 text-on-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<p class="font-body-base text-body-base italic">A la espera de selección de punto...</p>
+</div>
+</div>
+<div class="pt-6" id="action-area" style="display:none;">
+<button class="w-full bg-surface-container-high border border-white/10 hover:border-primary/50 text-on-surface py-3 rounded-lg flex items-center justify-center gap-2 transition-all" id="open-link-btn" onclick="openInternalFrame('Análisis Técnico Avanzado')">
+<span class="material-symbols-outlined text-[20px]" data-icon="open_in_new">open_in_new</span>
+<span class="font-body-bold text-body-bold">Abrir Análisis Completo</span>
+</button>
+</div>
+</div>
+<div class="p-6 bg-surface-container-lowest border-t border-white/5">
+<div class="flex items-center justify-between font-technical-sm text-technical-sm text-outline-variant">
+<span>FNX_SYS_V4.0.2</span>
+<span>© 2024 FLOW_NEXUS</span>
+</div>
+</div>
+<!-- Internal Sandboxed Modal/Iframe Overlay (Covers the aside) -->
+<div class="absolute inset-0 z-50 bg-surface-container translate-x-full transition-transform duration-500 ease-in-out border-l border-primary/30" id="iframe-overlay">
+<div class="flex flex-col h-full">
+<div class="h-14 bg-surface-container-high flex items-center justify-between px-6 border-b border-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary animate-pulse" data-icon="security">security</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-wider" id="iframe-title">Visor de Datos Protegidos</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 text-on-surface-variant hover:text-white transition-colors" onclick="closeInternalFrame()">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex-1 relative overflow-hidden bg-[#000]">
+<!-- Sandboxed iframe -->
+<iframe class="w-full h-full border-none" id="internal-browser" sandbox="allow-scripts allow-forms" src="about:blank"></iframe>
+<!-- Loading State -->
+<div class="absolute inset-0 flex items-center justify-center bg-surface pointer-events-none transition-opacity duration-300" id="iframe-loader">
+<div class="flex flex-col items-center gap-4">
+<div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+<span class="font-technical-sm text-outline uppercase">Estableciendo Túnel Seguro...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<script>
+    const infoData = {
+      1: {
+        title: "Procesador Central (CPU)",
+        desc: "El corazón del nexo. Gestiona paquetes de datos de alta densidad y distribuye tareas de renderizado holográfico en la red.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-primary/5 border-l-2 border-primary rounded-r">
+              <p class="font-body-base text-body-base text-primary mb-1">Firma Térmica: Estable</p>
+              <p class="text-xs text-on-surface-variant">Operando a 42°C bajo carga del 85%.</p>
+            </div>
+            <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-white/10">
+              <div class="video-shield"></div>
+              <div class="video-shield-bottom"></div>
+              <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?modestbranding=1&rel=0&iv_load_policy=3&controls=1" allowfullscreen></iframe>
+            </div>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-on-surface text-body-base">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Integración de Núcleo Cuántico
+              </li>
+            </ul>
+          </div>
+        `,
+        linkText: "Ver Lógica del Procesador",
+        url: "https://example.com/logic-view"
+      },
+      2: {
+        title: "Reserva de Datos Alpha",
+        desc: "Matriz de almacenamiento masivo que utiliza memoria molecular localizada. Capacidad actual al 12% con redundancia triple activa.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-secondary/5 border-l-2 border-secondary rounded-r">
+              <p class="font-body-base text-body-base text-secondary mb-1">Integridad: Verificada</p>
+              <p class="text-xs text-on-surface-variant">Sin fragmentos corruptos en el último escaneo.</p>
+            </div>
+            <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+              <div class="h-full bg-secondary w-[12%]"></div>
+            </div>
+            <p class="text-xs text-outline text-right">12.4 PB / 100 PB</p>
+            <div class="bg-surface-container-high p-4 rounded-lg">
+                <p class="text-xs text-on-surface-variant leading-relaxed">Los protocolos de seguridad impiden la exportación de bloques de datos sin autorización de nivel 5.</p>
+            </div>
+          </div>
+        `,
+        linkText: "Explorar Bloques de Datos",
+        url: "https://example.com/data-browser"
+      },
+      3: {
+        title: "Placa de Interfaz Neural",
+        desc: "Punto de contacto principal para la interacción humano-máquina. Facilita la traducción visual 2.5D y bucles de retroalimentación háptica.",
+        content: `
+          <div class="space-y-3">
+            <div class="p-4 bg-tertiary/5 border-l-2 border-tertiary rounded-r">
+              <p class="font-body-base text-body-base text-tertiary mb-1">Motor Háptico: Activo</p>
+              <p class="text-xs text-on-surface-variant">Sincronización de usuario a 0.04ms.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">SENSOR_GSR</span>
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">OCULAR_TRACK</span>
+              <span class="px-2 py-1 bg-surface-container text-[10px] rounded text-outline">EEG_SYNC</span>
+            </div>
+          </div>
+        `,
+        linkText: "Calibrar Interfaz",
+        url: "https://example.com/calibration"
+      }
+    };
+
+    let activePointId = null;
+
+    function updateInfoPanel(id, element) {
+      // Pinning logic: Lock the view
+      if (activePointId === id) return; 
+
+      // Visual feedback on point
+      document.querySelectorAll('.canvas-dot').forEach(dot => dot.classList.remove('active'));
+      element.classList.add('active');
+      activePointId = id;
+
+      const data = infoData[id];
+      const titleEl = document.getElementById('info-title');
+      const descEl = document.getElementById('info-desc');
+      const contentEl = document.getElementById('dynamic-content');
+      const actionArea = document.getElementById('action-area');
+      const btnTextEl = document.querySelector('#open-link-btn span.font-body-bold');
+
+      // Animate transition
+      titleEl.style.opacity = '0';
+      contentEl.style.opacity = '0';
+      
+      setTimeout(() => {
+        titleEl.textContent = data.title;
+        descEl.textContent = data.desc;
+        contentEl.innerHTML = data.content;
+        btnTextEl.textContent = data.linkText;
+        
+        actionArea.style.display = 'block';
+        titleEl.style.opacity = '1';
+        contentEl.style.opacity = '1';
+
+        // Store active URL for internal browser
+        document.getElementById('open-link-btn').setAttribute('data-target-url', data.url);
+      }, 200);
+    }
+
+    function openInternalFrame(title) {
+      const url = document.getElementById('open-link-btn').getAttribute('data-target-url');
+      const overlay = document.getElementById('iframe-overlay');
+      const titleEl = document.getElementById('iframe-title');
+      const loader = document.getElementById('iframe-loader');
+      const frame = document.getElementById('internal-browser');
+
+      titleEl.textContent = title;
+      loader.style.opacity = '1';
+      
+      // Navigate frame
+      frame.src = url || 'about:blank';
+      
+      overlay.classList.remove('translate-x-full');
+      
+      // Simulate loading end
+      setTimeout(() => {
+        loader.style.opacity = '0';
+      }, 1500);
+    }
+
+    function closeInternalFrame() {
+      const overlay = document.getElementById('iframe-overlay');
+      overlay.classList.add('translate-x-full');
+      // Reset src after close to stop any media
+      setTimeout(() => {
+        document.getElementById('internal-browser').src = 'about:blank';
+      }, 500);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+  </script>
+<script>function syncTopProgress(id) { const progressDots = document.querySelectorAll('div.flex.-space-x-1 button'); progressDots.forEach((btn, idx) => { if (idx + 1 === id) { btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant'); btn.classList.add('bg-primary', 'text-on-primary'); } else if (idx + 1 > id) { btn.classList.add('bg-surface-container-high', 'text-on-surface-variant'); btn.classList.remove('bg-primary', 'text-on-primary'); } }); const progressBar = document.querySelector('.absolute.top-0.left-0.h-full.bg-primary'); if (progressBar) progressBar.style.width = ((id / 8) * 100) + '%'; } const originalUpdateInfoPanel = updateInfoPanel; updateInfoPanel = function(id, element) { originalUpdateInfoPanel(id, element); syncTopProgress(id); };</script></body></html>

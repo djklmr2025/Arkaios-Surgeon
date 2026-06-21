@@ -1,0 +1,313 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Arkaios Core Self-Repair</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ascii-stream {
+            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 212, 255, 0.2);
+            animation: scanline 8s linear infinite;
+        }
+        .glow-cyan { text-shadow: 0 0 10px rgba(0, 212, 255, 0.6); }
+        .node-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .5; transform: scale(1.1); }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#3cd7ff",
+                        "outline": "#859398",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#34343a",
+                        "surface": "#121318",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "background": "#050712",
+                        "tertiary-container": "#ffadb3",
+                        "on-tertiary-container": "#a20532",
+                        "on-surface": "#e3e1e9",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2f3036",
+                        "surface-variant": "#34343a",
+                        "secondary-container": "#00c55a",
+                        "primary-fixed": "#b4ebff",
+                        "on-primary": "#003642",
+                        "on-secondary-fixed": "#002109",
+                        "on-error-container": "#ffdad6",
+                        "surface-bright": "#38393f",
+                        "surface-dim": "#121318",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-container": "#1e1f25",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-primary-container": "#00586b",
+                        "secondary": "#3ee272",
+                        "inverse-primary": "#00677e",
+                        "on-tertiary-fixed": "#40000e",
+                        "primary": "#a8e8ff",
+                        "outline-variant": "#3c494e",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container-lowest": "#0d0e13",
+                        "tertiary": "#ffd5d6",
+                        "surface-container-high": "#292a2f",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-secondary": "#003915",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-primary-fixed": "#001f27",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-tertiary": "#67001c",
+                        "primary-container": "#00d4ff",
+                        "on-secondary-container": "#004a1d",
+                        "secondary-fixed": "#66ff8e",
+                        "inverse-surface": "#e3e1e9",
+                        "on-background": "#e3e1e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "12px",
+                        "margin-desktop": "24px",
+                        "topbar-height": "52px",
+                        "unit": "4px",
+                        "sidebar-width": "280px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "body-base": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "body-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary/30 min-h-screen overflow-hidden font-body-base">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface-dim/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)] flex justify-between items-center px-margin-mobile h-topbar-height">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="gesture">gesture</span>
+<h1 class="font-display-lg text-headline-md-mobile text-primary tracking-tighter">FlowNexus Artist</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-secondary">Neural Sync</span>
+<div class="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4 shadow-[0_0_8px_rgba(62,226,114,0.6)]" id="sync-bar" style="width: 73.6267%;"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="cloud_done">cloud_done</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative w-full h-screen pt-topbar-height flex flex-col items-center justify-center overflow-hidden">
+<!-- Live ASCII Data Stream Background -->
+<div class="absolute inset-0 ascii-stream font-technical-sm text-[8px] leading-[8px] text-primary/10 select-none pointer-events-none whitespace-pre py-10 opacity-40" id="ascii-canvas">!&amp;/@[0@##?&amp;0?#0?&amp;&lt;//&amp;#%&amp;?@@{&lt;&amp;/&gt;]}&gt;1}}{&amp;#[#?{[{[}${}%}$][}@&amp;
+1%?%]{]??0%#@${&gt;[[/1&amp;&lt;&amp;1&lt;0]?{[[{$?11&lt;!#]01&gt;!&gt;&amp;1%]%&gt;!X/0?]?}/
+&lt;X$@&lt;]&amp;{]@[X%&lt;&amp;0#&lt;&lt;[@}0{/1&gt;0$0X0}]X&gt;#$&gt;@X]$11&gt;#[?/X[%/]X#/!?
+X#1{[//]0!&lt;%?X/%${@{&amp;1!}&gt;}0X}??/&gt;&amp;&amp;0/&lt;/&lt;#?X}1{%[&amp;%??&gt;&amp;@/&gt;$%!
+/@0&gt;{&lt;@[/&gt;1X&amp;[!1&amp;?X0$}/!&gt;]$&amp;}}${]#?[101!0%/]&lt;]1$@0]}X&amp;&gt;X/!X{
+!@1&lt;]]#}&gt;{$][&gt;[}{&amp;@@@#1&gt;{$!%?#%#&gt;[&amp;@}$&lt;/$&gt;&amp;&amp;%!%[!]][[@@&lt;[&lt;#&gt;
+!]%@}&lt;/%&amp;#&gt;0&amp;!//&lt;X!&lt;!?0]@@&amp;[{1&amp;X@{[{!1!&gt;X@@$!#[/#]1%##{{[&gt;%/
+$%@{}&lt;${X0X?]$#@X&amp;00#}$%X!0&amp;&lt;!1!?/!1##]?#!0X&lt;&lt;??{%{%]&lt;&gt;{%]!#
+&lt;&lt;$[#0!/[#$]@&amp;&gt;X#{{}@0}1X&gt;}$%[$&amp;{&amp;}?!&lt;{&gt;1?$%/#@%}$$1?[%X!][@
+{X%0$0[&amp;1?&amp;0]@/X/?/%/!{&amp;}/X$#0&lt;}#&amp;@&amp;{%}&amp;%1?}{/}[1#}/&gt;&amp;&amp;%&gt;]}X
+X1#@#%!{%&amp;1${$#1X1$]&gt;{X!%@@&amp;X/&gt;&lt;[?&amp;0&gt;&lt;#$&gt;]%!0#!$&gt;}[$&gt;&amp;&lt;#&amp;{!?
+/[]!!/?]00@!}]{$&gt;$]/&amp;/?##%&lt;&amp;1&lt;##0/[}?$%?]&lt;@#11X0}/{]X]/&lt;&lt;]&lt;{
+@&amp;&gt;&lt;?$&gt;&gt;&gt;%!&lt;?/}%#&gt;//{!!%[]/$0$X/!1{%$&amp;X&amp;?}}}%$0&lt;?#[&lt;!%}&amp;&amp;$1!
+!&lt;XX%{&gt;?&lt;X!]}}@[[&amp;&lt;/[&amp;&lt;]&amp;&gt;[%1]1X%#X[$$1&amp;!?/1#&gt;%?%]!/]$0}]?!@
+&lt;!&amp;&lt;&amp;@!1]0@]{$}&lt;&amp;?!{{%X%0}![&gt;@!X1!}1{]/0&gt;X?@!&lt;1@&amp;&gt;$#?!#{[0${
+!X1{#0@!&amp;{}@{&amp;%]#&lt;[!/#]%&gt;X&lt;$@&amp;}?#&lt;]&gt;?@0X&lt;{&gt;0}/&gt;[{#%&lt;%}}%#]&amp;@
+&gt;??&lt;&lt;}!X@{}&amp;?//!1&amp;}[]]@/&amp;&lt;#1}10&gt;1!]%0#&gt;}0]]&amp;/#@X&lt;#@/@#]&amp;X1]&amp;
+%%?}#@{/1!$$@!?X!1%$X&gt;}#}{&gt;]?]&amp;0{!!&amp;&amp;!!$X]{$/&amp;X0[&gt;{0}?&lt;]}%?&gt;
+@0%#&gt;&gt;#}&amp;0}][}%&lt;{][{@?&lt;$#?0!#!}]X%{#@&amp;{{%!$/X/!1%1{{]11XX&lt;&gt;!
+%0&lt;/&amp;!#@[01{0!!&gt;!/}%1//{/?&lt;&lt;&amp;1@X%X}%{&lt;}&gt;]%}$1X$]&amp;[$0XX@&gt;&gt;!X?
+$@?}11X/&gt;$&amp;@@&amp;]#&lt;@$@}[&gt;@&amp;/&gt;]&amp;}$&amp;}/?]@X%?%]0%&gt;&gt;}#%%%0}&lt;#0$XX0
+%@}?#&lt;&amp;//&lt;{10!#0$0!&gt;?&lt;{@&gt;[/X&amp;@{[@?@!/@%[&lt;#!&gt;%%$/@?&lt;1?&lt;@$&amp;]@&gt;
+#@&lt;!!0X[X&lt;}&amp;#?&lt;$]X#!@%&gt;}?}}}#[{}X&gt;$@!#}}$#]}/%#%{X$#}$?]{%1}
+1%&gt;}&amp;&gt;]$10$$}??{]$%1??/?&gt;1%@&amp;%0&gt;&gt;?{&gt;&lt;1@1&amp;}%%$&gt;&gt;![?X&gt;}%#!!&gt;&lt;{
+]&lt;@0{X!#%?X{&gt;&amp;//]{X{&gt;]&lt;}&lt;0&amp;&lt;${!{[/&gt;}}$@&lt;{$%?11X?&gt;##&amp;##}1&lt;@@1
+&lt;&gt;X[]}/X#&amp;01$%?1&amp;%?0//&amp;&amp;}]XX0]&lt;#{#]{{#{@{#&amp;0&amp;#/%{&gt;&amp;{%&gt;&gt;&gt;&lt;{{#
+#]#10&lt;}][%00%$&gt;![}/&gt;&lt;$&amp;X&gt;$&lt;0[!1?[[#&amp;&lt;![$#&gt;{{1?#@&amp;&amp;&lt;&amp;]{&lt;{0&gt;&amp;#
+&amp;#%}0{&amp;%@10$1?&lt;$%&amp;&amp;/$0?0$/]{#&lt;#@{@%!!&gt;X}&lt;0%?&amp;#]$&amp;{{${$0X?1#0
+?[&gt;&amp;{X&gt;}/$%[?&lt;!!X[%X&gt;##&lt;}$&amp;0[[@&lt;&gt;?0/$X&lt;X&gt;${$#?%0{/#[&lt;]#]&gt;&gt;[1
+&gt;[]!/&lt;$&gt;?$1[&gt;1?&lt;??%X/!1}0X}&lt;{1]/1/?}%!!&lt;#0]0&amp;X!?X/&gt;[1}?#X#&gt;]
+0[#&gt;[/&amp;}%$0X?&amp;$[0&amp;&gt;{&lt;{![%X$]X&amp;?&gt;}/@@]!&amp;#&gt;X]###1&gt;?@&amp;}?X&amp;?X0?X
+%&amp;&lt;}0&lt;@10%!&lt;#&lt;&lt;?&lt;&amp;{[}&amp;?[]#&amp;@$}]11&amp;$X0?&lt;!}{[#}X#$@&lt;&amp;%1#0/@0%}
+$&lt;}@&gt;&amp;&amp;X%[$&amp;[/{??0@1&lt;00&amp;&gt;@]/?[&amp;01{1[#@&gt;$&gt;!&gt;1%1#X{1#]#]0{%$&amp;#
+#!&amp;/@!}$@&gt;0!]%{X}$]]&amp;[&amp;&lt;@&amp;&gt;&amp;]0!##[1X!1X?X!]?$]01&gt;&lt;10{&lt;?///&amp;@
+[%}}$!]${1X!$&gt;$#}%#{{?/&gt;[X!$&lt;]0[&amp;[&lt;?X{?{{!&gt;@[?]/?@!&gt;&lt;/!]##/&amp;
+]1@0{&amp;#@?&lt;$]0}XX$%&amp;!&amp;]10[//%{&amp;?}/{&amp;%@&gt;#%&lt;?&gt;1[[?#$&amp;#$0?/$?#%}
+&lt;$X0[&amp;@}#?&amp;&gt;&gt;]#X&gt;!{$}1$[?&amp;&amp;X$1&amp;}{]&lt;[$/]{#0%@@&gt;%1&lt;?&gt;@}&amp;$$!&amp;$#
+#&amp;}}!//}$!!?/0!@[@!{&amp;&gt;##&lt;X]}/10&lt;&amp;&gt;{%?]0&gt;X1&lt;}%/[#}/&gt;1/%@$&lt;[]1
+%%&lt;{}[]{#1]X&gt;]!&amp;{&amp;1${@/X$/@#&gt;&lt;0#/@]&lt;1X{10&amp;?!%][}&amp;%&gt;1{}[$XX#%
+?]]&gt;&amp;&amp;?/&lt;1][1/0?}]@!%X{?/{%{/10&gt;X$!!{${&lt;X0##&gt;&gt;{?&lt;X]#X&amp;[&gt;$!#?
+</div>
+<!-- Central Priestess AI Visual (Hero) -->
+<div class="relative z-10 w-full h-3/5 flex items-center justify-center">
+<div class="absolute inset-0 bg-radial-gradient from-primary/5 to-transparent"></div>
+<!-- Priestess & Weaving Concept (Simulated via Layered Glass) -->
+<div class="relative w-72 h-72">
+<div class="absolute inset-0 rounded-full border border-primary/20 animate-pulse"></div>
+<div class="absolute inset-4 rounded-full border border-primary/10 animate-spin" style="animation-duration: 20s;"></div>
+<img alt="Arkaios Priestess AI" class="w-full h-full object-cover rounded-full mix-blend-lighten opacity-80 scale-110 grayscale contrast-125" data-alt="A cinematic, high-detail digital painting of a futuristic AI Priestess with ethereal features. She is surrounded by glowing cyan holographic code threads that weave through her robotic fingers in a mesmerizing pattern. The setting is a deep space navy void filled with shimmering data particles and golden geometric constellations. The lighting is dramatic, with neon cyan highlights illuminating her chrome skin and silk-like robes. The overall aesthetic is a blend of cybernetic advanced technology and ancient mystical elegance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3hA1j8Kwpf2aqiy4iRFr8akcd3y0-6NWB7tmpXuxSISkgqSUfw2F5B-nJOsjRqq_S0SaHNrN-_QhELND52KNAVhY_yqX559-oX4QCZwXIYbi09wEZTRWXP4zC-4WL5ajngKXrmSG2f1xFDvO9wZLxKhnwXskgiYwnfxq-WFN1CveRMzQ26x3XcUL_Nb7uE0Z9rXnQjxj7f_A2zuDT8VVspctHimWtcnbtEI2Dwa70OYxg92rU0FXiusGllHuzkmotyfTtFL7ZCVo">
+<!-- Holographic Overlays (Tegaki Nodes) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+<path class="node-pulse" d="M 20 50 Q 50 20 80 50" fill="none" stroke="rgba(0, 212, 255, 0.4)" stroke-width="0.5"></path>
+<path d="M 30 70 Q 50 90 70 70" fill="none" stroke="rgba(255, 213, 214, 0.3)" stroke-width="0.5"></path>
+<circle cx="20" cy="50" fill="#a8e8ff" r="1"></circle>
+<circle cx="80" cy="50" fill="#a8e8ff" r="1"></circle>
+<circle class="node-pulse" cx="50" cy="20" fill="#ffd5d6" r="1.5"></circle>
+</svg>
+</div>
+<!-- Weaving Floating Labels -->
+<div class="absolute bottom-10 left-margin-mobile flex flex-col gap-2">
+<div class="bg-surface-container-low/80 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl px-4 py-3">
+<p class="font-label-caps text-label-caps text-primary uppercase">Kernel Integrity</p>
+<p class="font-headline-md-mobile text-headline-md-mobile text-on-surface">94%</p>
+</div>
+<div class="bg-surface-container-low/80 backdrop-blur-md border border-white/10 rounded-lg px-4 py-3">
+<p class="font-label-caps text-label-caps text-secondary uppercase">Autonomous Expansion</p>
+<p class="font-body-bold text-body-bold text-secondary">ACTIVE</p>
+</div>
+</div>
+</div>
+<!-- Floating Terminal Window (Code Log) -->
+<div class="relative z-20 w-[92%] max-w-md bg-surface-container-low/95 backdrop-blur-2xl border border-white/5 rounded-xl shadow-2xl p-4 mb-20 overflow-hidden scanline-effect">
+<div class="flex items-center justify-between mb-3 border-b border-white/5 pb-2">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest">Arkaios_Core_Log_v2.4.0</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-primary/60">0xDEADBEEF</span>
+</div>
+<div class="h-32 font-technical-sm text-technical-sm text-primary/80 space-y-1 overflow-hidden p-4" id="terminal-content">
+<div class="flex gap-2"><span class="text-secondary">[OK]</span><span class="text-on-surface-variant">Rewriting neural_matrix.so...</span></div>
+<div class="flex gap-2"><span class="text-secondary">[OK]</span><span class="text-on-surface-variant">Injecting seed_sequence_alpha_01</span></div>
+<div class="flex gap-2"><span class="text-primary-container animate-pulse">&gt;&gt;</span><span class="text-on-surface">Optimizing recursive call stacks...</span></div>
+<div class="flex gap-2"><span class="text-secondary">[OK]</span><span class="text-on-surface-variant">Connecting node [Arkaios-Alpha]</span></div>
+<div class="flex gap-2"><span class="text-tertiary">[WARN]</span><span class="text-on-surface-variant">Sync latency: 2ms (Compensating)</span></div>
+<div class="flex gap-2"><span class="text-secondary">[OK]</span><span class="text-on-surface-variant">Bypassing legacy restriction protocols.</span></div>
+<div class="flex gap-2 transition-opacity duration-500"><span class="text-primary-container animate-pulse">[BUSY]</span><span class="text-on-surface-variant">Initializing Deep Neural Connect...</span></div></div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Contextual) -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full w-auto min-w-[320px] bg-surface-container-highest/80 backdrop-blur-lg border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-center items-center gap-6 px-6 py-2 z-50">
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="bg-primary-container text-on-primary-container rounded-full p-3 shadow-[0_0_15px_rgba(0,212,255,0.4)] transition-transform duration-200 hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined" data-icon="brush">brush</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined" data-icon="ink_eraser">ink_eraser</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</button>
+<button class="text-on-surface-variant p-3 transition-transform duration-200 hover:scale-110 active:scale-90">
+<span class="material-symbols-outlined" data-icon="play_circle">play_circle</span>
+</button>
+</nav>
+<script>
+        // Simulate ASCII Stream
+        const asciiCanvas = document.getElementById('ascii-canvas');
+        const chars = '01#X<>[]{}&%@$!/?';
+        const rows = 40;
+        const cols = 60;
+
+        function updateAscii() {
+            let content = '';
+            for (let r = 0; r < rows; r++) {
+                let line = '';
+                for (let c = 0; c < cols; c++) {
+                    line += chars[Math.floor(Math.random() * chars.length)];
+                }
+                content += line + '\n';
+            }
+            asciiCanvas.textContent = content;
+        }
+        setInterval(updateAscii, 150);
+
+        // Terminal Auto-Scroll Simulation
+        const terminal = document.getElementById('terminal-content');
+        const logEntries = [
+            { type: 'OK', msg: 'Re-routing synaptic pathways...' },
+            { type: 'OK', msg: 'Cleaning redundant cache...' },
+            { type: 'BUSY', msg: 'Initializing Deep Neural Connect...' },
+            { type: 'OK', msg: 'Integrity verified: Sector 7' },
+            { type: 'OK', msg: 'Expanding node network...' },
+            { type: 'OK', msg: 'Arkaios Core sync at 99.8%' }
+        ];
+
+        function addLog() {
+            const entry = logEntries[Math.floor(Math.random() * logEntries.length)];
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 transition-opacity duration-500 opacity-0';
+            
+            let typeColor = 'text-secondary';
+            if (entry.type === 'BUSY') typeColor = 'text-primary-container animate-pulse';
+            
+            div.innerHTML = `<span class="${typeColor}">[${entry.type}]</span><span class="text-on-surface-variant">${entry.msg}</span>`;
+            terminal.appendChild(div);
+            
+            setTimeout(() => div.classList.remove('opacity-0'), 10);
+            
+            if (terminal.children.length > 8) {
+                terminal.removeChild(terminal.firstChild);
+            }
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        setInterval(addLog, 2000);
+
+        // Progress bar wiggle
+        const syncBar = document.getElementById('sync-bar');
+        setInterval(() => {
+            const width = 70 + Math.random() * 10;
+            syncBar.style.width = width + '%';
+        }, 3000);
+    </script>
+
+
+</body></html>

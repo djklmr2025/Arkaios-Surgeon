@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Arkaios Core | FlowNexus Live Injection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-cyan {
+            border-bottom: 2px solid #3cd7ff;
+            box-shadow: 0 4px 12px -2px rgba(60, 215, 255, 0.3);
+        }
+        .map-glow-node {
+            box-shadow: 0 0 15px rgba(60, 215, 255, 0.8), 0 0 5px #ffd5d6;
+        }
+        @keyframes pulse-sync {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .sync-active {
+            animation: pulse-sync 2s infinite ease-in-out;
+        }
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow: hidden;
+        }
+        .cyber-grid {
+            background-image: linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-tertiary-container": "#a20532",
+                        "on-surface": "#e3e1e9",
+                        "inverse-on-surface": "#2f3036",
+                        "tertiary-container": "#ffadb3",
+                        "error-container": "#93000a",
+                        "surface": "#121318",
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "background": "#121318",
+                        "surface-container-highest": "#34343a",
+                        "surface-tint": "#3cd7ff",
+                        "outline": "#859398",
+                        "error": "#ffb4ab",
+                        "surface-bright": "#38393f",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#002109",
+                        "on-primary": "#003642",
+                        "surface-variant": "#34343a",
+                        "primary-fixed": "#b4ebff",
+                        "secondary-container": "#00c55a",
+                        "surface-container-lowest": "#0d0e13",
+                        "tertiary": "#ffd5d6",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-fixed": "#40000e",
+                        "outline-variant": "#3c494e",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "secondary": "#3ee272",
+                        "inverse-primary": "#00677e",
+                        "surface-dim": "#121318",
+                        "surface-container": "#1e1f25",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-primary-container": "#00586b",
+                        "on-secondary-fixed-variant": "#005321",
+                        "secondary-fixed": "#66ff8e",
+                        "on-secondary-container": "#004a1d",
+                        "on-background": "#e3e1e9",
+                        "inverse-surface": "#e3e1e9",
+                        "tertiary-fixed": "#ffdadb",
+                        "primary-container": "#00d4ff",
+                        "on-tertiary": "#67001c",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-primary-fixed": "#001f27",
+                        "on-secondary": "#003915",
+                        "surface-container-high": "#292a2f",
+                        "primary-fixed-dim": "#3cd7ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "topbar-height": "52px",
+                        "margin-mobile": "12px",
+                        "margin-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["10px", {"lineHeight": "14px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased">
+<!-- Top Navigation Bar (Shared Component: TopAppBar) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-primary/10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-primary/5 p-2 rounded-full transition-all">menu</span>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary tracking-wider uppercase">Arkaios Core</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm sync-active" style="font-variation-settings: 'FILL' 1;">sync</span>
+<span class="font-label-caps text-label-caps text-primary">SYNC 100%</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-primary/5 p-2 rounded-full cursor-pointer transition-all active:scale-95 duration-200">settings_input_component</span>
+</div>
+</div>
+</header>
+<!-- Side Drawer (Shared Component: NavigationDrawer) -->
+<aside class="fixed inset-y-0 left-0 z-40 h-full w-72 bg-surface-dim/95 backdrop-blur-2xl border-r border-tertiary/20 shadow-2xl transition-transform duration-300 ease-in-out hidden lg:flex flex-col pt-20">
+<div class="px-6 py-4 flex items-center gap-4 border-b border-white/5 mb-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-primary/30 ring-2 ring-primary/10">
+<img alt="Sacerdotisa AI Core" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLt_ETpInJ2pidKADUcDN7TSh9NJaW80hWJIaxQb9UvaWSCbTMjCr9d-h5rEG51LeIHiakL4cW_U8RQCnfV-21-QGlh_6d1dZSTHymZThA3oo2S9__zQg3iafblyBl3TiF5fi2-2nXFnqhQBXWg29MKkK-WricP2AMEzEJ1-yiUb28nZmMMSLAuOkUyJu9jTEtRXctA_5dnJ2S5PkUodAJLBHBQ7CP5hFGJx9Dw_PRFh5GiXoI4g_FkqjfY"/>
+</div>
+<div>
+<h3 class="font-headline-sm text-primary text-sm">Arkaios System</h3>
+<p class="font-data-mono text-data-mono text-secondary opacity-80 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                    Online • Core V2
+                </p>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<!-- Active Tab: Metro -->
+<a class="flex items-center gap-4 px-4 py-3 bg-primary/10 text-primary border-l-4 border-tertiary rounded-r-lg group transition-all" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">subway</span>
+<span class="font-body-md text-body-md font-semibold">Metro</span>
+<span class="ml-auto font-data-mono text-[9px] bg-primary/20 px-1 rounded">ACTIVE</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg group transition-all" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">account_tree</span>
+<span class="font-body-md text-body-md">Arquitectura</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg group transition-all" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">psychology</span>
+<span class="font-body-md text-body-md">Agentes</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-white/5">
+<div class="p-3 glass-panel rounded-lg border border-primary/20">
+<span class="font-label-caps text-[10px] text-tertiary block mb-1">SYSTEM META</span>
+<span class="font-data-mono text-data-mono text-on-surface opacity-60">Active Node: MX-CDMX-01</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-72 pt-16 h-screen relative cyber-grid overflow-hidden">
+<!-- Interactive Map Background -->
+<div class="absolute inset-0 z-0">
+<div class="relative w-full h-full flex items-center justify-center">
+<!-- Map Placeholder Representation -->
+<div class="relative w-full h-full opacity-60 pointer-events-none" data-location="Mexico City" style="">
+<!-- Geometric Metro Simulation -->
+<svg class="w-full h-full p-20" fill="none" viewbox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+<!-- Metro Lines (Neon) -->
+<path class="animate-[dash_20s_linear_infinite]" d="M100 200 L400 200 L500 300 L500 800" stroke="#3cd7ff" stroke-dasharray="10 5" stroke-width="4"></path>
+<path d="M200 900 L200 400 L500 400 L800 100" opacity="0.6" stroke="#ffd5d6" stroke-width="4"></path>
+<path d="M800 800 L500 800 L400 700 L100 700" stroke="#3ee272" stroke-width="3"></path>
+<!-- Glow Nodes -->
+<circle class="map-glow-node" cx="400" cy="200" fill="#3cd7ff" r="8"></circle>
+<circle class="map-glow-node" cx="500" cy="400" fill="#ffd5d6" r="8"></circle>
+<circle class="animate-pulse" cx="500" cy="800" fill="#3cd7ff" r="10"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- UI Overlays -->
+<div class="absolute inset-0 pointer-events-none p-6 flex flex-col justify-between">
+<!-- Top Controls -->
+<div class="flex justify-between items-start pointer-events-auto">
+<div class="flex flex-col gap-2">
+<div class="bg-secondary/20 border border-secondary/40 text-secondary px-3 py-1 rounded-full font-label-caps text-label-caps flex items-center gap-2 backdrop-blur-md">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+                        CORE_OPTIMIZED_V1.0
+                    </div>
+<div class="glass-panel p-4 rounded-xl border-l-4 border-primary">
+<h2 class="font-headline-sm text-primary mb-1">Sector 7-G Node</h2>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="font-label-caps text-[10px] opacity-60">TRAFFIC FLOW</p>
+<p class="font-data-mono text-xl text-primary">89.4%</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] opacity-60">LATENCY</p>
+<p class="font-data-mono text-xl text-tertiary">4ms</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Zoom/Pan Controls -->
+<div class="flex flex-col gap-2 glass-panel p-1 rounded-lg border border-white/10">
+<button class="p-2 hover:bg-primary/20 text-on-surface rounded transition-colors"><span class="material-symbols-outlined">add</span></button>
+<div class="h-px bg-white/10 mx-2"></div>
+<button class="p-2 hover:bg-primary/20 text-on-surface rounded transition-colors"><span class="material-symbols-outlined">remove</span></button>
+<div class="h-px bg-white/10 mx-2"></div>
+<button class="p-2 hover:bg-primary/20 text-on-surface rounded transition-colors"><span class="material-symbols-outlined">my_location</span></button>
+</div>
+</div>
+<!-- Bottom Content (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 pointer-events-auto items-end">
+<!-- Priestess Monitor -->
+<div class="md:col-span-3 glass-panel rounded-xl overflow-hidden border border-primary/30 relative group">
+<div class="aspect-square w-full relative">
+<img alt="Priestess Monitor" class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLt_ETpInJ2pidKADUcDN7TSh9NJaW80hWJIaxQb9UvaWSCbTMjCr9d-h5rEG51LeIHiakL4cW_U8RQCnfV-21-QGlh_6d1dZSTHymZThA3oo2S9__zQg3iafblyBl3TiF5fi2-2nXFnqhQBXWg29MKkK-WricP2AMEzEJ1-yiUb28nZmMMSLAuOkUyJu9jTEtRXctA_5dnJ2S5PkUodAJLBHBQ7CP5hFGJx9Dw_PRFh5GiXoI4g_FkqjfY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+<div class="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[9px] font-data-mono border border-primary/40 flex items-center gap-1">
+<span class="w-1 h-1 bg-red-500 rounded-full animate-pulse"></span> REC: LIVE_FEED
+                        </div>
+<div class="absolute bottom-3 left-3">
+<p class="font-label-caps text-white text-[10px]">MONITORING_ESTABLISHED</p>
+<p class="font-headline-sm text-primary text-xs">Sacerdotisa Unit-01</p>
+</div>
+</div>
+</div>
+<!-- Data Points Panel -->
+<div class="md:col-span-6 glass-panel rounded-xl p-5 border border-white/10 self-stretch">
+<div class="flex justify-between items-center mb-4">
+<h4 class="font-label-caps text-primary">INJECTED DATA CLUSTERS</h4>
+<span class="material-symbols-outlined text-sm opacity-60">filter_list</span>
+</div>
+<div class="space-y-3 overflow-y-auto max-h-48 pr-2 custom-scrollbar">
+<div class="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5 hover:border-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">terminal</span>
+<div>
+<p class="font-body-md text-sm">Node Override: Pantitlán</p>
+<p class="font-data-mono text-[10px] opacity-50">Hash: 0x882...FF01</p>
+</div>
+</div>
+<span class="font-data-mono text-secondary text-xs">COMPLETE</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5 hover:border-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-lg">data_exploration</span>
+<div>
+<p class="font-body-md text-sm">Flow Calibration: Line 1</p>
+<p class="font-data-mono text-[10px] opacity-50">Throughput: 1.2M req/s</p>
+</div>
+</div>
+<span class="font-data-mono text-primary text-xs">STABLE</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5 hover:border-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-lg">security</span>
+<div>
+<p class="font-body-md text-sm">Encryption Layer: Gold</p>
+<p class="font-data-mono text-[10px] opacity-50">Protocol: Arkaios-X</p>
+</div>
+</div>
+<span class="font-data-mono text-tertiary text-xs">ENCRYPTED</span>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="md:col-span-3 flex flex-col gap-3">
+<button class="w-full py-4 bg-primary text-on-primary font-label-caps text-sm rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">send</span>
+                        DEPLOY TO GRID
+                    </button>
+<button class="w-full py-4 border border-tertiary/40 text-tertiary font-label-caps text-sm rounded-lg flex items-center justify-center gap-2 hover:bg-tertiary/10 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">history</span>
+                        INJECTION LOGS
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav (Shared Component: BottomNavBar) -->
+<!-- Destination Rule: Render as this is a top-level map view -->
+<footer class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter py-4 bg-surface-container-low/70 backdrop-blur-md border-t border-primary/20 shadow-[0_-4px_20px_rgba(0,212,255,0.15)] md:hidden">
+<span class="material-symbols-outlined text-outline opacity-60 hover:text-primary-fixed transition-transform cursor-pointer">skip_previous</span>
+<span class="material-symbols-outlined text-primary scale-110 drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] cursor-pointer">play_circle</span>
+<span class="material-symbols-outlined text-outline opacity-60 hover:text-primary-fixed transition-transform cursor-pointer">pause_circle</span>
+<span class="material-symbols-outlined text-outline opacity-60 hover:text-primary-fixed transition-transform cursor-pointer">skip_next</span>
+<span class="material-symbols-outlined text-outline opacity-60 hover:text-primary-fixed transition-transform cursor-pointer">slow_motion_video</span>
+</footer>
+<script>
+        // Micro-interactions for map panning simulation
+        const mainCanvas = document.querySelector('main');
+        const mapSvg = document.querySelector('svg');
+
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
+
+        mainCanvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - mainCanvas.offsetLeft;
+            startY = e.pageY - mainCanvas.offsetTop;
+            mainCanvas.style.cursor = 'grabbing';
+        });
+
+        mainCanvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            mainCanvas.style.cursor = 'default';
+        });
+
+        mainCanvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            mainCanvas.style.cursor = 'default';
+        });
+
+        mainCanvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - mainCanvas.offsetLeft;
+            const y = e.pageY - mainCanvas.offsetTop;
+            const walkX = (x - startX) * 0.5;
+            const walkY = (y - startY) * 0.5;
+            mapSvg.style.transform = `translate(${walkX}px, ${walkY}px)`;
+        });
+
+        // Atmospheric shimmer effect on nodes
+        setInterval(() => {
+            const nodes = document.querySelectorAll('.map-glow-node');
+            nodes.forEach(node => {
+                node.style.opacity = 0.5 + Math.random() * 0.5;
+            });
+        }, 1500);
+    </script>
+</body></html>

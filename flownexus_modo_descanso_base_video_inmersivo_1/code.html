@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Metro Holographic - Liquid Crystal Reveal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        body {
+            background-color: #0d0e13;
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* SVG Filter for Liquid Effect */
+        .liquid-filter {
+            filter: url(#liquid-distortion);
+        }
+
+        /* Liquid Crystal Drip Animation */
+        @keyframes liquid-drip {
+            0% { clip-path: inset(0 0 0 0); opacity: 1; }
+            100% { clip-path: inset(100% 0 0 0); opacity: 0; filter: blur(20px) contrast(2); }
+        }
+
+        .animate-liquid-reveal {
+            animation: liquid-drip 2s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+        }
+
+        /* Wave Animation for SVG Displacement */
+        @keyframes wave-move {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.1) translate(-2%, -2%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+
+        .animate-wave {
+            animation: wave-move 8s ease-in-out infinite;
+        }
+
+        /* Neon Breathing Effect */
+        @keyframes neon-pulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); opacity: 0.6; }
+            50% { text-shadow: 0 0 25px rgba(0, 212, 255, 0.9); opacity: 0.9; }
+        }
+        .animate-neon-pulse { animation: neon-pulse 4s infinite ease-in-out; }
+
+        .cyber-void-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 24, 0.9) 100%);
+        }
+
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            object-fit: cover;
+            filter: brightness(0.4) saturate(0.8);
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(30, 31, 37, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        #liquid-overlay {
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#121318",
+                        "primary-container": "#00d4ff",
+                        "secondary": "#3ee272",
+                        "on-surface": "#e3e1e9",
+                        "on-surface-variant": "#bbc9cf",
+                        "surface-container-high": "#292a2f",
+                        "surface-container-lowest": "#0d0e13",
+                        "background": "#121318",
+                        "primary": "#a8e8ff"
+                    },
+                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    "spacing": { "margin-mobile": "12px", "topbar-height": "52px", "unit": "4px", "gutter": "16px" },
+                    "fontFamily": {
+                        "body-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex flex-col h-screen w-screen relative overflow-hidden" onclick="triggerLiquidReveal(event)">
+<!-- Hidden SVG Filter for Liquid Displacement -->
+<svg style="position: absolute; width: 0; height: 0;">
+<filter id="liquid-distortion">
+<feturbulence basefrequency="0.015" id="turbulence" numoctaves="3" seed="1" type="fractalNoise"></feturbulence>
+<fedisplacementmap in="SourceGraphic" scale="30"></fedisplacementmap>
+</filter>
+</svg>
+<!-- DESTINATION STATE: FlowNexus Feed (Hidden initially) -->
+<div class="fixed inset-0 z-10 bg-surface-container-lowest flex flex-col opacity-0 transition-opacity duration-1000" id="app-destination">
+<header class="h-[52px] border-b border-white/10 flex items-center justify-between px-4 bg-surface/80 backdrop-blur-md">
+<span class="font-display-lg text-xs tracking-widest text-primary-container">FLOW_NEXUS // CORE</span>
+<span class="material-symbols-outlined text-on-surface/50 text-xl">grid_view</span>
+</header>
+<main class="flex-grow p-4 space-y-4 overflow-y-auto">
+<div class="glass-panel p-4 rounded-xl space-y-3 border-l-4 border-l-primary-container">
+<div class="flex justify-between items-center">
+<span class="font-label-caps text-[9px] text-primary-container">SYSTEM STATUS: SYNCED</span>
+<span class="font-technical-sm text-[9px] text-on-surface/40">12:44:01</span>
+</div>
+<h4 class="font-body-bold text-on-surface">Orchestrator Node Alpha Active</h4>
+<div class="h-24 bg-surface-container-high/40 rounded-lg flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-primary-container/30 text-4xl animate-pulse">insights</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-panel p-4 rounded-xl aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-secondary">memory</span>
+<div>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">CPU Load</p>
+<p class="font-display-lg text-lg text-secondary">14.2%</p>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-xl aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary-container">hub</span>
+<div>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">Network</p>
+<p class="font-display-lg text-lg text-primary-container">980 Mbps</p>
+</div>
+</div>
+</div>
+</main>
+<nav class="h-16 border-t border-white/5 bg-surface/40 backdrop-blur-xl flex justify-around items-center">
+<span class="material-symbols-outlined text-primary-container">home</span>
+<span class="material-symbols-outlined text-on-surface/40">search</span>
+<span class="material-symbols-outlined text-on-surface/40">notifications</span>
+<span class="material-symbols-outlined text-on-surface/40">person</span>
+</nav>
+</div>
+<!-- TOP LAYER: Modo Descanso (The "Liquid" Surface) -->
+<div class="fixed inset-0 z-20 pointer-events-none" id="liquid-overlay">
+<!-- Immersive Background Video -->
+<div class="fixed inset-0 z-0">
+<img alt="Fondo Ciudades del Futuro" class="video-bg liquid-filter animate-wave" src="https://lh3.googleusercontent.com/aida/ADBb0ugGYcLBWbbiWGXKcvs_jdMtgpfCGYFI1DJwd2ZUqn_UgGiI-1_tZCvEWxN7DIyxfrjel_WaJxPH-gWGllpAvdJpEn_5InXT0AW6Je4QEwvTJv_wwGF9R-cKY4VfQDzujCmkU7YBxpyIaCzZFW_wmXVR7v9tdyh9-lZ5_WLeMx5WQvfkpK_PoQ8mXiHltN61i1llCYSBiTiaOfTRK0jTTbhCnE-YSnjopGwsQB6yBDq2nK6fiiBiOHRPf0s"/>
+<div class="absolute inset-0 cyber-void-overlay backdrop-blur-[2px]"></div>
+</div>
+<!-- UI Elements that will "Drip" -->
+<header class="fixed top-0 w-full z-50 bg-surface/10 backdrop-blur-md border-b border-white/5 flex justify-between items-center h-[52px] px-margin-mobile">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container text-2xl">lens_blur</span>
+<h1 class="font-display-lg text-[18px] tracking-[0.2em] text-on-surface/80">METRO HOLOGRAPHIC</h1>
+</div>
+</header>
+<main class="relative z-10 h-full flex flex-col items-center justify-center" id="reveal-content">
+<div class="text-center space-y-12">
+<!-- AI Entity Placeholder (Priestess guiding the water) -->
+<div class="relative w-72 h-72 mx-auto transition-all duration-1000" id="ai-entity-container">
+<div class="absolute -inset-12 border border-primary-container/10 rounded-full animate-[spin_20s_linear_infinite] opacity-30"></div>
+<img alt="Priestess of Arkaios" class="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(0,212,255,0.4)] liquid-filter" src="https://lh3.googleusercontent.com/aida/ADBb0uhA9MvVsc32V1vV6fU3W5z9hW7Y0q8T8R_1F-0O_6hI4eUq5l0oF-0o9p0e9R8S-0T=s1024"/>
+<!-- Subtle glowing particles near her hands -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-12">
+<div class="w-4 h-4 bg-primary-container/20 blur-md rounded-full animate-pulse"></div>
+<div class="w-4 h-4 bg-primary-container/20 blur-md rounded-full animate-pulse"></div>
+</div>
+</div>
+<div class="space-y-4">
+<h2 class="font-headline-md text-on-surface/60 tracking-[0.6em] animate-neon-pulse uppercase text-sm">
+                    Toca para Sumergirte
+                </h2>
+<div class="flex justify-center gap-4 items-center">
+<div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-primary-container/60"></div>
+<span class="font-technical-sm text-primary-container text-[10px] tracking-widest uppercase">Liquid State Active</span>
+<div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-primary-container/60"></div>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 w-full h-16 flex justify-around items-center bg-surface/20 border-t border-white/5 text-on-surface/20">
+<span class="material-symbols-outlined">waves</span>
+<span class="material-symbols-outlined">water_drop</span>
+<span class="material-symbols-outlined">opacity</span>
+</footer>
+</div>
+<script>
+    let isTransitioning = false;
+
+    function triggerLiquidReveal(event) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
+        // Sound placeholder logic
+        console.log("PLAY SOUND: liquid_splash.mp3");
+        // const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-water-splash-1311.mp3');
+        // audio.play();
+
+        const overlay = document.getElementById('liquid-overlay');
+        const app = document.getElementById('app-destination');
+        const turbulence = document.getElementById('turbulence');
+
+        // Intensify distortion on click
+        let val = 0.015;
+        const distInterval = setInterval(() => {
+            val += 0.01;
+            turbulence.setAttribute('baseFrequency', val);
+            if (val > 0.1) clearInterval(distInterval);
+        }, 30);
+
+        // Add the drip animation
+        overlay.classList.add('animate-liquid-reveal');
+
+        // Reveal the app destination underneath
+        setTimeout(() => {
+            app.classList.remove('opacity-0');
+            app.classList.add('opacity-100');
+        }, 400);
+
+        // Cleanup overlay after animation
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 2000);
+    }
+
+    // Gentle turbulence movement
+    let seed = 1;
+    setInterval(() => {
+        if (!isTransitioning) {
+            seed++;
+            document.getElementById('turbulence').setAttribute('seed', seed);
+        }
+    }, 150);
+</script>
+</body></html>

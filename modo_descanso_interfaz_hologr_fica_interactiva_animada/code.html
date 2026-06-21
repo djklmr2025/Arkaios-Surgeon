@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Metro Holographic - Modo Descanso</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Ripple Effect - Water Simulation */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-animation 1.5s cubic-bezier(0, 0.2, 0.4, 1);
+            background: radial-gradient(circle, rgba(168, 232, 255, 0.3) 0%, rgba(168, 232, 255, 0.05) 50%, transparent 70%);
+            border: 2px solid rgba(168, 232, 255, 0.2);
+            box-shadow: inset 0 0 20px rgba(168, 232, 255, 0.1);
+            pointer-events: none;
+            backdrop-filter: contrast(1.2) brightness(1.1) blur(1px);
+        }
+
+        @keyframes ripple-animation {
+            0% {
+                transform: scale(0);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        /* Neon Breathing Effect */
+        @keyframes neon-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(168, 232, 255, 0.5), 0 0 20px rgba(168, 232, 255, 0.2);
+                opacity: 0.7;
+                transform: scale(1);
+            }
+            50% {
+                text-shadow: 0 0 25px rgba(168, 232, 255, 0.9), 0 0 40px rgba(168, 232, 255, 0.5);
+                opacity: 1;
+                transform: scale(1.02);
+            }
+        }
+
+        .animate-neon-pulse {
+            animation: neon-pulse 3s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        .cyber-void-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(18, 19, 24, 0.7) 100%);
+        }
+
+        body {
+            background-color: #050712;
+            overflow: hidden;
+            user-select: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#00c55a",
+                        "on-secondary": "#003915",
+                        "on-surface": "#e3e1e9",
+                        "on-secondary-container": "#004a1d",
+                        "surface-container": "#1e1f25",
+                        "on-primary": "#003642",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface-container-highest": "#34343a",
+                        "surface-container-low": "#1a1b21",
+                        "primary": "#a8e8ff",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "inverse-primary": "#00677e",
+                        "surface-bright": "#38393f",
+                        "surface-dim": "#121318",
+                        "on-surface-variant": "#bbc9cf",
+                        "on-secondary-fixed": "#002109",
+                        "surface-variant": "#34343a",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface": "#121318",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2f3036",
+                        "error-container": "#93000a",
+                        "background": "#121318",
+                        "on-tertiary-container": "#a20532",
+                        "tertiary": "#ffd5d6",
+                        "surface-container-high": "#292a2f",
+                        "outline": "#859398",
+                        "secondary-fixed": "#66ff8e",
+                        "primary-container": "#00d4ff",
+                        "tertiary-container": "#ffadb3",
+                        "on-primary-container": "#00586b",
+                        "primary-fixed": "#b4ebff",
+                        "on-secondary-fixed-variant": "#005321",
+                        "surface-tint": "#3cd7ff",
+                        "on-tertiary-fixed": "#40000e",
+                        "secondary": "#3ee272",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-primary-fixed": "#001f27",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "on-tertiary": "#67001c",
+                        "secondary-fixed-dim": "#3ee272",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-background": "#e3e1e9",
+                        "outline-variant": "#3c494e",
+                        "inverse-surface": "#e3e1e9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "margin-mobile": "12px",
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-base": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex flex-col h-screen w-screen relative overflow-hidden" onclick="createRipple(event)">
+<!-- Background Video Simulation -->
+<div class="fixed inset-0 z-0">
+<img alt="Fondo futurista CyberFlow" class="w-full h-full object-cover opacity-60 scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPxTMtaRvtu-x9KNEemCVixRaVde432cxTy7sOYRpYEsNslhMPboU7-3PolYE9J-l2Y9I1oS94HoIxErSFSXnl2We-R-48XqpcpDra8k0ygTeOzI7wJWp_iKj54zeYNTQAGxVudQ3CSCw_gPC17IdqChTeLNptTLq757OKke9eN5sXtmJ6vFbYw_5FhZEE2jz18AKhSVLtWWpjLYJvBn0BnpHoo_AAKHdR_NpZ7uKC_Et4SV1TZtBnQJKLKjVYtZFm7Q3GrrHsgFU" style="filter: saturate(1.2) brightness(0.7) contrast(1.1) blur(4px);"/>
+<div class="absolute inset-0 cyber-void-overlay backdrop-blur-[1px]"></div>
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">waves</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 mr-6">
+<span class="font-label-caps text-on-surface-variant tracking-widest opacity-60">ID: UNIT_772_HOLO</span>
+<span class="font-label-caps text-on-surface-variant tracking-widest opacity-60">STATUS: READY</span>
+</div>
+<span class="material-symbols-outlined text-primary text-xl active:scale-95 duration-300">settings_input_antenna</span>
+</div>
+</header>
+<!-- Main Content: Central Attract State -->
+<main class="relative z-10 flex-grow flex flex-col items-center justify-center pointer-events-none">
+<div class="text-center space-y-8">
+<div class="mb-12 relative">
+<div class="absolute -inset-16 border border-primary/20 rounded-full animate-[spin_12s_linear_infinite] pointer-events-none"></div>
+<div class="absolute -inset-24 border border-secondary/10 rounded-full animate-[spin_20s_linear_infinite_reverse] pointer-events-none"></div>
+<span class="material-symbols-outlined text-7xl text-primary drop-shadow-[0_0_20px_rgba(168,232,255,0.6)]" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+</div>
+<h2 class="font-headline-md text-on-surface tracking-[0.2em] animate-neon-pulse uppercase">
+            Toca para Interactuar
+        </h2>
+<div class="flex justify-center gap-2 items-center">
+<div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-primary"></div>
+<span class="font-technical-sm text-on-surface-variant text-[10px] tracking-widest uppercase">System Core Active</span>
+<div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-primary"></div>
+</div>
+</div>
+</main>
+<!-- Author Signature Overlay -->
+<div class="fixed top-20 right-6 z-20 pointer-events-none">
+<div class="bg-surface-container-low/60 backdrop-blur-md border border-primary/20 p-4 rounded-lg flex flex-col items-end gap-1">
+<span class="font-label-caps text-secondary text-[9px] tracking-widest">ECOSISTEMA INTELIGENTE</span>
+<span class="font-body-bold text-on-surface text-xs italic opacity-80">firmado por Stitch AI Assistant</span>
+</div>
+</div>
+<!-- Bottom Interface (Initially hidden) -->
+<div class="fixed bottom-12 left-0 w-full flex justify-center z-50 opacity-0 transform translate-y-8 transition-all duration-1000 pointer-events-none" id="interaction-ui">
+<button class="pointer-events-auto flex items-center gap-3 px-8 py-4 bg-surface-container-highest/80 backdrop-blur-2xl border border-white/10 rounded-full text-primary hover:bg-primary/10 hover:border-primary/40 transition-all active:scale-95 group shadow-[0_20px_60px_rgba(0,0,0,0.55)]" onclick="resetUI(event)">
+<span class="material-symbols-outlined text-xl group-hover:rotate-180 transition-transform duration-500">replay</span>
+<span class="font-label-caps tracking-[0.15em]">Regresar a Modo Demo</span>
+</button>
+</div>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center h-16 pb-safe bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30">
+<div class="flex flex-col items-center text-on-surface-variant opacity-40">
+<span class="material-symbols-outlined text-2xl">motion_photos_on</span>
+<span class="font-label-caps text-[9px]">Live Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="font-label-caps text-[9px]">Interactive Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-40">
+<span class="material-symbols-outlined text-2xl">replay</span>
+<span class="font-label-caps text-[9px]">Demo Loop</span>
+</div>
+</nav>
+<script>
+    let firstTouch = false;
+
+    function createRipple(event) {
+        const body = document.body;
+        const ripple = document.createElement("div");
+        ripple.classList.add("ripple");
+        
+        // Size calculated to cover significant area for "water ripple" effect
+        const size = Math.max(window.innerWidth, window.innerHeight) * 0.4;
+        ripple.style.width = ripple.style.height = `${size}px`;
+        
+        const x = event.clientX - size / 2;
+        const y = event.clientY - size / 2;
+        
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        
+        body.appendChild(ripple);
+        
+        // Show Interaction UI on first touch
+        if (!firstTouch) {
+            const ui = document.getElementById('interaction-ui');
+            ui.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+            ui.classList.add('opacity-100', 'translate-y-0');
+            firstTouch = true;
+        }
+
+        ripple.addEventListener("animationend", () => {
+            ripple.remove();
+        });
+    }
+
+    function resetUI(event) {
+        event.stopPropagation();
+        const ui = document.getElementById('interaction-ui');
+        ui.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+        ui.classList.remove('opacity-100', 'translate-y-0');
+        firstTouch = false;
+    }
+</script>
+</body></html>

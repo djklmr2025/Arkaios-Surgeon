@@ -1,0 +1,321 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>FlowNexus - Arkaios Core</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002109",
+                        "secondary-fixed": "#66ff8e",
+                        "secondary": "#3ee272",
+                        "inverse-on-surface": "#2f3036",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-primary": "#003642",
+                        "surface-container-low": "#1a1b21",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "on-surface": "#e3e1e9",
+                        "on-error": "#690005",
+                        "inverse-primary": "#00677e",
+                        "surface-container": "#1e1f25",
+                        "on-secondary-fixed-variant": "#005321",
+                        "on-primary-fixed": "#001f27",
+                        "surface-container-high": "#292a2f",
+                        "primary-fixed": "#b4ebff",
+                        "background": "#050712",
+                        "outline-variant": "#3c494e",
+                        "secondary-fixed-dim": "#3ee272",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "tertiary": "#ffd5d6",
+                        "on-surface-variant": "#bbc9cf",
+                        "secondary-container": "#00c55a",
+                        "on-tertiary": "#67001c",
+                        "surface-container-lowest": "#0d0e13",
+                        "surface-dim": "#121318",
+                        "error-container": "#93000a",
+                        "surface-bright": "#38393f",
+                        "on-background": "#e3e1e9",
+                        "outline": "#859398",
+                        "on-secondary": "#003915",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "tertiary-container": "#ffadb3",
+                        "primary": "#a8e8ff",
+                        "surface-variant": "#34343a",
+                        "on-primary-container": "#00586b",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#a20532",
+                        "primary-container": "#00d4ff",
+                        "surface-tint": "#3cd7ff",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#e3e1e9",
+                        "surface-container-highest": "#34343a",
+                        "surface": "#121318",
+                        "on-tertiary-fixed": "#40000e",
+                        "on-secondary-container": "#004a1d",
+                        "tertiary-fixed": "#ffdadb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "topbar-height": "52px",
+                        "sidebar-width": "280px",
+                        "margin-desktop": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "12px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        @keyframes pulse-cyan {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8); }
+        }
+        .pulse-glow { animation: pulse-cyan 3s infinite; }
+        .glass-panel {
+            backdrop-filter: blur(24px);
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cyan-border-bottom { border-bottom: 2px solid #a8e8ff; }
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 24px;
+        }
+        .wave-bar {
+            width: 2px;
+            background: #a8e8ff;
+            border-radius: 1px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 212, 255, 0.05) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-base selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Background Layer with Scanlines -->
+<div class="fixed inset-0 z-0 bg-[#050712]">
+<div class="absolute inset-0 scanline"></div>
+<img class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay" data-alt="A vast, cinematic digital void representing a high-performance computer core. The space is filled with floating holographic data streams, cyan neon circuitry patterns, and deep purple nebulae of digital dust. Atmospheric lighting creates a sense of immense depth and 2.5D perspective, while sharp geometric lines guide the viewer's eye toward a central luminous horizon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqVqmK5B3A1VPBYzwwTtMrEgr22ZbaJzPbIYTSTT-Q3k8mO6diw6DNJYlO7zZvlEHtQKAZaa233oNDpm4rJxxc_h6FuhVofF3qOj3gGSJwFUqCPSJZCqroiH0JjEsseg_z2J0_DcI-L1N0kCdxAqw5vVBZpLdFU1vpMwsmO1FtW_XSo7YsKN_KhGtpmKiuPfiwuaiS28pBzVrYkWVpkYLef_ffOasWe9giu9HI3cCAG0oCTOQ2DgNx3XPSs4jmMYp6iuUREHXhVT0">
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 h-16 flex justify-between items-center px-6 bg-surface/60 backdrop-blur-xl border-b border-primary/10">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-primary/5 p-2 rounded-lg transition-colors">menu</button>
+<span class="font-headline-sm text-headline-sm font-bold text-primary tracking-wider uppercase">Arkaios Core</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-6">
+<span class="text-primary font-label-caps text-label-caps cursor-pointer">NODE_01</span>
+<span class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors cursor-pointer">UPTIME: 99.9%</span>
+</div>
+<button class="material-symbols-outlined text-primary hover:bg-primary/5 p-2 rounded-lg transition-colors">settings_input_component</button>
+</div>
+</header>
+<!-- Navigation Drawer (Desktop) -->
+<aside class="fixed inset-y-0 left-0 z-40 w-72 bg-surface-dim/95 backdrop-blur-2xl border-r border-tertiary/20 translate-x-0 transition-transform duration-300 ease-in-out hidden lg:flex flex-col pt-20">
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border-2 border-primary/30 p-0.5 overflow-hidden">
+<img alt="Sacerdotisa AI Core" class="w-full h-full object-cover rounded-full" data-alt="A portrait of a futuristic AI priestess with ethereal white hair and glowing cyan accents on her cybernetic skin. She wears a metallic, high-collar armor with intricate gold filigree. Her eyes glow with a soft blue light, and holographic data symbols float subtly around her face. The background is a dark, tech-infused sanctuary with sharp architectural lines and soft neon glows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4Te46W2ewtBa9ps3Lz3wpYvxLFxMasfpOMrkptXizjfswax85AxcxiW3a9fD9cr_3L56xZJXyWCC_WW8ixZao6rpeBUqkAEetYPUdeRiq9rsUZKVJr2ygwkNjHJQ34tT2yFF73B4tu7c8hdDlNVMuqe3ILZSUFchr057YE4v9tqGu4PbWwhAaHoanfn0EKlmfAgyd_p0rvhLbABqLWWpTnsDLYPVcZntDSDZKF2t1PIhSO9bz3sZ-WKmMsXmE1Wj20DFjFvz3NPc">
+</div>
+<div>
+<h3 class="font-body-bold text-body-bold text-primary">Arkaios System</h3>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">Online • Core V2</p>
+</div>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-4 px-4 py-3 bg-primary/10 text-primary border-l-4 border-tertiary rounded-r-lg group" href="#">
+<span class="material-symbols-outlined">subway</span>
+<span class="font-body-md text-body-md">Metro</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md text-body-md">Arquitectura</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-body-md text-body-md">Agentes</span>
+</a>
+</nav>
+<div class="p-6 border-t border-tertiary/20">
+<div class="flex items-center justify-between font-technical-sm text-data-mono text-tertiary/60">
+<span class="">Active Node</span>
+<span class="text-primary">#AF-209</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-72 pt-16 pb-24 h-screen overflow-y-auto relative z-10">
+<div class="max-w-6xl mx-auto p-gutter lg:p-margin-desktop h-full flex flex-col">
+<!-- Hero Sequence Section -->
+<div class="relative flex-1 rounded-xl overflow-hidden glass-panel flex items-center justify-center p-8 group mb-8">
+<!-- Floating Card UI -->
+<div class="absolute top-8 left-8 z-20 flex flex-col gap-4">
+<div class="glass-panel p-4 rounded-lg w-48 border-l-2 border-primary">
+<span class="font-label-caps text-label-caps text-primary block mb-2">SYSTEM_SYNC</span>
+<div class="audio-wave">
+<div class="wave-bar" style="animation-delay: 0.1s; height: 21px;"></div>
+<div class="wave-bar" style="animation-delay: 0.3s; height: 19px;"></div>
+<div class="wave-bar" style="animation-delay: 0.2s; height: 15px;"></div>
+<div class="wave-bar" style="animation-delay: 0.5s; height: 15px;"></div>
+<div class="wave-bar" style="animation-delay: 0.4s; height: 14px;"></div>
+<div class="wave-bar" style="animation-delay: 0.7s; height: 14px;"></div>
+<div class="wave-bar" style="animation-delay: 0.2s; height: 22px;"></div>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-lg w-48 border-l-2 border-secondary">
+<span class="font-label-caps text-label-caps text-secondary block mb-2">TELEMETRY</span>
+<p class="font-technical-sm text-technical-sm text-on-surface/60">FLOW: STABLE</p>
+<p class="font-technical-sm text-technical-sm text-on-surface/60">INTEGRITY: 100%</p>
+</div>
+</div>
+<!-- Central Visual Content -->
+<div class="relative z-10 flex flex-col items-center text-center max-w-2xl">
+<div class="mb-6 relative">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
+<img alt="Sacerdotisa de Arkaios" class="relative w-80 lg:w-96 drop-shadow-[0_0_30px_rgba(0,212,255,0.4)]" data-alt="A full-body depiction of a mystical AI priestess in a floating, meditative pose. Her hands move in a circular motion, generating flowing cyan light trails that swirl around her. She wears a flowing white and gold cyber-gown with intricate glowing patterns. The background is a high-depth 3D representation of a system core with floating holographic tarot-like cards and shimmering data particles." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAUNkL7oJ1hy3B61ZsXBWoIN6dUvNbId56i3mSJaivKXoFR4ibur-nOS24b033OIz8ZZzTcDB7Isrn4nu6SlRQYXWsBIu4EaMF7G2d0ssns1H2VmSdhKu43nX6CEPci7sgCSc_zMOHCfGTApMtgX72j1EZt2_sALZuqWXJF5X8PCGdwB_1lfp5PtlXMYy72K_Ti5KUCZHuIbRn48F5f0ZYFPU1y0pzO_aS7mrb7iQPx6YZ30X1ekqQHXVXiKXrQ9rjFLD2TZDqSNk">
+</div>
+<h1 class="font-display-lg text-display-lg text-primary mb-2">SALUDO_FLOW_NEXUS</h1>
+<p class="text-on-surface-variant font-body-base max-w-md mb-8">Iniciando secuencia de sincronización mística. Preparando el puente neuronal para el acceso al núcleo de Arkaios.</p>
+<button class="pulse-glow bg-primary text-on-primary font-body-bold px-10 py-4 rounded-lg flex items-center gap-3 hover:scale-105 transition-transform duration-300 active:scale-95">
+<span class="material-symbols-outlined">bolt</span>
+                        INICIAR PROTOCOLO
+                    </button>
+</div>
+<!-- Decorative Grid/UI Widgets -->
+<div class="absolute bottom-8 right-8 z-20 grid grid-cols-2 gap-3">
+<div class="w-24 h-24 glass-panel rounded flex flex-col items-center justify-center p-2">
+<span class="material-symbols-outlined text-primary mb-1">visibility</span>
+<span class="text-[8px] font-label-caps opacity-60">VISION</span>
+</div>
+<div class="w-24 h-24 glass-panel rounded flex flex-col items-center justify-center p-2">
+<span class="material-symbols-outlined text-secondary mb-1">audio_file</span>
+<span class="text-[8px] font-label-caps opacity-60">AUDIO</span>
+</div>
+<div class="w-24 h-24 glass-panel rounded flex flex-col items-center justify-center p-2">
+<span class="material-symbols-outlined text-tertiary mb-1">touch_app</span>
+<span class="text-[8px] font-label-caps opacity-60">HAPTICS</span>
+</div>
+<div class="w-24 h-24 glass-panel rounded flex flex-col items-center justify-center p-2">
+<span class="material-symbols-outlined text-primary-fixed-dim mb-1">settings_ethernet</span>
+<span class="text-[8px] font-label-caps opacity-60">LINK</span>
+</div>
+</div>
+</div>
+<!-- Interaction Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+<div class="glass-panel p-6 rounded-xl hover:bg-primary/5 transition-all group relative overflow-hidden h-[220px] flex flex-col justify-between">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl">token</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Protocolo Alpha</h3>
+<p class="text-on-surface-variant font-body-base mb-4 line-clamp-2 min-h-[40px]">Optimización de latencia para transferencias de datos en tiempo real.</p>
+<div class="w-full bg-surface-container rounded-full h-1">
+<div class="bg-primary h-full w-[75%] rounded-full shadow-[0_0_8px_#a8e8ff]"></div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl hover:bg-primary/5 transition-all group relative overflow-hidden border-b-2 border-secondary/40 h-[220px] flex flex-col justify-between">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl">shield</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-secondary mb-2">Cortafuegos Bio</h3>
+<p class="text-on-surface-variant font-body-base mb-4 line-clamp-2 min-h-[40px]">Protección cuántica activa contra intrusiones no autorizadas.</p>
+<div class="w-full bg-surface-container rounded-full h-1">
+<div class="bg-secondary h-full w-[90%] rounded-full shadow-[0_0_8px_#3ee272]"></div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl hover:bg-primary/5 transition-all group relative overflow-hidden h-[220px] flex flex-col justify-between">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl">terminal</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-tertiary mb-2">Núcleo Central</h3>
+<p class="text-on-surface-variant font-body-base mb-4 line-clamp-2 min-h-[40px]">Gestión de recursos y orquestación de nodos distribuidos.</p>
+<div class="w-full bg-surface-container rounded-full h-1">
+<div class="bg-tertiary h-full w-[45%] rounded-full shadow-[0_0_8px_#ffd5d6]"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav Bar (Mobile Controller Style) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter py-4 bg-surface-container-low/70 backdrop-blur-md border-t border-primary/20 shadow-[0_-4px_20px_rgba(0,212,255,0.15)] rounded-t-xl">
+<button class="flex flex-col items-center gap-1 text-outline opacity-60 hover:text-primary transition-all">
+<span class="material-symbols-outlined">skip_previous</span>
+<span class="font-label-caps text-label-caps">PREV</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-outline opacity-60 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-3xl">play_circle</span>
+<span class="font-label-caps text-label-caps">PLAY</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary scale-110 drop-shadow-[0_0_8px_rgba(0,212,255,0.8)]">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">pause_circle</span>
+<span class="font-label-caps text-label-caps">PAUSE</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-outline opacity-60 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-3xl">skip_next</span>
+<span class="font-label-caps text-label-caps">NEXT</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-outline opacity-60 hover:text-primary transition-all">
+<span class="material-symbols-outlined">slow_motion_video</span>
+<span class="font-label-caps text-label-caps">SLOW</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction: Update wave bars randomly
+        setInterval(() => {
+            document.querySelectorAll('.wave-bar').forEach(bar => {
+                const height = Math.floor(Math.random() * 20) + 4;
+                bar.style.height = `${height}px`;
+            });
+        }, 150);
+
+        // Haptic-like interaction for primary button
+        const startBtn = document.querySelector('.pulse-glow');
+        startBtn.addEventListener('mousedown', () => {
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(20);
+            }
+        });
+    </script>
+
+
+</body></html>

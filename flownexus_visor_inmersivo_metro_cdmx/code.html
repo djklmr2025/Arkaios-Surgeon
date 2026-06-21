@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>METRO HOLOGRAPHIC - Metro CDMX</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Injection -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#1a1b21",
+                        "on-tertiary": "#67001c",
+                        "on-primary-fixed": "#001f27",
+                        "inverse-primary": "#00677e",
+                        "background": "#121318",
+                        "on-secondary-fixed-variant": "#005321",
+                        "inverse-surface": "#e3e1e9",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#34343a",
+                        "on-secondary": "#003915",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#00586b",
+                        "primary-fixed-dim": "#3cd7ff",
+                        "secondary-container": "#00c55a",
+                        "surface-container-high": "#292a2f",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb2b7",
+                        "surface-container": "#1e1f25",
+                        "on-tertiary-fixed": "#40000e",
+                        "on-secondary-fixed": "#002109",
+                        "surface-tint": "#3cd7ff",
+                        "secondary-fixed": "#66ff8e",
+                        "outline-variant": "#3c494e",
+                        "primary-container": "#00d4ff",
+                        "tertiary": "#ffd5d6",
+                        "on-tertiary-container": "#a20532",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface": "#121318",
+                        "on-secondary-container": "#004a1d",
+                        "surface-bright": "#38393f",
+                        "primary": "#a8e8ff",
+                        "tertiary-container": "#ffadb3",
+                        "outline": "#859398",
+                        "primary-fixed": "#b4ebff",
+                        "secondary": "#3ee272",
+                        "on-background": "#e3e1e9",
+                        "on-surface-variant": "#bbc9cf",
+                        "secondary-fixed-dim": "#3ee272",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-dim": "#121318",
+                        "surface-container-lowest": "#0d0e13",
+                        "on-tertiary-fixed-variant": "#91002b",
+                        "on-surface": "#e3e1e9",
+                        "inverse-on-surface": "#2f3036",
+                        "surface-variant": "#34343a",
+                        "on-primary": "#003642",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "topbar-height": "52px",
+                        "margin-desktop": "24px",
+                        "unit": "4px",
+                        "margin-mobile": "12px",
+                        "gutter": "16px",
+                        "sidebar-width": "280px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { background-color: #050712; overflow: hidden; }
+        .glass-panel { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .ripple { position: absolute; border-radius: 50%; background: rgba(0, 212, 255, 0.4); transform: scale(0); animation: ripple-effect 1s linear; pointer-events: none; }
+        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
+        .map-container { transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1); cursor: grab; }
+        .map-container:active { cursor: grabbing; }
+        #water-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .neon-border { box-shadow: inset 0 0 10px rgba(168, 232, 255, 0.2), 0 0 5px rgba(168, 232, 255, 0.1); }
+    </style>
+</head>
+<body class="text-on-surface font-body-base selection:bg-primary-container selection:text-on-primary-container">
+<!-- Water Ripple Layer -->
+<div class="fixed inset-0 z-0" id="ripple-area"></div>
+<!-- Top AppBar (from JSON) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] md:text-display-lg tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6">
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">LIVE FEED</button>
+<button class="font-label-caps text-label-caps text-primary transition-colors border-b-2 border-primary pb-1">INTERACTIVE MAP</button>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 p-2 rounded-lg transition-colors" data-icon="settings_input_antenna">settings_input_antenna</button>
+</div>
+</header>
+<!-- Main Viewport / Infinite Stage -->
+<main class="relative w-screen h-screen pt-[52px] overflow-hidden flex items-center justify-center">
+<!-- Interactive Map Container -->
+<div class="relative w-full h-full flex items-center justify-center bg-surface-container-lowest overflow-hidden" id="map-viewport">
+<div class="map-container relative origin-center scale-100" id="map-inner" style="width: 1920px; height: 1080px;">
+<img alt="Metro CDMX Map" class="w-full h-full object-contain pointer-events-none opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC54wW5Yj06ty8PSCk9t1RiGItgyJG1jKaGMencXhtV8fsKunsp9GySdM-V6QZo-NMm6ZTfyEey1mY7GegW0BF9ivkJbqBjTF1FR6IsXTyIj4OBKYSRsnP8tZtGsY2aTuilgpNcAaoZ1R2haV1JgGZhDrVOx87QCzySbC2Eb-Yt2TssstQtnvi3xQFNk-YjAD3lpR_ysgBNQHiwfiBW2qezn9S42rFg5v6i3n0dN4j9CdpziIFnXDyB33-OCO9huYk6_ztjwc4is-k"/>
+<!-- Simulated Train Movement Overlays -->
+<div class="absolute top-[45%] left-[30%] w-3 h-3 bg-primary rounded-full shadow-[0_0_15px_#3cd7ff] animate-pulse"></div>
+<div class="absolute top-[52%] left-[48%] w-3 h-3 bg-secondary rounded-full shadow-[0_0_15px_#3ee272] animate-pulse" style="animation-delay: 1s"></div>
+<div class="absolute top-[60%] left-[62%] w-3 h-3 bg-tertiary rounded-full shadow-[0_0_15px_#ffadb3] animate-pulse" style="animation-delay: 2s"></div>
+</div>
+</div>
+<!-- Mode Controls (Floating Glass Widget) -->
+<div class="fixed bottom-24 right-6 md:right-margin-desktop z-40 flex flex-col gap-2">
+<div class="bg-surface-container/95 glass-panel p-2 rounded-xl border border-white/10 shadow-2xl flex flex-col gap-1">
+<button class="flex items-center justify-between gap-4 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container transition-all active:scale-95" id="btn-natural">
+<span class="font-label-caps text-label-caps">NATURAL MODE</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="fit_screen">fit_screen</span>
+</button>
+<button class="flex items-center justify-between gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all active:scale-95" id="btn-hd">
+<span class="font-label-caps text-label-caps">HD RESOLUTION</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="high_density">high_density</span>
+</button>
+</div>
+<!-- Quick Actions -->
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-high hover:bg-primary/20 border border-primary/30 py-3 rounded-lg flex items-center justify-center gap-2 transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 duration-300" data-icon="sync">sync</span>
+<span class="font-label-caps text-label-caps text-primary">SINCRONIZAR</span>
+</button>
+<button class="flex-1 bg-surface-container-high hover:bg-tertiary/20 border border-tertiary/30 py-3 rounded-lg flex items-center justify-center gap-2 transition-all group">
+<span class="material-symbols-outlined text-tertiary group-hover:-rotate-45 duration-300" data-icon="replay">replay</span>
+<span class="font-label-caps text-label-caps text-tertiary">DEMO LOOP</span>
+</button>
+</div>
+</div>
+<!-- System Signature -->
+<div class="fixed bottom-20 left-6 md:left-margin-desktop z-40 hidden md:block">
+<div class="flex flex-col">
+<p class="font-technical-sm text-technical-sm text-on-surface-variant/40 tracking-[0.2em]">CORE PROTOCOL V2.4</p>
+<p class="font-technical-sm text-technical-sm text-primary/80">Ecosistema Inteligente firmado por Stitch AI Assistant</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (from JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-t border-secondary/30 flex justify-around items-center h-16 pb-safe shadow-[0_-10px_40px_rgba(0,197,90,0.15)] rounded-t-full">
+<a class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="font-label-caps text-label-caps mt-1">Live Feed</span>
+</a>
+<a class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)] animate-pulse-slow" href="#">
+<span class="material-symbols-outlined" data-icon="touch_app" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="font-label-caps text-label-caps mt-1">Interactive Mode</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="font-label-caps text-label-caps mt-1">Demo Loop</span>
+</a>
+</nav>
+<!-- Navigation Drawer (Left-side hidden on mobile) -->
+<div class="hidden md:flex fixed inset-y-0 left-0 w-sidebar-width bg-surface-container/95 backdrop-blur-2xl border-r border-primary/20 flex-col p-gutter z-[60] transform -translate-x-full transition-transform duration-500 ease-out shadow-[20px_0_60px_rgba(0,0,0,0.55)]" id="drawer">
+<div class="flex items-center gap-3 mb-12">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+<div class="text-left">
+<p class="font-label-caps text-label-caps text-secondary">AETHER CORE</p>
+<p class="font-body-base text-body-base text-on-surface font-bold">Stitch AI</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">v2.4.0-HOLO</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<button class="flex items-center gap-4 p-4 bg-primary-container text-on-primary-container rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-body-base text-body-base">Network Map</span>
+</button>
+<button class="flex items-center gap-4 p-4 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-body-base text-body-base">Schedules</span>
+</button>
+<button class="flex items-center gap-4 p-4 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-body-base text-body-base">Tourist Info</span>
+</button>
+<button class="flex items-center gap-4 p-4 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="emergency">emergency</span>
+<span class="font-body-base text-body-base">Emergency</span>
+</button>
+</nav>
+<div class="mt-auto p-4 border border-primary/20 rounded-lg bg-surface-container-low">
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">NODE STATUS</p>
+<div class="flex items-center gap-2 mt-2">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-[12px] text-on-surface">Encrypted Uplink Active</span>
+</div>
+</div>
+</div>
+<!-- Toggle Drawer Button -->
+<button class="fixed top-[64px] left-6 z-[70] bg-surface-container/90 p-3 rounded-full border border-white/10 text-primary shadow-lg hover:scale-110 active:scale-95 transition-all" id="drawer-toggle">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<script>
+        // Water Ripple Effect
+        const rippleArea = document.getElementById('ripple-area');
+        rippleArea.addEventListener('mousedown', (e) => {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${e.clientX - 25}px`;
+            ripple.style.top = `${e.clientY - 25}px`;
+            ripple.style.width = '50px';
+            ripple.style.height = '50px';
+            rippleArea.appendChild(ripple);
+            
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        });
+
+        // Map Pan & Zoom
+        const mapInner = document.getElementById('map-inner');
+        const viewport = document.getElementById('map-viewport');
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
+        let scale = 1;
+
+        // Mode Switching
+        const btnNatural = document.getElementById('btn-natural');
+        const btnHD = document.getElementById('btn-hd');
+
+        btnNatural.addEventListener('click', () => {
+            scale = 1;
+            mapInner.style.transform = `scale(${scale}) translate(0px, 0px)`;
+            btnNatural.classList.add('bg-primary-container', 'text-on-primary-container');
+            btnNatural.classList.remove('text-on-surface-variant');
+            btnHD.classList.remove('bg-primary-container', 'text-on-primary-container');
+            btnHD.classList.add('text-on-surface-variant');
+        });
+
+        btnHD.addEventListener('click', () => {
+            scale = 2.5;
+            mapInner.style.transform = `scale(${scale})`;
+            btnHD.classList.add('bg-primary-container', 'text-on-primary-container');
+            btnHD.classList.remove('text-on-surface-variant');
+            btnNatural.classList.remove('bg-primary-container', 'text-on-primary-container');
+            btnNatural.classList.add('text-on-surface-variant');
+        });
+
+        // Mouse Drag Panning
+        viewport.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX - mapInner.offsetLeft;
+            startY = e.pageY - mapInner.offsetTop;
+        });
+
+        viewport.addEventListener('mouseleave', () => isDragging = false);
+        viewport.addEventListener('mouseup', () => isDragging = false);
+
+        viewport.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - startX;
+            const y = e.pageY - startY;
+            mapInner.style.transform = `scale(${scale}) translate(${x/scale}px, ${y/scale}px)`;
+        });
+
+        // Drawer Toggle
+        const drawer = document.getElementById('drawer');
+        const toggle = document.getElementById('drawer-toggle');
+        let drawerOpen = false;
+
+        toggle.addEventListener('click', () => {
+            drawerOpen = !drawerOpen;
+            if (drawerOpen) {
+                drawer.style.transform = 'translateX(0)';
+                toggle.querySelector('span').innerText = 'close';
+            } else {
+                drawer.style.transform = 'translateX(-100%)';
+                toggle.querySelector('span').innerText = 'menu';
+            }
+        });
+
+        // Mobile Scroll Prevention
+        document.body.addEventListener('touchmove', function(e){ e.preventDefault(); }, { passive: false });
+    </script>
+</body></html>

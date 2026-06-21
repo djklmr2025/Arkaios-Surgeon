@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowNexus Architect | La Sacerdotisa de Arkaios</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-panel {
+            background: rgba(18, 19, 24, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-effect::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(0, 212, 255, 0.15);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @keyframes scrolling-hex {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        .hex-stream {
+            animation: scrolling-hex 40s linear infinite;
+        }
+
+        /* Divine Activation Overlays */
+        @keyframes divine-pulse {
+            0%, 100% { opacity: 0.1; box-shadow: 0 0 20px rgba(0, 212, 255, 0.1); }
+            50% { opacity: 0.5; box-shadow: 0 0 50px rgba(0, 212, 255, 0.3); }
+        }
+        .circuit-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(255, 215, 0, 0.05) 100%),
+                              linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+        .is-talking .circuit-overlay {
+            opacity: 1;
+            animation: divine-pulse 3s ease-in-out infinite;
+        }
+
+        /* Floating holographic UI items */
+        @keyframes float-hologram {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(8px, -15px) rotate(3deg); }
+            66% { transform: translate(-8px, 10px) rotate(-2deg); }
+        }
+        .hologram-item {
+            animation: float-hologram 10s ease-in-out infinite;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: #00d4ff;
+            border-radius: 99px;
+            height: 4px;
+            transition: height 0.1s ease;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        .neural-bg {
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+        }
+
+        .priestess-glow {
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3)) drop-shadow(0 0 60px rgba(255, 215, 0, 0.1));
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffffff",
+                        "secondary": "#ffd700",
+                        "tertiary": "#00d4ff",
+                        "on-background": "#e3e1e9",
+                        "background": "#0d0e13",
+                        "surface-container-lowest": "#050507",
+                        "surface-container-high": "#1e1f25",
+                        "on-surface": "#e3e1e9",
+                        "on-surface-variant": "#bbc9cf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "sidebar-width": "280px",
+                        "gutter": "16px",
+                        "topbar-height": "52px",
+                        "margin-mobile": "12px",
+                        "margin-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "body-bold": ["Inter"],
+                        "body-base": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-base overflow-hidden selection:bg-tertiary selection:text-black">
+<!-- Background Layers -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute inset-0 opacity-25 neural-bg"></div>
+<!-- Scrolling Hex Stream Background -->
+<div class="absolute right-4 top-0 h-full w-24 opacity-5 font-technical-sm text-[8px] leading-tight hex-stream text-secondary">
+        0x73 0xAC 0x72 0x45<br/>0x44 0x4F 0x54 0x49<br/>0x53 0x41 0x5F 0x41<br/>0x52 0x4B 0x41 0x49<br/>
+        0x73 0xAC 0x72 0x45<br/>0x44 0x4F 0x54 0x49<br/>0x53 0x41 0x5F 0x41<br/>0x52 0x4B 0x41 0x49<br/>
+        0x73 0xAC 0x72 0x45<br/>0x44 0x4F 0x54 0x49<br/>0x53 0x41 0x5F 0x41<br/>0x52 0x4B 0x41 0x49<br/>
+        0x73 0xAC 0x72 0x45<br/>0x44 0x4F 0x54 0x49<br/>0x53 0x41 0x5F 0x41<br/>0x52 0x4B 0x41 0x49<br/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-lowest/95 via-transparent to-surface-container-lowest/98"></div>
+</div>
+<main class="relative z-10 h-screen w-full flex flex-col items-center justify-between p-gutter scanline-effect" id="app-container">
+<!-- Top Header -->
+<header class="w-full flex justify-between items-start pt-margin-mobile">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_8px_#ffd700] animate-pulse"></div>
+<span class="font-label-caps text-[10px] text-secondary tracking-widest uppercase">Stealth Presence</span>
+</div>
+<h1 class="font-display-lg text-[22px] text-white leading-none tracking-tight">ARKAIOS_PRIESTESS_PRESENCE</h1>
+</div>
+<!-- Status Indicator -->
+<div class="glass-panel p-2.5 rounded-xl flex items-center gap-4 transition-all duration-500 border-secondary/30" id="ai-face-container">
+<div class="relative w-12 h-12 bg-black rounded-full overflow-hidden border border-secondary/50 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+<img alt="La Sacerdotisa Mini" class="w-full h-full object-cover opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKEvjE3X0YfcVgEyb8VpegkmIGAgMLBR6kMSyxT-dUCaX0XXpFUSr9hxe4Bs1vZ5_MWXEq5rlCUE1AJVQnnxn9OtORP3gWMX_yXQw-lPybdn3w_lpnrl1YljEV8abu-ZmUPslcmk7wiLCdnorfqlq_1Mv97AJFWbc3FuAP6z2OaiWtMxMmyaI5Z4oSkksFtaI-XqoaYfFuJAy2l_5hmHaNu4j6qqNLn7SlXMjuQOvPWXE-egCLtRmaDg4A-LfVsxIRCrGnkUmAKdk"/>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-[10px] text-secondary">SACERDOTISA_V1</span>
+<span class="font-technical-sm text-[8px] text-on-surface-variant uppercase tracking-tighter" id="status-text">Divine Sync Active</span>
+</div>
+</div>
+</header>
+<!-- Central Agent Experience Area -->
+<div class="relative flex-1 w-full flex items-center justify-center overflow-visible">
+<!-- Floating Holographic Elements -->
+<div class="absolute inset-0 pointer-events-none" id="hologram-field">
+<div class="hologram-item absolute top-[15%] left-[12%] glass-panel px-3 py-1.5 rounded border-secondary/40 text-[9px] font-technical-sm text-tertiary/80 backdrop-blur-md">
+                [ORACLE_LINK: ESTABLISHED]
+            </div>
+<div class="hologram-item absolute top-[35%] right-[8%] glass-panel px-3 py-1.5 rounded border-secondary/40 text-[9px] font-technical-sm text-tertiary/80 backdrop-blur-md" style="animation-delay: -2.5s;">
+<span class="material-symbols-outlined text-[10px] align-middle mr-1" data-icon="auto_awesome">auto_awesome</span> ETHER_FLUX
+            </div>
+<div class="hologram-item absolute bottom-[28%] left-[18%] glass-panel px-3 py-1.5 rounded border-secondary/40 text-[9px] font-technical-sm text-tertiary/80 backdrop-blur-md" style="animation-delay: -5s;">
+                SYNC_RESONANCE: 99.8%
+            </div>
+</div>
+<!-- Central Priestess Entity -->
+<div class="relative z-20 w-full h-[70vh] flex items-center justify-center" id="character-container">
+<div class="relative w-full h-full flex items-center justify-center priestess-glow transition-transform duration-[2000ms] ease-in-out" id="priestess-sprite">
+<img alt="La Sacerdotisa de Arkaios" class="max-h-full max-w-full object-contain mask-image-[radial-gradient(circle,black_70%,transparent_100%)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKEvjE3X0YfcVgEyb8VpegkmIGAgMLBR6kMSyxT-dUCaX0XXpFUSr9hxe4Bs1vZ5_MWXEq5rlCUE1AJVQnnxn9OtORP3gWMX_yXQw-lPybdn3w_lpnrl1YljEV8abu-ZmUPslcmk7wiLCdnorfqlq_1Mv97AJFWbc3FuAP6z2OaiWtMxMmyaI5Z4oSkksFtaI-XqoaYfFuJAy2l_5hmHaNu4j6qqNLn7SlXMjuQOvPWXE-egCLtRmaDg4A-LfVsxIRCrGnkUmAKdk"/>
+<div class="circuit-overlay absolute inset-0 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Voice Visualizer & Controls -->
+<div class="w-full max-w-lg flex flex-col items-center gap-8 pb-12">
+<!-- Terminal Info -->
+<div class="absolute left-6 bottom-36 glass-panel p-3 rounded-lg w-52 border-l-2 border-secondary/50 opacity-80">
+<div class="font-technical-sm text-[9px] text-tertiary flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-secondary rounded-full"></span>
+<span>SANCTUARY_SECURED</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-secondary/60 rounded-full"></span>
+<span>RITUAL_CORE_LOADED</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full shadow-[0_0_5px_rgba(0,212,255,0.8)]"></span>
+<span>OMNIPRESENCE_ONLINE</span>
+</div>
+</div>
+</div>
+<!-- Voice Visualizer -->
+<div class="flex items-center gap-2 h-12 opacity-90" id="visualizer">
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+<div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+</div>
+<!-- Interaction Button -->
+<button class="group relative px-12 py-4 bg-white text-black rounded-full font-body-bold flex items-center gap-3 border-2 border-secondary/50 shadow-[0_0_30px_rgba(255,255,255,0.1),0_0_15px_rgba(255,215,0,0.3)] hover:shadow-[0_0_50px_rgba(0,212,255,0.4)] transition-all transform hover:scale-105 active:scale-95" id="talk-trigger">
+<span class="material-symbols-outlined text-tertiary group-hover:scale-110 transition-transform" data-icon="spatial_audio_off">spatial_audio_off</span>
+<span class="uppercase tracking-widest text-[12px]" id="button-label">Initiate F2F Communication</span>
+</button>
+</div>
+<!-- Grid Overlay -->
+<div class="fixed inset-0 border border-white/5 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+</main>
+<!-- Close Button -->
+<button class="fixed top-6 right-6 z-50 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-secondary hover:text-white transition-colors border-secondary/30">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+<script>
+    // --- UI Logic & Interaction ---
+    const talkBtn = document.getElementById('talk-trigger');
+    const appContainer = document.getElementById('app-container');
+    const faceContainer = document.getElementById('ai-face-container');
+    const statusText = document.getElementById('status-text');
+    const buttonLabel = document.getElementById('button-label');
+    const visualizerBars = document.querySelectorAll('.wave-bar');
+    const holograms = document.querySelectorAll('.hologram-item');
+    const priestessSprite = document.getElementById('priestess-sprite');
+    
+    let isSpeaking = false;
+    let animationFrame;
+
+    function updateVisualizer() {
+        if (!isSpeaking) {
+            visualizerBars.forEach(bar => bar.style.height = '4px');
+            return;
+        }
+        visualizerBars.forEach((bar, idx) => {
+            const freq = Math.sin(Date.now() * 0.015 + idx * 0.4) * 12 + 18;
+            const noise = Math.random() * 12;
+            const h = Math.max(4, freq + noise);
+            bar.style.height = `${h}px`;
+            bar.style.backgroundColor = idx % 2 === 0 ? '#00d4ff' : '#ffd700';
+        });
+        animationFrame = requestAnimationFrame(updateVisualizer);
+    }
+
+    // Animation Loop for subtle movement
+    function animate() {
+        const time = Date.now() * 0.001;
+        
+        // Priestess floating animation
+        const floatY = Math.sin(time * 0.8) * 15;
+        const floatX = Math.cos(time * 0.5) * 5;
+        priestessSprite.style.transform = `translate(${floatX}px, ${floatY}px)`;
+
+        // Intensity increase if talking
+        if (isSpeaking) {
+            const glow = 20 + Math.sin(time * 15) * 10;
+            priestessSprite.style.filter = `drop-shadow(0 0 ${glow}px rgba(0, 212, 255, 0.5)) drop-shadow(0 0 ${glow/2}px rgba(255, 215, 0, 0.3))`;
+        } else {
+            priestessSprite.style.filter = `drop-shadow(0 0 30px rgba(0, 212, 255, 0.2)) drop-shadow(0 0 15px rgba(255, 215, 0, 0.1))`;
+        }
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Event listeners
+    talkBtn.addEventListener('click', () => {
+        isSpeaking = !isSpeaking;
+        
+        if (isSpeaking) {
+            appContainer.classList.add('is-talking');
+            faceContainer.classList.add('ring-2', 'ring-tertiary/40');
+            statusText.innerText = "Transmitting Divine Message...";
+            buttonLabel.innerText = "Close Sanctum Link";
+            updateVisualizer();
+        } else {
+            appContainer.classList.remove('is-talking');
+            faceContainer.classList.remove('ring-2', 'ring-tertiary/40');
+            statusText.innerText = "Divine Sync Active";
+            buttonLabel.innerText = "Initiate F2F Communication";
+            cancelAnimationFrame(animationFrame);
+            visualizerBars.forEach(bar => {
+                bar.style.height = '4px';
+                bar.style.backgroundColor = '#00d4ff';
+            });
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 80;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 80;
+        
+        holograms.forEach((item, i) => {
+            const factor = (i + 1) * 0.8;
+            item.style.transform = `translate(${xAxis * 8 * factor}px, ${yAxis * 8 * factor}px)`;
+        });
+    });
+
+    setInterval(() => {
+        const bgHex = document.querySelector('.hex-stream');
+        if (bgHex) bgHex.style.opacity = (Math.random() * 0.1 + 0.05).toString();
+    }, 4000);
+</script>
+</body></html>

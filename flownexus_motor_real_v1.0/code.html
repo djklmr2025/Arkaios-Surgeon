@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>METRO HOLOGRAPHIC - Arkaios Ecosystem</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #050712;
+            color: #e3e1e9;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(22, 33, 62, 0.85);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-border-cyan {
+            border-bottom: 2px solid #00d4ff;
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 15px rgba(72, 234, 121, 0.4);
+        }
+        .map-container {
+            mask-image: radial-gradient(circle, black 70%, transparent 100%);
+        }
+        @keyframes pulse-cyan {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .active-node {
+            animation: pulse-cyan 2s infinite ease-in-out;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(0, 212, 255, 0.5), transparent);
+            position: absolute;
+            top: 0;
+            animation: scan 4s linear infinite;
+            z-index: 10;
+        }
+        @keyframes scan {
+            from { top: 0%; }
+            to { top: 100%; }
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#34343a",
+                    "on-tertiary-container": "#a20532",
+                    "surface-container-lowest": "#0d0e13",
+                    "on-secondary-fixed-variant": "#005321",
+                    "error": "#ffb4ab",
+                    "inverse-surface": "#e3e1e9",
+                    "tertiary-fixed-dim": "#ffb2b7",
+                    "surface-variant": "#34343a",
+                    "primary-fixed-dim": "#3cd7ff",
+                    "on-primary-fixed": "#001f27",
+                    "on-error": "#690005",
+                    "secondary-container": "#00c55a",
+                    "secondary-fixed": "#66ff8e",
+                    "tertiary-container": "#ffadb3",
+                    "surface-container-high": "#292a2f",
+                    "on-tertiary-fixed": "#40000e",
+                    "surface-dim": "#121318",
+                    "surface-bright": "#38393f",
+                    "on-secondary": "#003915",
+                    "surface-tint": "#3cd7ff",
+                    "surface-container": "#1e1f25",
+                    "on-surface": "#e3e1e9",
+                    "on-primary-container": "#00586b",
+                    "inverse-on-surface": "#2f3036",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#ffdadb",
+                    "on-background": "#e3e1e9",
+                    "surface-container-low": "#1a1b21",
+                    "secondary": "#3ee272",
+                    "surface": "#121318",
+                    "on-tertiary": "#67001c",
+                    "inverse-primary": "#00677e",
+                    "on-secondary-fixed": "#002109",
+                    "on-tertiary-fixed-variant": "#91002b",
+                    "primary": "#a8e8ff",
+                    "outline": "#859398",
+                    "background": "#121318",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-primary": "#003642",
+                    "primary-container": "#00d4ff",
+                    "on-surface-variant": "#bbc9cf",
+                    "tertiary": "#ffd5d6",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "primary-fixed": "#b4ebff",
+                    "on-error-container": "#ffdad6",
+                    "outline-variant": "#3c494e",
+                    "on-secondary-container": "#004a1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "sidebar-width": "280px",
+                    "margin-desktop": "24px",
+                    "topbar-height": "52px",
+                    "margin-mobile": "12px"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "body-bold": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface select-none">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center h-[52px] px-margin-mobile md:px-margin-desktop">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="waves">waves</span>
+<h1 class="font-display-lg text-[20px] tracking-tighter text-primary drop-shadow-[0_0_8px_rgba(168,232,255,0.4)]">METRO HOLOGRAPHIC</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-4">
+<button class="font-label-caps text-label-caps text-primary">MAP_LIVE</button>
+<button class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">ANALYTICS</button>
+</div>
+<button class="text-primary hover:bg-white/5 p-2 rounded-full transition-all active:scale-95" title="Network Settings">
+<span class="material-symbols-outlined" data-icon="settings_input_antenna">settings_input_antenna</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative h-screen w-full flex items-center justify-center pt-[52px]">
+<!-- Background Atmosphere -->
+<div class="absolute inset-0 z-0 opacity-20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cinematic, wide-angle view of a futuristic Tokyo-inspired megacity at dusk. Rain streaks down through neon-lit skyscrapers, reflecting vibrant cyan and magenta lights on wet surfaces. High-speed maglev trains glide through transparent tubes above bustling multi-level streets. The overall atmosphere is dark and high-contrast, with a sophisticated cybernetic aesthetic using deep blues and glowing electric accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDx3zkV6JvDhbzMjHbfkduBR5coOEJPCg-PDZVKH7VRBAsrs4No7CHKziC0w9s0hskCn8GEurXaqr-HHfuE2ppSQjC1lr0F8qEB59Kywxjrkmypu4LHukoECGqegElYt8LbuoIvE8h1P6XdQv2ILTTON9wtjRaCsPFPTwBxDprU4ogCF6O-UwniDH8OfNPuhvaezm1baSFK7oqWzOCn2id64roC82mPyfWLypPlkg_EZfaffKOgTUUNd9IwfKQz9A8uic9lsSaru-E"/>
+</div>
+<!-- Interactive Map Viewer -->
+<div class="relative z-10 w-full max-w-6xl aspect-[16/10] px-4">
+<div class="glass-panel w-full h-full rounded-xl overflow-hidden relative shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-primary/20">
+<div class="scanline"></div>
+<!-- Map Layer -->
+<div class="absolute inset-0 p-8 flex items-center justify-center map-container bg-surface-container-lowest/40">
+<img alt="Metro Network" class="max-w-full max-h-full object-contain mix-blend-lighten opacity-80 transition-transform duration-700 hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0IurRY96_0UAn5ZFmCiNcgEb3hYfIvkWwyaRJKsC7QlJVK80m6dJ-3Z3QOMmvk03OBGN-mfpyAJ1mRfb1oedShwlR7eih44brqfpYGQeeXLOxbw5JUWmIEHrul0lo0C23rD2kXT6AB_DzvRgk4AFe2axkNkAS4pmnpyelMh1Lh7gM2GxqgEY6_SZt72GTEJyLAkq6tThBhINQ5ZZINcJjJ-ZZIx4Wrt0k703qJuVqEwF0vE50Iq_7kKJnia61E9kbksL2Dc4AJ9k"/>
+<!-- Dynamic Interaction Point (Central Node) -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer group">
+<div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center active-node border border-primary relative">
+<div class="absolute inset-0 rounded-full bg-primary animate-ping opacity-20"></div>
+<span class="material-symbols-outlined text-primary" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<!-- Tooltip on hover -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-48 glass-panel p-3 rounded-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none">
+<p class="font-label-caps text-[10px] text-secondary">ACTIVE_NODE</p>
+<h4 class="font-body-bold text-on-surface">Pino Suárez</h4>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">L1 x L2 Interchange</p>
+</div>
+</div>
+</div>
+<!-- Floating Zoom Controls -->
+<div class="absolute top-6 right-6 flex flex-col gap-2">
+<button class="glass-panel p-2 rounded-lg text-primary hover:bg-primary/20 transition-colors" title="Zoom In">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="glass-panel p-2 rounded-lg text-primary hover:bg-primary/20 transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="glass-panel p-2 rounded-lg text-primary hover:bg-primary/20 transition-colors" title="Recenter">
+<span class="material-symbols-outlined" data-icon="center_focus_strong">center_focus_strong</span>
+</button>
+</div>
+<!-- Viewport Navigation (Selectors) -->
+<div class="absolute bottom-6 left-6 flex gap-2">
+<button class="glass-panel px-4 py-2 rounded-full border-primary text-primary font-technical-sm text-[11px] flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#3cd7ff]"></div>
+                        NODE_VIEW
+                    </button>
+<button class="glass-panel px-4 py-2 rounded-full text-on-surface-variant font-technical-sm text-[11px] hover:text-on-surface transition-colors">
+                        PATH_FLOW
+                    </button>
+<button class="glass-panel px-4 py-2 rounded-full text-on-surface-variant font-technical-sm text-[11px] hover:text-on-surface transition-colors">
+                        SATELLITE
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Area Informativa / Audio Player (Bottom Overlay) -->
+<section class="fixed bottom-0 left-0 w-full z-40 px-gutter pb-gutter md:px-margin-desktop md:pb-margin-desktop">
+<div class="max-w-7xl mx-auto glass-panel p-6 rounded-xl grid grid-cols-1 md:grid-cols-12 gap-6 items-center border-t-2 border-[#00d4ff] shadow-[0_-20px_60px_rgba(0,0,0,0.6)]">
+<!-- Agent Info -->
+<div class="md:col-span-3 flex items-center gap-4">
+<div class="relative">
+<div class="w-14 h-14 rounded-lg overflow-hidden border border-secondary neon-glow-green">
+<img class="w-full h-full object-cover" data-alt="A hyper-realistic close-up portrait of a humanoid AI agent with sleek, translucent skin revealing subtle glowing internal fiber-optic circuitry. The agent has expressive, digital eyes emitting a soft cyan light. The aesthetic is clean and futuristic, following a high-end corporate sci-fi style with dark obsidian backgrounds and sharp neon green accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAX4a-uwvGkkQL1viSNk1I9M6nX5VtxYlDMmf2r0Co5bidgxUyjrdQwHfx8GxI48fCwTQCL4_XNbfTt5aou2F0asL6BTQqWwJlt32DHbDuiGu_gqSkSa4VhQRLtI71iwe3Z9zFQ3Jz6aPXYoyEhf9nOrk8-YKqFJsZosCrKuxgwOmWRmLZWq_TPNK0pOVMXB98EVh3OUiFtznaBUbAQGs6JXPxmrW5Q_fvES33gL4ZEkONnqxdbOKuWbKcQQqrLfDgWZj7g4YCcgU"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary rounded-full border-2 border-background animate-pulse"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-secondary text-[12px] tracking-widest">AETHER CORE</h3>
+<p class="font-body-base text-on-surface-variant text-[13px]">IA Assistant Active</p>
+</div>
+</div>
+<!-- Contextual Text Area -->
+<div class="md:col-span-5">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-technical-sm text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded">STREAMING_DESC</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant">v2.4.0-HOLO</span>
+</div>
+<p class="font-body-base text-on-surface leading-relaxed line-clamp-2 md:line-clamp-none">
+                    Analizando flujo de pasajeros en <span class="text-primary font-body-bold">Estación Pino Suárez</span>. 
+                    Interconexión crítica entre Línea 1 (Rosa) y Línea 2 (Azul). Se recomienda transbordo por túnel sur para optimizar tiempo de viaje.
+                </p>
+</div>
+<!-- Integrated Audio Player -->
+<div class="md:col-span-4 glass-panel bg-white/5 rounded-lg p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-technical-sm text-[10px] text-on-surface-variant">ROUTE_AUDIO_GUIDE.mp3</span>
+<span class="font-technical-sm text-[10px] text-primary">02:45 / 04:20</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[65%] shadow-[0_0_8px_#3cd7ff]"></div>
+</div>
+<div class="flex items-center justify-center gap-6 mt-1">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="skip_previous">skip_previous</span></button>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center active:scale-95 transition-all shadow-[0_0_15px_rgba(0,212,255,0.4)]" id="playBtn">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="skip_next">skip_next</span></button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="volume_up">volume_up</span></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Side Navigation Drawer (Hidden on mobile) -->
+<aside class="hidden lg:flex fixed left-0 top-[52px] h-[calc(100vh-52px-100px)] w-sidebar-width flex-col glass-panel border-r border-primary/20 z-30 p-gutter">
+<div class="mb-8">
+<h2 class="font-label-caps text-secondary text-[11px] mb-4">SYSTEM_DIRECTORIES</h2>
+<nav class="flex flex-col gap-2">
+<div class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg group cursor-pointer transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="map">map</span>
+<span class="font-body-base text-[14px]">Network Map</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-primary/10 hover:text-primary rounded-lg group cursor-pointer transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="schedule">schedule</span>
+<span class="font-body-base text-[14px]">Schedules</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-primary/10 hover:text-primary rounded-lg group cursor-pointer transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="explore">explore</span>
+<span class="font-body-base text-[14px]">Tourist Info</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-primary/10 hover:text-primary rounded-lg group cursor-pointer transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="emergency">emergency</span>
+<span class="font-body-base text-[14px]">Emergency</span>
+</div>
+</nav>
+</div>
+<div class="mt-auto pt-6 border-t border-white/5">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-white/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Microscopic close-up of a high-tech processor chip with glowing copper pathways and pulsating blue light emitters. The style is sharp and technical, reflecting high-performance engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB65Zh3rSlwkz6xT11A3Ra8Ag9yRir6DZXBSuR6YnAvp6AJzaR_opTvWbomVgigzl1G7Gu0ffnvJqThq5TlS3jWsbN0ItZu-X3hbynXV1hbZMf_imEmssP1j215GObgJq0klmWzOTABI7WjYEhAKDlOVWikphwIj2ASWzE2RRRYp0Dq3WCr7asZcjo8DctOtEOQxdYzSkoLLbt6_sYmFRk7-0mibbuis22GkkKAGed8dZVHY4ssej1ciH2dN3eZOEljo3YK9D_OZg"/>
+</div>
+<div>
+<p class="font-technical-sm text-[10px] text-on-surface-variant">NODE_ID</p>
+<p class="font-technical-sm text-[10px] text-primary">ARK-7742-PX</p>
+</div>
+</div>
+<div class="bg-black/20 p-3 rounded-lg border border-white/5">
+<p class="font-technical-sm text-[9px] text-on-surface-variant mb-1">REALTIME_LOAD</p>
+<div class="flex gap-1 h-4 items-end">
+<div class="w-1 bg-primary h-[40%]"></div>
+<div class="w-1 bg-primary h-[70%]"></div>
+<div class="w-1 bg-secondary h-[90%]"></div>
+<div class="w-1 bg-primary h-[50%]"></div>
+<div class="w-1 bg-primary h-[30%]"></div>
+<div class="w-1 bg-error h-[95%]"></div>
+<div class="w-1 bg-primary h-[60%]"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Bottom Nav for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 glass-panel border-t border-secondary/30 pb-safe">
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="motion_photos_on">motion_photos_on</span>
+<span class="text-[9px] font-label-caps uppercase">Feed</span>
+</div>
+<div class="flex flex-col items-center text-tertiary drop-shadow-[0_0_10px_rgba(255,173,179,0.6)]">
+<span class="material-symbols-outlined" data-icon="touch_app" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<span class="text-[9px] font-label-caps uppercase">Mode</span>
+</div>
+<div class="flex flex-col items-center text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined" data-icon="replay">replay</span>
+<span class="text-[9px] font-label-caps uppercase">Loop</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for Play Button
+        const playBtn = document.getElementById('playBtn');
+        let isPlaying = false;
+        
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            const icon = playBtn.querySelector('.material-symbols-outlined');
+            icon.innerText = isPlaying ? 'pause' : 'play_arrow';
+            
+            if (isPlaying) {
+                playBtn.classList.remove('bg-primary');
+                playBtn.classList.add('bg-secondary');
+                playBtn.style.boxShadow = '0 0 20px rgba(72, 234, 121, 0.6)';
+            } else {
+                playBtn.classList.remove('bg-secondary');
+                playBtn.classList.add('bg-primary');
+                playBtn.style.boxShadow = '0 0 15px rgba(0, 212, 255, 0.4)';
+            }
+        });
+
+        // Atmospheric mouse glow effect
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.createElement('div');
+            glow.className = 'fixed pointer-events-none z-[100] w-[150px] h-[150px] rounded-full blur-[80px] bg-primary/5';
+            glow.style.left = `${e.clientX - 75}px`;
+            glow.style.top = `${e.clientY - 75}px`;
+            document.body.appendChild(glow);
+            setTimeout(() => glow.remove(), 100);
+        });
+    </script>
+</body></html>
