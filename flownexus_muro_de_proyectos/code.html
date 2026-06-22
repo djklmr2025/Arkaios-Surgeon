@@ -871,7 +871,8 @@ async function deleteProject(btn, url, cardId) {
         btn.disabled = false;
       }
     } catch(e) {
-      showToast('⚠️ Error de conexión');
+      console.error('Error al borrar:', e);
+      showToast('⚠️ Error de conexión o JSON inválido');
       btn.disabled = false;
     }
   };
