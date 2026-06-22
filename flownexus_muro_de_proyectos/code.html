@@ -794,26 +794,46 @@ async function submitProject() {
     hidden: true
   });
 
-  try {
-    const res = await fetch(`${API_BASE}/api/publish-project`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const result = await res.json();
-    if (result.ok) {
-      showToast('🎉 ¡Proyecto publicado con éxito!');
-      closePublishModal();
-      loadFeed();
-    } else {
-      showToast(`⚠️ Error: ${result.error || 'No se pudo subir'}`);
+  const publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  
+  const doSubmit = async (key) => {
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (key) headers['x-publish-key'] = key;
+      
+      const res = await fetch(`${API_BASE}/api/publish-project`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      if (result.ok) {
+        showToast('🎉 ¡Proyecto publicado con éxito!');
+        closePublishModal();
+        loadFeed();
+      } else if (String(result.error) === 'Unauthorized') {
+        const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key). Ingrésala aquí:');
+        if (newKey) {
+          localStorage.setItem('flow-diagram-publish-key', newKey.trim());
+          await doSubmit(newKey.trim());
+        } else {
+          showToast('⚠️ Error: Llave no provista.');
+          btn.disabled = false;
+          btn.textContent = 'Publicar Diagrama';
+        }
+      } else {
+        showToast(`⚠️ Error: ${result.error || 'No se pudo subir'}`);
+        btn.disabled = false;
+        btn.textContent = 'Publicar Diagrama';
+      }
+    } catch(e) {
+      showToast('⚠️ Error en la red');
+      btn.disabled = false;
+      btn.textContent = 'Publicar Diagrama';
     }
-  } catch(e) {
-    showToast('⚠️ Error en la red');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Publicar Diagrama';
-  }
+  };
+  
+  await doSubmit(publishKey);
 }
 
 // Delete project (God Mode)
@@ -821,24 +841,43 @@ async function deleteProject(btn, url, cardId) {
   if (!confirm('¿Estás seguro de que deseas eliminar este proyecto del muro permanentemente?')) return;
   
   btn.disabled = true;
-  try {
-    const res = await fetch(`${API_BASE}/api/delete-project`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url })
-    });
-    const data = await res.json();
-    if (data.ok) {
-      showToast('🗑️ Proyecto eliminado con éxito.');
-      loadFeed();
-    } else {
-      showToast(`⚠️ Error al borrar: ${data.error || 'Intenta de nuevo'}`);
+  
+  let publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  
+  const doDelete = async (key) => {
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (key) headers['x-publish-key'] = key;
+      
+      const res = await fetch(`${API_BASE}/api/delete-project`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showToast('🗑️ Proyecto eliminado con éxito.');
+        loadFeed();
+      } else if (String(data.error) === 'Unauthorized') {
+        const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key) para autorizar la eliminación. Ingrésala aquí:');
+        if (newKey) {
+          localStorage.setItem('flow-diagram-publish-key', newKey.trim());
+          await doDelete(newKey.trim());
+        } else {
+          showToast('⚠️ Error al borrar: Llave no provista.');
+          btn.disabled = false;
+        }
+      } else {
+        showToast(`⚠️ Error al borrar: ${data.error || 'Intenta de nuevo'}`);
+        btn.disabled = false;
+      }
+    } catch(e) {
+      showToast('⚠️ Error de conexión');
       btn.disabled = false;
     }
-  } catch(e) {
-    showToast('⚠️ Error de conexión');
-    btn.disabled = false;
-  }
+  };
+  
+  await doDelete(publishKey);
 }
 
 // FETCH AND RENDER THE FEED
@@ -2058,61 +2097,75 @@ function publishToGlobalWall(event, id) {
   
   showToast('Publicando en el muro general...');
   
-  // Fetch project payload
-  fetch(`${API_BASE}/api/project?id=${encodeURIComponent(id)}`)
-    .then(res => res.json())
-    .then(project => {
-      let author = 'Comunidad';
-      let email = currentUser ? currentUser.email : 'invitado@domain.com';
-      
-      // Filter out previous metadata elements
-      const filteredElements = (project.elements || []).filter(e => {
-        if (e.type === 'text' && String(e.text).startsWith('Autor: ')) {
-          const parts = e.text.split('|');
-          author = parts[0].replace('Autor: ', '').trim();
-          if (parts[1]) email = parts[1].replace('Email: ', '').trim();
-          return false;
+  const publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  
+  const doPublish = (key) => {
+    // Fetch project payload
+    fetch(`${API_BASE}/api/project?id=${encodeURIComponent(id)}`)
+      .then(res => res.json())
+      .then(project => {
+        let author = 'Comunidad';
+        let email = currentUser ? currentUser.email : 'invitado@domain.com';
+        
+        const filteredElements = (project.elements || []).filter(e => {
+          if (e.type === 'text' && String(e.text).startsWith('Autor: ')) {
+            const parts = e.text.split('|');
+            author = parts[0].replace('Autor: ', '').trim();
+            if (parts[1]) email = parts[1].replace('Email: ', '').trim();
+            return false;
+          }
+          return true;
+        });
+        
+        const payload = {
+          name: project.name || 'Proyecto',
+          folder: 'community',
+          elements: filteredElements,
+          camera: project.camera || { x: 0, y: 0, zoom: 1 }
+        };
+        
+        payload.elements.push({
+          type: 'text',
+          text: `Autor: ${author} | Email: ${email} | Scope: public`,
+          x: -99999,
+          y: -99999,
+          fontSize: 1,
+          hidden: true
+        });
+        
+        const headers = { 'Content-Type': 'application/json' };
+        if (key) headers['x-publish-key'] = key;
+        
+        return fetch(`${API_BASE}/api/publish-project`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.ok) {
+          showToast('🎉 ¡Diseño compartido en el muro general!');
+          loadFeed(); // Reloads feed list and allLoadedProjects
+        } else if (String(result.error) === 'Unauthorized') {
+          const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key). Ingrésala aquí:');
+          if (newKey) {
+            localStorage.setItem('flow-diagram-publish-key', newKey.trim());
+            doPublish(newKey.trim());
+          } else {
+            showToast('⚠️ Error: Llave no provista.');
+          }
+        } else {
+          showToast('⚠️ Error al publicar: ' + (result.error || 'Intente nuevamente'));
         }
-        return true;
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('⚠️ Error de red al publicar');
       });
-      
-      // Prepare new payload with Scope: public
-      const payload = {
-        name: project.name || 'Proyecto',
-        folder: 'community',
-        elements: filteredElements,
-        camera: project.camera || { x: 0, y: 0, zoom: 1 }
-      };
-      
-      payload.elements.push({
-        type: 'text',
-        text: `Autor: ${author} | Email: ${email} | Scope: public`,
-        x: -99999,
-        y: -99999,
-        fontSize: 1,
-        hidden: true
-      });
-      
-      // Publish
-      return fetch(`${API_BASE}/api/publish-project`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    })
-    .then(res => res.json())
-    .then(result => {
-      if (result.ok) {
-        showToast('🎉 ¡Diseño compartido en el muro general!');
-        loadFeed(); // Reloads feed list and allLoadedProjects
-      } else {
-        showToast('⚠️ Error al publicar: ' + (result.error || 'Intente nuevamente'));
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      showToast('⚠️ Error de red al publicar');
-    });
+  };
+  
+  doPublish(publishKey);
 }
 
 // INITIALIZE FEED STATE
