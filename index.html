@@ -3,7 +3,11 @@
 <head>
   <meta http-equiv="refresh" content="0; url=flownexus_muro_de_proyectos/code.html" />
   <title>Redirecting...</title>
+  <link rel="manifest" href="manifest.json">
   <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
     window.location.href = "flownexus_muro_de_proyectos/code.html";
   </script>
 </head>

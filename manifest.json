@@ -1,0 +1,24 @@
+{
+  "name": "FlowNexus App",
+  "short_name": "FlowNexus",
+  "description": "Visor y Creador de Diagramas Interactivos de Flujo",
+  "start_url": "/flownexus_muro_de_proyectos/code.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1117",
+  "theme_color": "#00f0ff",
+  "icons": [
+    {
+      "src": "https://flow-diagram-creator.vercel.app/flownexus_muro_de_proyectos/viki_yrbt.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://flow-diagram-creator.vercel.app/flownexus_muro_de_proyectos/viki_yrbt.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}
