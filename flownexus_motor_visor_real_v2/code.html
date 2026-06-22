@@ -172,6 +172,10 @@ tailwind.config = {
     <span class="material-symbols-outlined text-primary">share</span>
     <span style="font-size:9px;color:#9aa4b5;text-transform:uppercase;letter-spacing:.08em;">Compartir</span>
   </button>
+  <button class="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" onclick="editProject()">
+    <span class="material-symbols-outlined text-primary">edit</span>
+    <span style="font-size:9px;color:#9aa4b5;text-transform:uppercase;letter-spacing:.08em;">Editar</span>
+  </button>
 </nav>
 
 <!-- ═══════════════════════════════ STATUS TOAST ═══════════════════════════════ -->
@@ -785,6 +789,15 @@ function shareUrl(){
     showToast(`📋 URL copiada: ${url}`);
   } else {
     showToast('Carga un proyecto primero para compartirlo.');
+  }
+}
+
+function editProject(){
+  if(S.currentId){
+    const url=`${API_BASE}/?id=${S.currentId}`;
+    window.open(url, '_blank');
+  } else {
+    showToast('Carga un proyecto primero para editarlo.');
   }
 }
 

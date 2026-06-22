@@ -137,6 +137,133 @@ tailwind.config = {
   .holo-text {
     text-shadow: 0 0 15px rgba(168, 232, 255, 0.8), 0 0 30px rgba(168, 232, 255, 0.4);
   }
+
+  /* KIOSK / ENTERPRISE SPLIT SCREEN */
+  .kiosk-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: #050712;
+  }
+  .kiosk-canvas-col {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background: radial-gradient(circle at 50% 50%, #0d1124 0%, #050712 100%);
+    overflow: hidden;
+  }
+  .kiosk-deck-col {
+    width: 380px;
+    height: 100%;
+    border-left: 1px solid rgba(168, 232, 255, 0.15);
+    background: rgba(18, 20, 31, 0.85);
+    backdrop-filter: blur(25px);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 40;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  }
+  .kiosk-svg {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+  .kiosk-svg:active {
+    cursor: grabbing;
+  }
+  .kiosk-node {
+    cursor: pointer;
+  }
+  .kiosk-node:hover {
+    filter: drop-shadow(0 0 8px rgba(168, 232, 255, 0.6));
+  }
+
+  /* V.I.K.I. Avatar inside Kiosk Mode */
+  .viki-container {
+    padding: 16px;
+    background: rgba(168, 232, 255, 0.03);
+    border-top: 1px solid rgba(168, 232, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .viki-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(168, 232, 255, 0.3);
+    background: #0c0e17;
+    box-shadow: 0 0 15px rgba(168, 232, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .viki-avatar::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px dashed rgba(168, 232, 255, 0.2);
+    animation: spin-dash 20s linear infinite;
+  }
+  @keyframes spin-dash {
+    100% { transform: rotate(360deg); }
+  }
+  .viki-mouth::after {
+    content: "---";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #a8e8ff;
+    text-shadow: 0 0 5px rgba(168, 232, 255, 0.8);
+  }
+  .viki-talking .viki-mouth::after {
+    animation: viki-talk 0.15s steps(1) infinite;
+  }
+  @keyframes viki-talk {
+    0%, 100% { content: "---"; }
+    20% { content: "-o-"; }
+    40% { content: "-O-"; }
+    60% { content: "(_)"; }
+    80% { content: "-v-"; }
+  }
+  .viki-visualizer {
+    display: flex;
+    gap: 2px;
+    height: 12px;
+    align-items: flex-end;
+  }
+  .viki-bar {
+    width: 3px;
+    height: 3px;
+    background: #a8e8ff;
+    border-radius: 1px;
+    transition: height 0.1s;
+  }
+  
+  /* Dialogue Bubble */
+  .viki-bubble {
+    background: rgba(168, 232, 255, 0.05);
+    border: 1px solid rgba(168, 232, 255, 0.15);
+    border-radius: 16px;
+    padding: 12px;
+    font-size: 11px;
+    color: #e3e1f0;
+    line-height: 1.5;
+    font-family: 'JetBrains Mono', monospace;
+    width: 100%;
+    min-height: 52px;
+    box-sizing: border-box;
+    position: relative;
+  }
 </style>
 </head>
 <body class="min-h-screen pb-24 pt-[56px] text-on-surface">
@@ -219,10 +346,6 @@ tailwind.config = {
     <span id="god-badge" class="hidden bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono">GOD</span>
   </div>
   <div class="flex items-center gap-3 relative" id="header-actions">
-    <button onclick="openPublishModal()" class="bg-primary/10 border border-primary/30 text-primary px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-primary/20 transition-all flex items-center gap-1.5 active:scale-95">
-      <span class="material-symbols-outlined text-[16px]">add_box</span>
-      Publicar
-    </button>
     
     <button onclick="toggleUserDropdown()" class="w-8 h-8 rounded-full border border-primary/20 overflow-hidden bg-surface-container flex items-center justify-center cursor-pointer hover:border-primary/50 transition-all relative">
       <img id="user-avatar" alt="User profile" class="w-full h-full object-cover hidden" src=""/>
@@ -279,7 +402,13 @@ tailwind.config = {
 
     <!-- Personal Grid Section -->
     <div>
-      <h4 class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-3">Mis Diseños</h4>
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="text-[11px] font-bold text-primary uppercase tracking-wider block">Mis Diseños</h4>
+        <button onclick="openPublishModal()" class="bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 transition-all rounded-lg px-2.5 py-1 text-[10px] font-bold flex items-center gap-1 active:scale-95">
+          <span class="material-symbols-outlined text-[14px]">add</span>
+          Agregar
+        </button>
+      </div>
       <div class="grid grid-cols-3 gap-2" id="profile-posts-grid">
         <!-- Vertical Grid Cards dynamically rendered here -->
       </div>
@@ -298,19 +427,10 @@ tailwind.config = {
     <span class="material-symbols-outlined fill-icon text-[24px]">home</span>
     <span class="text-[9px] font-bold uppercase tracking-wider">Feed</span>
   </button>
-  <button onclick="openPublishModal()" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
-    <div class="bg-primary/15 p-2.5 rounded-xl border border-primary/30 -translate-y-2 shadow-lg">
-      <span class="material-symbols-outlined text-primary text-[22px]">add</span>
-    </div>
-  </button>
   <button id="nav-btn-profile" onclick="switchTab('profile')" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
     <span class="material-symbols-outlined text-[24px]">person</span>
     <span class="text-[9px] font-bold uppercase tracking-wider">Perfil</span>
   </button>
-  <a href="https://flow-diagram-creator.vercel.app" target="_blank" class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
-    <span class="material-symbols-outlined text-[24px]">edit_square</span>
-    <span class="text-[9px] font-bold uppercase tracking-wider">Editor</span>
-  </a>
 </nav>
 
 <!-- PUBLISH MODAL -->
@@ -385,6 +505,7 @@ let screensaverActive = false;
 let inactivityTimer = null;
 let currentKioskIndex = 0;
 let kioskProjects = [];
+let allLoadedProjects = [];
 let currentActiveTab = 'feed';
 
 // Notification helper
@@ -396,9 +517,9 @@ function showToast(msg) {
   t._tid = setTimeout(() => t.style.opacity = '0', 3000);
 }
 
-// God Mode activation via triple click (RESTRICTED TO arkaios2026@gmail.com)
+// God Mode activation via triple click (RESTRICTED TO admin/god accounts)
 function handleTitleClick() {
-  if (!currentUser || currentUser.email !== 'arkaios2026@gmail.com') {
+  if (!currentUser || (currentUser.email !== 'arkaios2026@gmail.com' && currentUser.email !== 'admin@arkaios.dpdns.org')) {
     // Bloquear silenciosamente
     return;
   }
@@ -666,7 +787,7 @@ async function submitProject() {
   
   payload.elements.push({
     type: 'text',
-    text: `Autor: ${author} | Email: ${userEmailStr}`,
+    text: `Autor: ${author} | Email: ${userEmailStr} | Scope: private`,
     x: -99999,
     y: -99999,
     fontSize: 1,
@@ -749,12 +870,16 @@ async function loadFeed() {
         
         let author = 'Comunidad';
         let email = '';
+        let scope = 'public';
         const dummyText = project.elements?.find(e => e.type === 'text' && String(e.text).startsWith('Autor: '));
         if (dummyText) {
           const parts = dummyText.text.split('|');
           author = parts[0].replace('Autor: ', '').trim();
           if (parts[1]) {
             email = parts[1].replace('Email: ', '').trim();
+          }
+          if (parts[2]) {
+            scope = parts[2].replace('Scope: ', '').trim().toLowerCase();
           }
           project.elements = project.elements.filter(e => e !== dummyText);
         }
@@ -765,6 +890,7 @@ async function loadFeed() {
           project: project,
           author: author,
           email: email,
+          scope: scope,
           nameNormalized: String(project.name || '').trim().toLowerCase()
         });
       } catch(err) {
@@ -772,10 +898,12 @@ async function loadFeed() {
       }
     }
 
+    allLoadedProjects = rawProjects;
+
     const seenNames = new Set();
     const uniqueProjects = [];
     rawProjects.forEach(item => {
-      if (!seenNames.has(item.nameNormalized)) {
+      if (item.scope !== 'private' && !seenNames.has(item.nameNormalized)) {
         seenNames.add(item.nameNormalized);
         uniqueProjects.push(item);
       }
@@ -823,8 +951,8 @@ function renderProfileView() {
   const emptyMsg = document.getElementById('profile-empty-message');
   grid.innerHTML = '';
   
-  // Filter only user's own projects
-  const myProjects = kioskProjects.filter(item => item.email === currentUser.email);
+  // Filter only user's own projects from allLoadedProjects (includes private ones)
+  const myProjects = allLoadedProjects.filter(item => item.email === currentUser.email);
   document.getElementById('profile-posts-count').textContent = myProjects.length;
 
   if (myProjects.length === 0) {
@@ -840,15 +968,42 @@ function renderProfileView() {
     const cell = document.createElement('div');
     cell.className = 'profile-grid-cell';
     const viewUrl = `../flownexus_motor_visor_real_v2/code.html?id=${encodeURIComponent(item.id)}`;
+    const isPrivate = (item.scope === 'private');
     
     cell.innerHTML = `
-      <div class="w-full h-full relative" onclick="window.open('${viewUrl}', '_blank')">
-        <svg class="w-full h-full" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
-          <defs></defs>
-          <g class="world-group"></g>
-        </svg>
-        <div class="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-[11px] font-bold">
-          <span class="material-symbols-outlined text-[14px] fill-icon">favorite</span> 1.2K
+      <div class="w-full h-full relative">
+        <div class="w-full h-full" onclick="window.open('${viewUrl}', '_blank')">
+          <svg class="w-full h-full" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
+            <defs></defs>
+            <g class="world-group"></g>
+          </svg>
+        </div>
+        
+        <!-- Status Badge -->
+        <div class="absolute top-2 right-2 flex gap-1 z-10 pointer-events-none">
+          ${isPrivate ? `
+            <span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono flex items-center gap-0.5 shadow-md">
+              <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">lock</span>
+              Privado
+            </span>
+          ` : `
+            <span class="bg-green-500/20 text-green-400 border border-green-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider font-mono flex items-center gap-0.5 shadow-md">
+              <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">public</span>
+              Muro
+            </span>
+          `}
+        </div>
+
+        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-2 opacity-0 hover:opacity-100 transition-opacity flex flex-col gap-1 items-center justify-end z-20">
+          <p class="text-[9px] font-mono text-white truncate max-w-full mb-1">${item.project.name || 'Sin nombre'}</p>
+          ${isPrivate ? `
+            <button onclick="publishToGlobalWall(event, '${item.id}')" class="bg-primary/25 hover:bg-primary/40 border border-primary/40 text-primary rounded px-2 py-1 text-[8px] font-bold uppercase tracking-wider flex items-center gap-0.5 transition-all active:scale-95">
+              <span class="material-symbols-outlined text-[11px]">publish</span>
+              Compartir al Muro
+            </button>
+          ` : `
+            <span class="text-[8px] text-secondary font-bold uppercase tracking-wider">Ya en Muro</span>
+          `}
         </div>
       </div>
     `;
@@ -860,199 +1015,8 @@ function renderProfileView() {
       setupProfileCellEngine(svg, item.project);
     }
   });
-
-  startGlobalAnimation();
 }
 
-function setupProfileCellEngine(svg, project) {
-  const defs = svg.querySelector('defs');
-  const world = svg.querySelector('.world-group');
-  
-  const state = {
-    elements: project.elements || [],
-    lineNodes: [],
-    moverNodes: [],
-    flat: [],
-    byId: new Map()
-  };
-  
-  state.flat = flatten(state.elements);
-  state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
-  state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
-
-  // Small Grid Cell dimensions
-  const fitCellView = () => {
-    const flat = flatten(state.elements);
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    flat.forEach(e => {
-      if (!e) return;
-      const bounds = getBounds(e);
-      if (!bounds) return;
-      minX = Math.min(minX, bounds.x1); minY = Math.min(minY, bounds.y1);
-      maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
-    });
-    if (Number.isFinite(minX)) {
-      const cw = maxX - minX || 1, ch = maxY - minY || 1;
-      const sizeW = 120; // 3-col thumbnail width
-      const sizeH = 213; // aspect-ratio 9:16
-      const pad = 12;
-      const z = Math.max(0.01, Math.min((sizeW - pad*2)/cw, (sizeH - pad*2)/ch));
-      const px = sizeW/2 - ((minX + cw/2)*z);
-      const py = sizeH/2 - ((minY + ch/2)*z);
-      world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
-    }
-  };
-  fitCellView();
-  animators.push(state);
-}
-
-// SETUP ENTERPRISE MODE VIEW
-function setupEnterpriseMode() {
-  document.getElementById('top-bar').style.display = 'none';
-  document.getElementById('bottom-bar').style.display = 'none';
-  document.body.style.paddingTop = '0px';
-  document.body.style.paddingBottom = '0px';
-  document.body.style.overflow = 'hidden';
-
-  const container = document.getElementById('feed-container');
-  container.className = 'w-screen h-screen max-w-none p-0 m-0 relative flex items-center justify-center bg-[#050712]';
-  
-  if (!kioskProjects.length) {
-    container.innerHTML = `<div class="text-center text-on-surface-variant text-sm">No hay proyectos para fijar.</div>`;
-    return;
-  }
-
-  renderKioskProject();
-  triggerScreensaver();
-
-  window.addEventListener('click', resetInactivityTimer);
-  window.addEventListener('touchstart', resetInactivityTimer);
-}
-
-function renderKioskProject() {
-  const container = document.getElementById('feed-container');
-  const item = kioskProjects[currentKioskIndex];
-  
-  container.innerHTML = `
-    <!-- Full-screen SVG Stage -->
-    <div class="w-full h-full relative overflow-hidden flex flex-col justify-between">
-      
-      <!-- Top banner del Kiosko -->
-      <div class="p-4 z-10 bg-gradient-to-b from-black/80 to-transparent flex items-center justify-between">
-        <div>
-          <h1 class="text-primary font-bold text-lg leading-tight uppercase holo-text tracking-tight">${item.project.name || 'Proyecto'}</h1>
-          <p class="text-[10px] text-on-surface-variant font-mono mt-0.5">PUBLICADO POR: ${item.author} · ${(item.project.elements || []).length} ELEMENTOS</p>
-        </div>
-        
-        <div class="flex gap-2">
-          <button onclick="selectUserRole('social')" title="Volver a vista social" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
-            <span class="material-symbols-outlined">exit_to_app</span>
-          </button>
-          <button onclick="triggerScreensaver()" title="Activar screensaver" class="w-9 h-9 rounded-xl border border-primary/20 flex items-center justify-center bg-background/50 hover:bg-primary/20 transition-all text-primary active:scale-90">
-            <span class="material-symbols-outlined">screensaver</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Stage -->
-      <div class="absolute inset-0 z-0 flex items-center justify-center">
-        <svg class="w-full h-full" id="svg-kiosk-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg" style="touch-action: none;">
-          <defs></defs>
-          <g class="world-group"></g>
-        </svg>
-      </div>
-
-      <!-- Kiosk Navigation Bar -->
-      <div class="p-4 z-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-center justify-between">
-        <div class="flex gap-2">
-          <button onclick="navigateKiosk(-1)" ${kioskProjects.length <= 1 ? 'disabled class="opacity-30"' : ''} class="px-4 py-2 border border-primary/20 rounded-xl bg-background/60 text-primary text-xs font-bold hover:bg-primary/25 transition-all flex items-center gap-1 active:scale-95">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Anterior
-          </button>
-          <button onclick="navigateKiosk(1)" ${kioskProjects.length <= 1 ? 'disabled class="opacity-30"' : ''} class="px-4 py-2 border border-primary/20 rounded-xl bg-background/60 text-primary text-xs font-bold hover:bg-primary/25 transition-all flex items-center gap-1 active:scale-95">
-            Siguiente <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-          </button>
-        </div>
-        <div class="text-right">
-          <p class="text-[9px] text-on-surface-variant uppercase tracking-widest font-mono">FlowNexus Enterprise v2</p>
-          <p class="text-[9px] text-primary/70 font-mono mt-0.5">${currentKioskIndex + 1} de ${kioskProjects.length}</p>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const svg = document.getElementById(`svg-kiosk-${item.id.replace(/\//g, '-')}`);
-  if (svg) {
-    const defs = svg.querySelector('defs');
-    const world = svg.querySelector('.world-group');
-    
-    const state = {
-      elements: item.project.elements || [],
-      lineNodes: [],
-      moverNodes: [],
-      flat: [],
-      byId: new Map()
-    };
-    state.flat = flatten(state.elements);
-    state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
-    state.elements.forEach(e => renderPreviewEl(e, world, defs, state));
-
-    const fitKioskView = () => {
-      const W = window.innerWidth;
-      const H = window.innerHeight;
-      const flat = flatten(state.elements);
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      flat.forEach(e => {
-        if (!e) return;
-        const bounds = getBounds(e);
-        if (!bounds) return;
-        minX = Math.min(minX, bounds.x1); minY = Math.min(minY, bounds.y1);
-        maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
-      });
-      if (Number.isFinite(minX)) {
-        const cw = maxX - minX || 1, ch = maxY - minY || 1;
-        const pad = 64;
-        const z = Math.max(0.01, Math.min((W - pad*2)/cw, (H - pad*2)/ch));
-        const px = W/2 - ((minX + cw/2)*z);
-        const py = H/2 - ((minY + ch/2)*z);
-        world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
-      }
-    };
-    fitKioskView();
-    window.addEventListener('resize', fitKioskView);
-    
-    stopGlobalAnimation();
-    animators = [state];
-    startGlobalAnimation();
-  }
-}
-
-function navigateKiosk(dir) {
-  currentKioskIndex = (currentKioskIndex + dir + kioskProjects.length) % kioskProjects.length;
-  renderKioskProject();
-}
-
-function triggerScreensaver() {
-  screensaverActive = true;
-  document.getElementById('screensaver').classList.remove('hidden');
-}
-
-function dismissScreensaver() {
-  screensaverActive = false;
-  document.getElementById('screensaver').classList.add('hidden');
-  resetInactivityTimer();
-}
-
-function resetInactivityTimer() {
-  if (!isEnterprise) return;
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => {
-    if (!screensaverActive) {
-      triggerScreensaver();
-    }
-  }, 30000);
-}
-
-// INSTAGRAM REDESIGNED CARD (SOCIAL VIEW)
 function renderProjectCard(container, id, url, project, author) {
   const card = document.createElement('article');
   card.className = 'glass-panel rounded-xl overflow-hidden flex flex-col shadow-xl cyber-glow transition-all duration-300 relative';
@@ -1287,6 +1251,25 @@ function fitCardView(svg, world, elements) {
 }
 
 // CARD ANIMATION TICK LOOP
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+const svgEl = (tag, attrs={}) => {
+  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  Object.entries(attrs).forEach(([k,v]) => { if(v!=null) n.setAttribute(k,String(v)); });
+  return n;
+};
+
+function setupProfileCellEngine(svg, project) {
+  setupPreviewEngine(svg, project);
+}
+
+function stopGlobalAnimation() {
+  if (globalRaf) {
+    cancelAnimationFrame(globalRaf);
+    globalRaf = null;
+  }
+}
+
 function startGlobalAnimation() {
   let lastTs = 0;
   const tick = ts => {
@@ -1308,24 +1291,11 @@ function startGlobalAnimation() {
         }
       });
     });
-    
     globalRaf = requestAnimationFrame(tick);
   };
   globalRaf = requestAnimationFrame(tick);
 }
 
-function stopGlobalAnimation() {
-  if (globalRaf) cancelAnimationFrame(globalRaf);
-  animators = [];
-}
-
-// ─── GEOMETRY AND HELPER FUNCTIONS ───────────────────────────────────────────
-const svgEl = (tag, attrs={}) => {
-  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
-  Object.entries(attrs).forEach(([k,v]) => { if(v!=null) n.setAttribute(k,String(v)); });
-  return n;
-};
-const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
 function gradFill(fillColor, grad, defs) {
   if (!grad || typeof grad !== 'object') return fillColor || '#00bcd4';
   const id = `g_card_${Math.random().toString(36).slice(2, 9)}`;
@@ -1523,6 +1493,626 @@ function getBounds(e) {
   const { x, y, w, h } = getRectLike(e);
   if (!w && !h) return null;
   return { x1: x, y1: y, x2: x + w, y2: y + h };
+}
+
+// ═══════════════════════════════ KIOSK / ENTERPRISE MODE ENGINE ═══════════════════════════════
+let kioskState = {
+  panX: 0,
+  panY: 0,
+  zoom: 1,
+  isPanning: false,
+  panStartX: 0,
+  panStartY: 0,
+  selectedNodeId: null,
+  activeSpeakTimeout: null
+};
+
+function setupEnterpriseMode() {
+  stopGlobalAnimation();
+  
+  // Hide main UI bars
+  document.getElementById('top-bar').style.display = 'none';
+  document.getElementById('bottom-bar').style.display = 'none';
+  document.body.style.paddingTop = '0px';
+  document.body.style.paddingBottom = '0px';
+  document.body.style.overflow = 'hidden';
+  
+  const container = document.getElementById('feed-container');
+  container.className = 'kiosk-wrapper';
+  
+  // Get active project
+  if (kioskProjects.length === 0) {
+    container.innerHTML = `
+      <div class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant font-mono gap-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+        <p>Esperando proyectos de la comunidad...</p>
+        <button onclick="exitEnterpriseView()" class="px-4 py-2 border border-primary/30 rounded-xl text-xs hover:bg-primary/10 text-primary">Salir de Kiosko</button>
+      </div>
+    `;
+    return;
+  }
+  
+  if (currentKioskIndex >= kioskProjects.length) {
+    currentKioskIndex = 0;
+  }
+  
+  const currentItem = kioskProjects[currentKioskIndex];
+  renderKioskProject(container, currentItem);
+  
+  // Setup Screensaver inactivity timer
+  window.addEventListener('click', resetInactivityTimer);
+  window.addEventListener('touchstart', resetInactivityTimer);
+  resetInactivityTimer();
+}
+
+function renderKioskProject(container, item) {
+  const project = item.project;
+  const author = item.author;
+  
+  // Generate visualizer bars HTML
+  let barsHtml = '';
+  for(let i=0; i<15; i++) {
+    barsHtml += `<div class="viki-bar" id="viki-bar-${i}"></div>`;
+  }
+
+  container.innerHTML = `
+    <!-- LEFT PANEL: CANVAS -->
+    <div class="kiosk-canvas-col">
+      <svg id="kiosk-svg-stage" class="kiosk-svg" xmlns="http://www.w3.org/2000/svg">
+        <defs id="kiosk-defs"></defs>
+        <g id="kiosk-world-group"></g>
+      </svg>
+      
+      <!-- CONTROLS OVERLAY -->
+      <div class="absolute bottom-6 left-6 z-20 flex gap-2">
+        <button onclick="zoomInKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+        <button onclick="zoomOutKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95">
+          <span class="material-symbols-outlined">remove</span>
+        </button>
+        <button onclick="fitKioskView()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Ajustar pantalla">
+          <span class="material-symbols-outlined">fit_screen</span>
+        </button>
+      </div>
+
+      <!-- PROJECT CYCLE / EXIT KIOSK FLOATING ACTIONS -->
+      <div class="absolute top-6 left-6 z-20 flex items-center gap-3">
+        <button onclick="exitEnterpriseView()" class="px-3.5 py-2 bg-red-500/10 border border-red-500/20 hover:bg-red-500/25 text-red-400 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-md active:scale-95">
+          <span class="material-symbols-outlined text-[16px]">exit_to_app</span>
+          Salir de Kiosko
+        </button>
+        
+        ${kioskProjects.length > 1 ? `
+          <div class="flex items-center bg-surface/80 border border-primary/20 rounded-xl p-1 shadow-md">
+            <button onclick="navigateKioskProject(-1)" class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <span class="text-[10px] px-2 font-mono text-primary font-bold">${currentKioskIndex + 1} / ${kioskProjects.length}</span>
+            <button onclick="navigateKioskProject(1)" class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+    
+    <!-- RIGHT PANEL: TECHNICAL INFO DECK & V.I.K.I. -->
+    <div class="kiosk-deck-col">
+      <!-- Info Deck Sheet (Lámina) -->
+      <div class="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
+        <div>
+          <h2 class="text-primary font-extrabold text-lg tracking-tight holo-text">${project.name || 'Proyecto Kiosko'}</h2>
+          <p class="text-[10px] text-on-surface-variant font-mono mt-1 uppercase">AUTOR: ${author}</p>
+        </div>
+        
+        <!-- Interactive Information Deck -->
+        <div id="kiosk-info-deck" class="glass-panel rounded-2xl p-5 flex flex-col gap-4 border border-primary/10">
+          <div>
+            <span class="text-[9px] font-bold text-secondary uppercase tracking-wider font-mono">Modo de Operación</span>
+            <h3 class="text-sm font-bold text-on-surface mt-1">Ecosistema FlowNexus</h3>
+          </div>
+          
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Interactúa con la visualización de la izquierda. Selecciona cualquier nodo o elemento del diagrama para desplegar su ficha técnica y recibir retroalimentación del asistente virtual V.I.K.I.
+          </p>
+          
+          <div class="border-t border-primary/10 pt-4 flex flex-col gap-2">
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-on-surface-variant font-mono">Total Elementos:</span>
+              <span class="font-bold text-primary font-mono">${(project.elements || []).length}</span>
+            </div>
+            <div class="flex justify-between items-center text-[10px]">
+              <span class="text-on-surface-variant font-mono">Calibración:</span>
+              <span class="font-bold text-secondary font-mono">Estable (100%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- V.I.K.I. Mode Assistant -->
+      <div class="viki-container">
+        <div class="flex items-center gap-3 w-full px-2">
+          <div id="viki-avatar-container" class="viki-avatar flex-shrink-0">
+            <div class="viki-mouth"></div>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[10px] font-bold text-primary font-mono tracking-wider">V.I.K.I. Assistant</span>
+            <span id="viki-status" class="text-[8px] text-on-surface-variant uppercase font-mono tracking-tight">En Espera...</span>
+          </div>
+          <div class="ml-auto viki-visualizer">
+            ${barsHtml}
+          </div>
+        </div>
+        
+        <!-- Speech dialogue bubble -->
+        <div class="viki-bubble">
+          <p id="viki-dialogue">Sistemas listos. Esperando selección de nodo para análisis estructural...</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Render SVG
+  const svg = document.getElementById('kiosk-svg-stage');
+  const world = document.getElementById('kiosk-world-group');
+  const defs = document.getElementById('kiosk-defs');
+  
+  // Clone project and elements
+  const state = {
+    elements: JSON.parse(JSON.stringify(project.elements || [])),
+    lineNodes: [],
+    moverNodes: [],
+    flat: [],
+    byId: new Map()
+  };
+  
+  state.flat = flatten(state.elements);
+  state.byId = new Map(state.flat.map(e => [String(e.id || ''), e]));
+  
+  // Render SVG elements
+  state.elements.forEach(e => renderKioskEl(e, world, defs, state));
+  
+  // Setup panning and zoom event listeners for Kiosk Stage
+  setupKioskCameraEvents(svg);
+  
+  // Fit view automatically at start
+  fitKioskView(true);
+  
+  // Animate loop hook
+  animators = [state];
+  startGlobalAnimation();
+  
+  // Welcome Speech
+  triggerVikiSpeak(`Bienvenido al sistema Kiosko FlowNexus. Por favor presione cualquier elemento del panel izquierdo para analizar la lámina de información correspondiente.`);
+}
+
+function renderKioskEl(elem, parent, defs, state) {
+  if (!elem || elem.hidden === true) return;
+
+  if (elem.type === 'group' && Array.isArray(elem.elements)) {
+    const g = svgEl('g', { 'data-id': elem.id || '' });
+    parent.appendChild(g);
+    elem.elements.forEach(c => renderKioskEl(c, g, defs, state));
+    return;
+  }
+
+  const fill = gradFill(elem.fillColor || 'transparent', elem.fillGradient, defs);
+  const stroke = elem.strokeColor || 'transparent';
+  const lw = Number(elem.lineWidth ?? elem.strokeWidth ?? 2);
+  const isMover = elem.type === 'mover';
+  const isFollower = elem.followRoute === true && elem.routeId;
+  let node = null;
+
+  if (elem.type === 'line') {
+    const curve = elem.routeCircular ? 'circle' : String(elem.routeCurve || 'line').toLowerCase();
+    if (curve !== 'line') {
+      const pts = getRoutePts(elem);
+      node = svgEl('polyline', { points: pts.map(p => `${p.x},${p.y}`).join(' '), fill: 'none', stroke, 'stroke-width': lw, 'stroke-linecap': 'round', 'stroke-dasharray': elem.active ? '5 5' : null });
+    } else {
+      const x1 = Number(elem.x ?? 0), y1 = Number(elem.y ?? 0);
+      const x2 = Number(elem.endX ?? 0), y2 = Number(elem.endY ?? 0);
+      node = svgEl('line', { x1, y1, x2, y2, stroke, 'stroke-width': lw, 'stroke-linecap': 'round', 'stroke-dasharray': elem.active ? '5 5' : null });
+    }
+    if (elem.active) state.lineNodes.push({ node, speed: Math.max(0.2, Number(elem.speed) || 1), offset: 0 });
+
+  } else if (elem.type === 'rectangle' || elem.type === 'rect') {
+    const { x, y, w, h } = getRectLike(elem);
+    node = svgEl('rect', { x, y, width: w, height: h, rx: Number(elem.radius ?? 0), fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'circle') {
+    const { x, y, w, h } = getRectLike(elem);
+    const r = Number(elem.radius ?? Math.min(w, h) / 2);
+    const cx = Number(elem.cx ?? (x + (w || r * 2) / 2));
+    const cy = Number(elem.cy ?? (y + (h || r * 2) / 2));
+    node = svgEl('circle', { cx, cy, r, fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'path' || elem.type === 'polygon') {
+    const pts = Array.isArray(elem.points) ? elem.points : [];
+    const pointsAttr = pts.map(p => `${Number(p.x ?? 0)},${Number(p.y ?? 0)}`).join(' ');
+    if (pointsAttr) node = svgEl('polygon', { points: pointsAttr, fill, stroke, 'stroke-width': lw });
+
+  } else if (elem.type === 'image') {
+    const { x, y, w, h } = getRectLike(elem);
+    const src = elem.imageSrc || elem.imageData || '';
+    if (src) node = svgEl('image', { x, y, width: w, height: h, href: src, preserveAspectRatio: 'xMidYMid meet' });
+
+  } else if (elem.type === 'text') {
+    const x = Number(elem.x ?? 0), y = Number(elem.y ?? 0);
+    node = svgEl('text', { x, y, 'font-size': Math.max(8, Number(elem.fontSize ?? 12)), 'font-family': 'Inter,sans-serif', fill: elem.fillColor || '#ffffff', 'text-anchor': 'middle' });
+    node.textContent = String(elem.text || '');
+  } else if (isMover) {
+    const { x, y, w, h } = getRectLike(elem);
+    const mw = Math.max(6, Number(w) * 0.7 || 28), mh = Math.max(6, Number(h) * 0.7 || 18);
+    const fillS = elem.fillColor || '#93c5fd', strokeS = elem.strokeColor || '#0b1027';
+    const g = svgEl('g');
+    g.appendChild(svgEl('rect', { x: -mw/2, y: -mh/2, width: mw, height: mh, rx: 3, fill: fillS, stroke: strokeS, 'stroke-width': 1 }));
+    node = g;
+  }
+
+  if (!node) return;
+
+  if (Number.isFinite(elem.rotation) && elem.rotation !== 0 && !isMover) {
+    const { x, y, w, h } = getRectLike(elem);
+    node.setAttribute('transform',`rotate(${elem.rotation} ${x+w/2} ${y+h/2})`);
+  }
+
+  // Interactive Node click handler for Kiosk Mode!
+  if (elem.id && elem.type !== 'line') {
+    node.classList.add('kiosk-node');
+    node.style.pointerEvents = 'all';
+    node.onclick = (e) => {
+      e.stopPropagation();
+      handleKioskNodeClick(elem);
+    };
+  }
+
+  if (isMover || isFollower) {
+    const ctr = getCenter(elem);
+    if (isMover) {
+      state.moverNodes.push({ node, elem, isMover: true, cx: ctr.x, cy: ctr.y });
+      parent.appendChild(node);
+    } else {
+      const wr = svgEl('g');
+      wr.appendChild(node);
+      state.moverNodes.push({ wrapper: wr, node, elem, isMover: false, cx: ctr.x, cy: ctr.y });
+      parent.appendChild(wr);
+    }
+  } else {
+    parent.appendChild(node);
+  }
+}
+
+function handleKioskNodeClick(elem) {
+  kioskState.selectedNodeId = elem.id;
+  
+  // Calculate center of node
+  const center = getCenter(elem);
+  
+  // Smoothly center camera to center.x, center.y
+  smoothPanTo(center.x, center.y, 1.5);
+  
+  // Update Information Deck sheet
+  updateKioskInfoDeck(elem);
+  
+  // V.I.K.I. Dialogue speak
+  const nodeName = elem.name || elem.text || `Nodo_${elem.id.slice(0, 4)}`;
+  const textMsg = `Analizando elemento: ${nodeName}. Tipo: ${elem.type.toUpperCase()}. Estado operacional nominal. Flujo y conexiones estables dentro de la red.`;
+  triggerVikiSpeak(textMsg);
+}
+
+function smoothPanTo(targetX, targetY, targetZoom = 1.2) {
+  const svg = document.getElementById('kiosk-svg-stage');
+  if (!svg) return;
+  const W = svg.clientWidth || window.innerWidth;
+  const H = svg.clientHeight || window.innerHeight;
+  
+  const targetPanX = W/2 - (targetX * targetZoom);
+  const targetPanY = H/2 - (targetY * targetZoom);
+  
+  const startPanX = kioskState.panX;
+  const startPanY = kioskState.panY;
+  const startZoom = kioskState.zoom;
+  
+  const duration = 600; // ms
+  const startTime = performance.now();
+  
+  const step = (now) => {
+    const progress = Math.min(1, (now - startTime) / duration);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    
+    kioskState.panX = startPanX + (targetPanX - startPanX) * ease;
+    kioskState.panY = startPanY + (targetPanY - startPanY) * ease;
+    kioskState.zoom = startZoom + (targetZoom - startZoom) * ease;
+    
+    applyKioskCamera();
+    
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+  
+  requestAnimationFrame(step);
+}
+
+function applyKioskCamera() {
+  const world = document.getElementById('kiosk-world-group');
+  if (world) {
+    world.setAttribute('transform', `translate(${kioskState.panX} ${kioskState.panY}) scale(${kioskState.zoom})`);
+  }
+}
+
+function setupKioskCameraEvents(svg) {
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  
+  svg.addEventListener('pointerdown', (e) => {
+    svg.setPointerCapture(e.pointerId);
+    isDragging = true;
+    startX = e.clientX - kioskState.panX;
+    startY = e.clientY - kioskState.panY;
+  });
+  
+  svg.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    kioskState.panX = e.clientX - startX;
+    kioskState.panY = e.clientY - startY;
+    applyKioskCamera();
+  });
+  
+  svg.addEventListener('pointerup', () => {
+    isDragging = false;
+  });
+  
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 0.85 : 1.18;
+    const rect = svg.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    
+    const wx = (mx - kioskState.panX) / kioskState.zoom;
+    const wy = (my - kioskState.panY) / kioskState.zoom;
+    
+    kioskState.zoom = clamp(kioskState.zoom * factor, 0.05, 15);
+    kioskState.panX = mx - wx * kioskState.zoom;
+    kioskState.panY = my - wy * kioskState.zoom;
+    
+    applyKioskCamera();
+  }, { passive: false });
+}
+
+function zoomInKiosk() {
+  kioskState.zoom = clamp(kioskState.zoom * 1.3, 0.05, 15);
+  applyKioskCamera();
+}
+
+function zoomOutKiosk() {
+  kioskState.zoom = clamp(kioskState.zoom / 1.3, 0.05, 15);
+  applyKioskCamera();
+}
+
+function fitKioskView(instant = false) {
+  const svg = document.getElementById('kiosk-svg-stage');
+  if (!svg) return;
+  const world = document.getElementById('kiosk-world-group');
+  if (!world) return;
+  
+  const currentItem = kioskProjects[currentKioskIndex];
+  if (!currentItem) return;
+  const elements = currentItem.project.elements || [];
+  if (elements.length === 0) return;
+  
+  const flat = flatten(elements);
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  flat.forEach(e => {
+    if (!e) return;
+    const bounds = getBounds(e);
+    if (!bounds) return;
+    minX = Math.min(minX, bounds.x1); minY = Math.min(minY, bounds.y1);
+    maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
+  });
+  
+  if (!Number.isFinite(minX)) return;
+  
+  const W = svg.clientWidth || window.innerWidth;
+  const H = svg.clientHeight || window.innerHeight;
+  const pad = 48;
+  const cw = maxX - minX || 1, ch = maxY - minY || 1;
+  const targetZoom = clamp(Math.min((W - pad*2)/cw, (H - pad*2)/ch), 0.05, 5);
+  const targetPanX = W/2 - ((minX + cw/2) * targetZoom);
+  const targetPanY = H/2 - ((minY + ch/2) * targetZoom);
+  
+  if (instant) {
+    kioskState.zoom = targetZoom;
+    kioskState.panX = targetPanX;
+    kioskState.panY = targetPanY;
+    applyKioskCamera();
+  } else {
+    smoothPanTo((minX + cw/2), (minY + ch/2), targetZoom);
+  }
+}
+
+function updateKioskInfoDeck(elem) {
+  const deck = document.getElementById('kiosk-info-deck');
+  if (!deck) return;
+  
+  const name = elem.name || elem.text || `Elemento ${elem.id.slice(0, 5)}`;
+  const type = elem.type.toUpperCase();
+  const desc = elem.desc || `Ficha técnica automatizada para el elemento vectorial ${name}. Coordenadas: (${Math.round(elem.x ?? 0)}, ${Math.round(elem.y ?? 0)}).`;
+  
+  deck.innerHTML = `
+    <div>
+      <span class="text-[9px] font-bold text-secondary uppercase tracking-wider font-mono">${type}</span>
+      <h3 class="text-sm font-bold text-primary mt-1">${name}</h3>
+    </div>
+    
+    <p class="text-xs text-on-surface-variant leading-relaxed">
+      ${desc}
+    </p>
+    
+    <div class="border-t border-primary/10 pt-4 flex flex-col gap-2">
+      <div class="flex justify-between items-center text-[10px]">
+        <span class="text-on-surface-variant font-mono">Identificador:</span>
+        <span class="font-bold text-primary font-mono text-[9px]">${elem.id}</span>
+      </div>
+      <div class="flex justify-between items-center text-[10px]">
+        <span class="text-on-surface-variant font-mono">Posición Relativa:</span>
+        <span class="font-bold text-secondary font-mono">${Math.round(elem.x ?? 0)}x, ${Math.round(elem.y ?? 0)}y</span>
+      </div>
+      ${elem.routeId ? `
+        <div class="flex justify-between items-center text-[10px]">
+          <span class="text-on-surface-variant font-mono">Ruta Vinculada:</span>
+          <span class="font-bold text-primary font-mono text-[9px]">${elem.routeId}</span>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function triggerVikiSpeak(text) {
+  const avatar = document.getElementById('viki-avatar-container');
+  const status = document.getElementById('viki-status');
+  const dialogue = document.getElementById('viki-dialogue');
+  
+  if (!avatar || !status || !dialogue) return;
+  
+  clearTimeout(kioskState.activeSpeakTimeout);
+  
+  avatar.classList.add('viki-talking');
+  status.textContent = 'Hablando...';
+  status.classList.remove('text-on-surface-variant');
+  status.classList.add('text-secondary');
+  
+  let i = 0;
+  dialogue.textContent = '';
+  
+  const interval = setInterval(() => {
+    for (let b = 0; b < 15; b++) {
+      const bar = document.getElementById(`viki-bar-${b}`);
+      if (bar) {
+        bar.style.height = `${Math.floor(Math.random() * 12) + 3}px`;
+      }
+    }
+    
+    if (i < text.length) {
+      dialogue.textContent += text.charAt(i);
+      i++;
+    } else {
+      clearInterval(interval);
+      
+      for (let b = 0; b < 15; b++) {
+        const bar = document.getElementById(`viki-bar-${b}`);
+        if (bar) bar.style.height = '3px';
+      }
+      
+      avatar.classList.remove('viki-talking');
+      status.textContent = 'En Espera...';
+      status.classList.remove('text-secondary');
+      status.classList.add('text-on-surface-variant');
+    }
+  }, 35);
+  
+  kioskState.activeSpeakTimeout = setTimeout(() => {
+    clearInterval(interval);
+  }, 12000);
+}
+
+function navigateKioskProject(direction) {
+  currentKioskIndex += direction;
+  if (currentKioskIndex < 0) currentKioskIndex = kioskProjects.length - 1;
+  if (currentKioskIndex >= kioskProjects.length) currentKioskIndex = 0;
+  
+  setupEnterpriseMode();
+}
+
+function resetInactivityTimer() {
+  const screensaver = document.getElementById('screensaver');
+  if (userRole !== 'enterprise') return;
+  
+  if (screensaverActive) return;
+  
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    if (userRole === 'enterprise') {
+      screensaver.classList.remove('hidden');
+      screensaverActive = true;
+    }
+  }, 30000);
+}
+
+function dismissScreensaver() {
+  const screensaver = document.getElementById('screensaver');
+  screensaver.classList.add('hidden');
+  screensaverActive = false;
+  resetInactivityTimer();
+  
+  triggerVikiSpeak("Sistemas reanudados. Toque un nodo del diagrama para desplegar información técnica.");
+}
+
+function publishToGlobalWall(event, id) {
+  if (event) event.stopPropagation();
+  
+  if (!confirm('¿Deseas compartir este diseño en el muro general público?')) return;
+  
+  showToast('Publicando en el muro general...');
+  
+  // Fetch project payload
+  fetch(`${API_BASE}/api/project?id=${encodeURIComponent(id)}`)
+    .then(res => res.json())
+    .then(project => {
+      let author = 'Comunidad';
+      let email = currentUser ? currentUser.email : 'invitado@domain.com';
+      
+      // Filter out previous metadata elements
+      const filteredElements = (project.elements || []).filter(e => {
+        if (e.type === 'text' && String(e.text).startsWith('Autor: ')) {
+          const parts = e.text.split('|');
+          author = parts[0].replace('Autor: ', '').trim();
+          if (parts[1]) email = parts[1].replace('Email: ', '').trim();
+          return false;
+        }
+        return true;
+      });
+      
+      // Prepare new payload with Scope: public
+      const payload = {
+        name: project.name || 'Proyecto',
+        folder: 'community',
+        elements: filteredElements,
+        camera: project.camera || { x: 0, y: 0, zoom: 1 }
+      };
+      
+      payload.elements.push({
+        type: 'text',
+        text: `Autor: ${author} | Email: ${email} | Scope: public`,
+        x: -99999,
+        y: -99999,
+        fontSize: 1,
+        hidden: true
+      });
+      
+      // Publish
+      return fetch(`${API_BASE}/api/publish-project`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.ok) {
+        showToast('🎉 ¡Diseño compartido en el muro general!');
+        loadFeed(); // Reloads feed list and allLoadedProjects
+      } else {
+        showToast('⚠️ Error al publicar: ' + (result.error || 'Intente nuevamente'));
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('⚠️ Error de red al publicar');
+    });
 }
 
 // INITIALIZE FEED STATE
