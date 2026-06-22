@@ -798,7 +798,10 @@ async function submitProject() {
   const doSubmit = async (key) => {
     try {
       const headers = { 'Content-Type': 'application/json' };
-      if (key) headers['x-publish-key'] = key;
+      if (key) {
+        const cleanKey = key.replace(/[^\x20-\x7E]/g, '').replace(/["']/g, '').trim();
+        headers['x-publish-key'] = cleanKey;
+      }
       
       const res = await fetch(`${API_BASE}/api/publish-project`, {
         method: 'POST',
@@ -846,7 +849,11 @@ async function deleteProject(btn, url, cardId) {
   const doDelete = async (key) => {
     try {
       const headers = { 'Content-Type': 'application/json' };
-      if (key) headers['x-publish-key'] = key;
+      if (key) {
+        // Remove smart quotes, normal quotes, and non-ASCII to prevent fetch TypeError
+        const cleanKey = key.replace(/[^\x20-\x7E]/g, '').replace(/["']/g, '').trim();
+        headers['x-publish-key'] = cleanKey;
+      }
       
       const res = await fetch(`${API_BASE}/api/delete-project`, {
         method: 'POST',
@@ -2191,7 +2198,10 @@ function publishToGlobalWall(event, id) {
         });
         
         const headers = { 'Content-Type': 'application/json' };
-        if (key) headers['x-publish-key'] = key;
+        if (key) {
+          const cleanKey = key.replace(/[^\x20-\x7E]/g, '').replace(/["']/g, '').trim();
+          headers['x-publish-key'] = cleanKey;
+        }
         
         return fetch(`${API_BASE}/api/publish-project`, {
           method: 'POST',
