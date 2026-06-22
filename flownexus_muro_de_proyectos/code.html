@@ -523,6 +523,16 @@ function showToast(msg) {
   t._tid = setTimeout(() => t.style.opacity = '0', 3000);
 }
 
+// Global copy to clipboard function
+function copyShareLink(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('🔗 ¡Enlace directo copiado al portapapeles!');
+  }).catch(err => {
+    console.error('Error al copiar: ', err);
+    showToast('⚠️ No se pudo copiar el enlace');
+  });
+}
+
 // God Mode activation via triple click (RESTRICTED TO admin/god accounts)
 function handleTitleClick() {
   if (!currentUser || (currentUser.email !== 'arkaios2026@gmail.com' && currentUser.email !== 'admin@arkaios.dpdns.org')) {
@@ -1118,13 +1128,13 @@ function renderProjectCard(container, id, url, project, author) {
     <!-- Instagram Action Bar -->
     <div class="px-3.5 pt-3.5 pb-2.5 flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <button class="text-on-surface-variant hover:text-error hover:scale-110 active:scale-95 transition-all" onclick="toggleLike(this)">
+        <button class="text-on-surface-variant hover:text-error hover:scale-110 active:scale-95 transition-all" onclick="toggleLike(this)" title="Me gusta">
           <span class="material-symbols-outlined text-[22px]">favorite</span>
         </button>
-        <button class="text-on-surface-variant hover:text-primary hover:scale-110 transition-all">
-          <span class="material-symbols-outlined text-[22px]">mode_comment</span>
+        <button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-95 transition-all" onclick="copyShareLink(window.location.origin + '${viewUrl.replace('..', '')}')" title="Copiar enlace directo">
+          <span class="material-symbols-outlined text-[22px]">share</span>
         </button>
-        <a href="${viewUrl}" target="_blank" class="text-on-surface-variant hover:text-primary hover:scale-110 transition-all flex items-center">
+        <a href="${viewUrl}" target="_blank" class="text-on-surface-variant hover:text-primary hover:scale-110 transition-all flex items-center" title="Abrir en Motor Visor">
           <span class="material-symbols-outlined text-[22px]">fullscreen</span>
         </a>
       </div>
