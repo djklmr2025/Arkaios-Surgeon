@@ -189,7 +189,9 @@ tailwind.config = {
 //  Fuentes de datos: ?id= | ?project= | ?listen= | panel manual
 // ──────────────────────────────────────────────────────────────────────────────
 
-const API_BASE = 'https://flow-diagram-creator.vercel.app';
+const API_BASE = window.location.hostname.endsWith('vercel.app') 
+  ? window.location.origin 
+  : 'https://flow-diagram-creator.vercel.app';
 const DEMO_ID  = '24a18b2cd7e3444b'; // Metro CDMX
 
 // ─── DOM ─────────────────────────────────────────────────────────────────────
