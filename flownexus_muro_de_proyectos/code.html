@@ -1782,17 +1782,26 @@ function renderKioskProject(container, item) {
       </div>
       
       <!-- Chat History -->
-      <div id="viki-chat-history" class="flex-1 p-4 flex flex-col gap-4 overflow-y-auto">
-         <!-- Greeting message will be injected here via triggerVikiSpeak -->
+      <div class="flex-1 flex flex-col h-full max-h-[110px] my-auto px-4 relative">
+         <div id="viki-chat-history" class="w-full flex-1 flex flex-col gap-2 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-transparent">
+            <!-- Greeting message will be injected here via triggerVikiSpeak -->
+         </div>
       </div>
       
-      <!-- Voice Input Control -->
-      <div class="pl-6 flex items-center justify-center flex-shrink-0 border-l border-primary/20 h-full relative">
-         <button id="viki-mic-btn" onclick="toggleVikiMic()" class="w-[84px] h-[84px] rounded-full bg-gradient-to-br from-surface-container-high to-background border-[3px] border-primary flex flex-col items-center justify-center text-primary hover:bg-primary/20 transition-all shadow-[0_0_35px_rgba(168,232,255,0.4)] active:scale-95 focus:outline-none -translate-y-4">
-            <span class="material-symbols-outlined text-[48px] drop-shadow-[0_0_10px_rgba(168,232,255,0.8)]" id="viki-mic-icon">mic</span>
+      <!-- Voice Input & Controls -->
+      <div class="pl-4 flex items-center justify-center flex-shrink-0 border-l border-primary/20 h-full gap-4 relative">
+         <button onclick="clearVikiChat()" class="text-on-surface-variant hover:text-red-400 transition-colors flex flex-col items-center justify-center p-2 rounded-lg bg-surface/50 border border-primary/10 hover:border-red-400/50" title="Limpiar Chat">
+            <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+            <span class="text-[8px] mt-1 font-mono uppercase tracking-widest">Clean</span>
          </button>
-         <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-[120px] text-center">
-            <span id="viki-mic-label" class="text-[9px] font-bold text-primary tracking-widest uppercase animate-pulse">Toque para hablar</span>
+         
+         <div class="relative flex flex-col items-center">
+             <button id="viki-mic-btn" onclick="toggleVikiMic()" class="w-[84px] h-[84px] rounded-full bg-gradient-to-br from-surface-container-high to-background border-[3px] border-primary flex flex-col items-center justify-center text-primary hover:bg-primary/20 transition-all shadow-[0_0_35px_rgba(168,232,255,0.4)] active:scale-95 focus:outline-none -translate-y-4">
+                <span class="material-symbols-outlined text-[48px] drop-shadow-[0_0_10px_rgba(168,232,255,0.8)]" id="viki-mic-icon">mic</span>
+             </button>
+             <div class="absolute -bottom-1 w-[120px] text-center">
+                <span id="viki-mic-label" class="text-[9px] font-bold text-primary tracking-widest uppercase animate-pulse">Toque para hablar</span>
+             </div>
          </div>
       </div>
     </div>
@@ -2260,7 +2269,7 @@ function appendChatMessage(role, text) {
   if (!history) return;
   
   const div = document.createElement('div');
-  div.className = role === 'user' ? 'self-end bg-surface border border-primary/20 rounded-2xl rounded-tr-sm p-3 max-w-[85%] text-xs text-on-surface shadow-md' : 'self-start bg-primary/10 border border-primary/30 rounded-2xl rounded-tl-sm p-3 max-w-[90%] text-xs text-primary shadow-md font-mono';
+  div.className = role === 'user' ? 'self-end bg-surface border border-primary/20 rounded-2xl rounded-tr-sm p-3 max-w-[85%] text-xs text-on-surface shadow-md flex-shrink-0' : 'self-start bg-primary/10 border border-primary/30 rounded-2xl rounded-tl-sm p-3 max-w-[90%] text-xs text-primary shadow-md font-mono flex-shrink-0';
   
   let formattedText = text
     .replace(/\[IMG:(.+?)\]/g, '<img src="$1" class="mt-2 rounded-lg w-full object-cover border border-primary/30" />')
@@ -2268,8 +2277,24 @@ function appendChatMessage(role, text) {
     
   div.innerHTML = formattedText;
   history.appendChild(div);
-  setTimeout(() => { history.scrollTop = history.scrollHeight; }, 50);
+  
+  // Auto-scroll to bottom
+  setTimeout(() => {
+    history.scrollTop = history.scrollHeight;
+  }, 50);
 }
+
+window.clearVikiChat = function() {
+  const history = document.getElementById('viki-chat-history');
+  if (history) {
+    history.innerHTML = '';
+    // Optional: add a tiny confirmation bubble
+    const div = document.createElement('div');
+    div.className = 'self-center bg-transparent text-primary/50 text-[10px] font-mono tracking-widest mt-2';
+    div.innerHTML = '-- Historial limpiado --';
+    history.appendChild(div);
+  }
+};
 
 function triggerVikiSpeak(text) {
   const avatar = document.getElementById('viki-avatar-container');
