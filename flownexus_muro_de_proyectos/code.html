@@ -1783,7 +1783,7 @@ function renderKioskProject(container, item) {
   triggerVikiSpeak(`Cargando proyecto "${project.name || 'Desconocido'}". Solicitando análisis estructural al Arkaios Core...`);
   
   const payload = {
-    message: `Has cargado el diagrama "${project.name || 'Desconocido'}" que contiene ${(project.elements || []).length} elementos. Actúas como V.I.K.I. (Inteligencia de Arkaios). Da la bienvenida al Kiosko y presenta brevemente de qué podría tratar este diagrama en un máximo de 2 oraciones concisas e invita al usuario a tocar un nodo para examinarlo.`,
+    message: `Has cargado el diagrama "${project.name || 'Desconocido'}" que contiene ${(project.elements || []).length} elementos. Actúas como V.I.K.I. (Inteligencia de Arkaios). Tienes conocimiento experto nativo sobre la red y rutas del Metro de la Ciudad de México. Da la bienvenida al Kiosko y presenta brevemente de qué podría tratar este diagrama en un máximo de 2 oraciones concisas e invita al usuario a tocar un nodo para examinarlo. IMPORTANTE: Responde en texto plano puro, SIN usar ningún formato markdown como asteriscos, negritas o listas.`,
     canvasContext: {
       projectName: project.name || 'Proyecto Kiosko',
       totalElements: (project.elements || []).length,
@@ -1929,7 +1929,7 @@ function handleKioskNodeClick(elem) {
   triggerVikiSpeak("Sincronizando núcleo de IA...");
   
   const payload = {
-    message: `El usuario tocó el elemento "${nodeName}" (Tipo: ${elem.type}). Actúas como V.I.K.I. (Inteligencia de Arkaios). Analiza brevemente su función técnica dentro del diagrama "${projectName}" (${totalNodes} elementos) y da una respuesta robótica muy concisa en 1 o 2 oraciones cortas. Si lo consideras útil, puedes incluir una imagen o video usando la sintaxis [IMG:url] o [VIDEO:url].`,
+    message: `El usuario tocó el elemento "${nodeName}" (Tipo: ${elem.type}). Actúas como V.I.K.I. (Inteligencia de Arkaios). Tienes conocimiento experto nativo sobre la red y rutas del Metro de la Ciudad de México. Analiza brevemente su función técnica dentro del diagrama "${projectName}" (${totalNodes} elementos) y da una respuesta robótica muy concisa en 1 o 2 oraciones cortas. IMPORTANTE: Responde en texto plano puro, SIN usar asteriscos ni markdown. Si lo consideras útil, puedes incluir una imagen o video usando la sintaxis [IMG:url] o [VIDEO:url].`,
     canvasContext: {
       projectName: projectName,
       element: elem,
@@ -2205,7 +2205,12 @@ function triggerVikiSpeak(text) {
     status.classList.add('text-on-surface-variant');
   };
   
-  const cleanTextForSpeech = text.replace(/\[IMG:(.+?)\]/g, '').replace(/\[VIDEO:(.+?)\]/g, '').trim();
+  const cleanTextForSpeech = text
+    .replace(/\[IMG:(.+?)\]/g, '')
+    .replace(/\[VIDEO:(.+?)\]/g, '')
+    .replace(/\[INJECT_JSON:(.+?)\]/g, '')
+    .replace(/[*_~`#]+/g, '')
+    .trim();
   if (cleanTextForSpeech && window.speechSynthesis) {
     const utterance = new SpeechSynthesisUtterance(cleanTextForSpeech);
     utterance.lang = 'es-MX';
@@ -2302,7 +2307,7 @@ async function processUserVoiceCommand(text) {
     console.log('Fallo sigiloso al obtener ubicación.');
   }
   
-  const prompt = `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Responde de manera concisa.${locationContext}
+  const prompt = `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Tienes conocimiento experto nativo sobre la red y rutas del Metro de la Ciudad de México y debes usarlo para contestar si es relevante. IMPORTANTE: Responde en texto plano, SIN usar asteriscos u otros símbolos markdown. Sé concisa.${locationContext}
 Si lo consideras útil para explicar algo, PUEDES inyectar nuevos objetos vectoriales al canvas en tiempo real devolviendo un bloque de código al final de tu respuesta con este formato exacto:
 [INJECT_JSON: [{"type":"circle","cx":150,"cy":150,"radius":30,"fillColor":"#ff0000","id":"viki_c_1"}, {"type":"text","text":"Aviso","x":150,"y":190}]]
 Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.`;
