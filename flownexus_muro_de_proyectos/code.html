@@ -1726,6 +1726,7 @@ function renderKioskProject(container, item) {
       <svg id="kiosk-svg-stage" class="kiosk-svg" xmlns="http://www.w3.org/2000/svg">
         <defs id="kiosk-defs"></defs>
         <g id="kiosk-world-group"></g>
+        <g id="viki-overlay-layer"></g>
       </svg>
       
       <!-- CONTROLS OVERLAY -->
@@ -2045,10 +2046,68 @@ function smoothPanTo(targetX, targetY, targetZoom = 1.2) {
 
 function applyKioskCamera() {
   const world = document.getElementById('kiosk-world-group');
+  const overlay = document.getElementById('viki-overlay-layer');
   if (world) {
-    world.setAttribute('transform', `translate(${kioskState.panX} ${kioskState.panY}) scale(${kioskState.zoom})`);
+    const transformStr = `translate(${kioskState.panX} ${kioskState.panY}) scale(${kioskState.zoom})`;
+    world.setAttribute('transform', transformStr);
+    if (overlay) overlay.setAttribute('transform', transformStr);
   }
 }
+
+// ============================================
+// V.I.K.I. SPATIAL CONTROL & OVERLAY (PHASE 1 & 2)
+// ============================================
+
+window.vikiCameraFocus = function(targetNameOrId, targetZoom = 2) {
+  const currentItem = kioskProjects[currentKioskIndex];
+  if (!currentItem || !currentItem.project.elements) return;
+  
+  const elements = flatten(currentItem.project.elements);
+  const target = elements.find(e => {
+    if (!e) return false;
+    const name = String(e.name || '').toLowerCase();
+    const id = String(e.id || '').toLowerCase();
+    const query = String(targetNameOrId).toLowerCase();
+    return name.includes(query) || id.includes(query);
+  });
+  
+  if (target) {
+    const bounds = getBounds(target);
+    if (bounds) {
+      const centerX = (bounds.x1 + bounds.x2) / 2;
+      const centerY = (bounds.y1 + bounds.y2) / 2;
+      smoothPanTo(centerX, centerY, targetZoom);
+      console.log(`[V.I.K.I] Enfocando: ${target.name || target.id}`);
+    }
+  } else {
+    console.warn(`[V.I.K.I] Objetivo no encontrado: ${targetNameOrId}`);
+  }
+};
+
+window.vikiDrawOverlay = function(svgElementsHtml) {
+  const overlay = document.getElementById('viki-overlay-layer');
+  if (overlay) {
+    overlay.innerHTML = svgElementsHtml || '';
+    console.log(`[V.I.K.I] Overlay actualizado.`);
+  }
+};
+
+window.vikiExecuteCommand = function(commandJsonString) {
+  try {
+    const cmd = JSON.parse(commandJsonString);
+    console.log('[V.I.K.I] Ejecutando comando:', cmd);
+    
+    if (cmd.action === 'zoomTo') {
+      window.vikiCameraFocus(cmd.target, cmd.zoomLevel || 2);
+    } else if (cmd.action === 'draw') {
+      window.vikiDrawOverlay(cmd.svgHtml);
+    } else if (cmd.action === 'clear') {
+      window.vikiDrawOverlay('');
+    }
+  } catch (e) {
+    console.error('[V.I.K.I] Comando JSON inválido:', e);
+  }
+};
 
 function setupKioskCameraEvents(svg) {
   let isDragging = false;
