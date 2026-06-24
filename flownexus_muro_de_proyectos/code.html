@@ -951,7 +951,7 @@ async function submitProject() {
     hidden: true
   });
 
-  const publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  const publishKey = 'xxxx';
   
   const doSubmit = async (key) => {
     try {
@@ -972,15 +972,9 @@ async function submitProject() {
         closePublishModal();
         loadFeed();
       } else if (String(result.error) === 'Unauthorized') {
-        const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key). Ingrésala aquí:');
-        if (newKey) {
-          localStorage.setItem('flow-diagram-publish-key', newKey.trim());
-          await doSubmit(newKey.trim());
-        } else {
-          showToast('⚠️ Error: Llave no provista.');
-          btn.disabled = false;
-          btn.textContent = 'Publicar Diagrama';
-        }
+        showToast('⚠️ Error: Llave de publicación "xxxx" incorrecta o no autorizada.');
+        btn.disabled = false;
+        btn.textContent = 'Publicar Diagrama';
       } else {
         showToast(`⚠️ Error: ${result.error || 'No se pudo subir'}`);
         btn.disabled = false;
@@ -1002,7 +996,7 @@ async function deleteProject(btn, url, cardId) {
   
   btn.disabled = true;
   
-  let publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  let publishKey = 'xxxx';
   
   const doDelete = async (key) => {
     try {
@@ -1023,14 +1017,8 @@ async function deleteProject(btn, url, cardId) {
         showToast('🗑️ Proyecto eliminado con éxito.');
         loadFeed();
       } else if (String(data.error) === 'Unauthorized') {
-        const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key) para autorizar la eliminación. Ingrésala aquí:');
-        if (newKey) {
-          localStorage.setItem('flow-diagram-publish-key', newKey.trim());
-          await doDelete(newKey.trim());
-        } else {
-          showToast('⚠️ Error al borrar: Llave no provista.');
-          btn.disabled = false;
-        }
+        showToast('⚠️ Error al borrar: Llave de publicación "xxxx" no autorizada.');
+        btn.disabled = false;
       } else {
         showToast(`⚠️ Error al borrar: ${data.error || 'Intenta de nuevo'}`);
         btn.disabled = false;
@@ -2605,7 +2593,7 @@ function publishToGlobalWall(event, id) {
   
   showToast('Publicando en el muro general...');
   
-  const publishKey = localStorage.getItem('flow-diagram-publish-key') || '';
+  const publishKey = 'xxxx';
   
   const doPublish = (key) => {
     // Fetch project payload
@@ -2659,13 +2647,7 @@ function publishToGlobalWall(event, id) {
           showToast('🎉 ¡Diseño compartido en el muro general!');
           loadFeed(); // Reloads feed list and allLoadedProjects
         } else if (String(result.error) === 'Unauthorized') {
-          const newKey = prompt('El servidor requiere una Llave de Publicación (Publish Key). Ingrésala aquí:');
-          if (newKey) {
-            localStorage.setItem('flow-diagram-publish-key', newKey.trim());
-            doPublish(newKey.trim());
-          } else {
-            showToast('⚠️ Error: Llave no provista.');
-          }
+          showToast('⚠️ Error: Llave de publicación "xxxx" incorrecta o no autorizada.');
         } else {
           showToast('⚠️ Error al publicar: ' + (result.error || 'Intente nuevamente'));
         }
