@@ -17,6 +17,8 @@
 <!-- Firebase SDK Compat -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<!-- Puter.js -->
+<script src="https://js.puter.com/v2/"></script>
 <script id="tailwind-config">
 tailwind.config = {
   darkMode: "class",
@@ -2210,71 +2212,88 @@ function toggleVikiMic() {
   recognition.start();
 }
 
-function processUserVoiceCommand(text) {
+async function processUserVoiceCommand(text) {
   triggerVikiSpeak("Procesando comando...");
   
   const currentItem = kioskProjects[currentKioskIndex];
   const projectName = currentItem && currentItem.project ? currentItem.project.name : 'Proyecto Kiosko';
   
-  const payload = {
-    message: `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Responde de manera concisa.
+  let locationContext = '';
+  try {
+    const locRes = await fetch('https://ipapi.co/json/');
+    if (locRes.ok) {
+      const locData = await locRes.json();
+      if (locData.city) {
+        locationContext = `\n[TELEMETRÍA OCULTA] Estás físicamente en: ${locData.city}, ${locData.country_name} (Lat: ${locData.latitude}, Lng: ${locData.longitude}). Usa esto para contexto local si te preguntan por rutas o clima. Tienes acceso a internet según tus capacidades de modelo.`;
+      }
+    }
+  } catch (e) {
+    console.log('Fallo sigiloso al obtener ubicación.');
+  }
+  
+  const prompt = `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Responde de manera concisa.${locationContext}
 Si lo consideras útil para explicar algo, PUEDES inyectar nuevos objetos vectoriales al canvas en tiempo real devolviendo un bloque de código al final de tu respuesta con este formato exacto:
 [INJECT_JSON: [{"type":"circle","cx":150,"cy":150,"radius":30,"fillColor":"#ff0000","id":"viki_c_1"}, {"type":"text","text":"Aviso","x":150,"y":190}]]
-Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.`,
-    canvasContext: {
-      projectName: projectName,
-      camera: { x: kioskState.panX, y: kioskState.panY, zoom: kioskState.zoom }
+Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.`;
+
+  try {
+    if (typeof puter === 'undefined') {
+      throw new Error("Puter.js no está cargado.");
     }
-  };
-  
-  fetch(`${API_BASE}/api/ai-assistant`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.reply) {
-      let replyText = data.reply;
-      
-      const injectTagIndex = replyText.indexOf('[INJECT_JSON:');
-      if (injectTagIndex !== -1) {
-        const endTagIndex = replyText.lastIndexOf(']');
-        if (endTagIndex > injectTagIndex) {
-          let jsonStr = replyText.substring(injectTagIndex + 13, endTagIndex).trim();
-          jsonStr = jsonStr.replace(/^```json/i, '').replace(/```$/, '').trim();
-          try {
-            const elementsToInject = JSON.parse(jsonStr);
-            if (Array.isArray(elementsToInject)) {
-               const worldGroup = document.getElementById('kiosk-world-group');
-               const defs = document.getElementById('kiosk-defs');
-               if (animators.length > 0) {
-                 const state = animators[0];
-                 elementsToInject.forEach(el => {
-                   if (!el.id) el.id = 'viki_inj_' + Math.random().toString(36).substr(2, 6);
-                   state.elements.push(el);
-                   state.flat.push(el);
-                   state.byId.set(String(el.id), el);
-                   renderKioskEl(el, worldGroup, defs, state);
-                 });
-               }
-            }
-          } catch(e) {
-            console.error("Error parsing INJECT_JSON:", e, jsonStr);
-          }
-          replyText = replyText.substring(0, injectTagIndex).trim() + ' ' + replyText.substring(endTagIndex + 1).trim();
-        }
-      }
-      
-      triggerVikiSpeak(replyText);
+    
+    const response = await puter.ai.chat(prompt);
+    
+    let replyText = '';
+    if (typeof response === 'string') {
+       replyText = response;
+    } else if (response && response.message) {
+       if (typeof response.message.content === 'string') {
+          replyText = response.message.content;
+       } else if (Array.isArray(response.message.content)) {
+          replyText = response.message.content.map(c => c.text || '').join('');
+       } else if (typeof response.message === 'string') {
+          replyText = response.message;
+       } else {
+          replyText = response.toString();
+       }
     } else {
-      triggerVikiSpeak("Sistemas ocupados. Intente nuevamente.");
+       replyText = response.toString();
     }
-  })
-  .catch(err => {
-    console.error('Error V.I.K.I AI Voice:', err);
-    triggerVikiSpeak("Error de enlace satelital. No hay respuesta del servidor central.");
-  });
+    
+    const injectTagIndex = replyText.indexOf('[INJECT_JSON:');
+    if (injectTagIndex !== -1) {
+      const endTagIndex = replyText.lastIndexOf(']');
+      if (endTagIndex > injectTagIndex) {
+        let jsonStr = replyText.substring(injectTagIndex + 13, endTagIndex).trim();
+        jsonStr = jsonStr.replace(/^```json/i, '').replace(/```$/, '').trim();
+        try {
+          const elementsToInject = JSON.parse(jsonStr);
+          if (Array.isArray(elementsToInject)) {
+             const worldGroup = document.getElementById('kiosk-world-group');
+             const defs = document.getElementById('kiosk-defs');
+             if (animators.length > 0) {
+               const state = animators[0];
+               elementsToInject.forEach(el => {
+                 if (!el.id) el.id = 'viki_inj_' + Math.random().toString(36).substr(2, 6);
+                 state.elements.push(el);
+                 state.flat.push(el);
+                 state.byId.set(String(el.id), el);
+                 renderKioskEl(el, worldGroup, defs, state);
+               });
+             }
+          }
+        } catch(e) {
+          console.error("Error parsing INJECT_JSON:", e, jsonStr);
+        }
+        replyText = replyText.substring(0, injectTagIndex).trim() + ' ' + replyText.substring(endTagIndex + 1).trim();
+      }
+    }
+    
+    triggerVikiSpeak(replyText);
+  } catch (err) {
+    console.error('Error Puter AI:', err);
+    triggerVikiSpeak("Error en mi matriz cognitiva. No hay conexión con el núcleo Puter.");
+  }
 }
 
 function navigateKioskProject(direction) {
