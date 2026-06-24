@@ -520,6 +520,11 @@ tailwind.config = {
       </div>
       
       <div>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Enlace Directo del Proyecto JSON (Opcional, ignora subida)</label>
+        <input type="text" id="pub-json-url" placeholder="https://flow-diagram-creator.vercel.app/api/project?id=..." class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors"/>
+      </div>
+
+      <div>
         <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">URL de Video / Imagen (Opcional)</label>
         <div class="flex gap-2">
           <input type="text" id="pub-media-url" placeholder="https://arkaios.../video.mp4" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors"/>
@@ -922,9 +927,10 @@ function handleFileSelect(file) {
 
 // Publish payload (INCLUDES email metadata for filtering)
 async function submitProject() {
+  const jsonLinkUrl = document.getElementById('pub-json-url')?.value.trim() || '';
   const mediaUrl = document.getElementById('pub-media-url')?.value.trim() || '';
-  if (!selectedProjectData && !mediaUrl) {
-    showToast('⚠️ Por favor selecciona un archivo .json o añade una URL de Media');
+  if (!selectedProjectData && !mediaUrl && !jsonLinkUrl) {
+    showToast('⚠️ Por favor selecciona un archivo .json, pega un enlace, o añade una URL de Media');
     return;
   }
   const name = document.getElementById('pub-name').value.trim() || 'Proyecto sin nombre';
@@ -956,7 +962,7 @@ async function submitProject() {
 
   const publishKey = 'xxxx';
   
-  const doSubmit = async () => { let jsonUrl = ''; if (payload.elements && payload.elements.length > 0) { try { const jsonRes = await fetch('https://api.jsonbin.io/v3/b', {method:'POST', headers:{'Content-Type':'application/json','X-Bin-Private':'false'}, body: JSON.stringify({elements: payload.elements, camera: payload.camera})}); const jsonData = await jsonRes.json(); if(jsonData.metadata && jsonData.metadata.id) jsonUrl = 'https://api.jsonbin.io/v3/b/' + jsonData.metadata.id + '/latest'; } catch(storageErr) { console.warn('Storage upload failed:', storageErr); } }
+  const doSubmit = async () => { let jsonUrl = ''; if (payload.elements && payload.elements.length > 0 && !jsonLinkUrl) { try { const jsonRes = await fetch('https://api.jsonbin.io/v3/b', {method:'POST', headers:{'Content-Type':'application/json','X-Bin-Private':'false'}, body: JSON.stringify({elements: payload.elements, camera: payload.camera})}); const jsonData = await jsonRes.json(); if(jsonData.metadata && jsonData.metadata.id) jsonUrl = 'https://api.jsonbin.io/v3/b/' + jsonData.metadata.id + '/latest'; } catch(storageErr) { console.warn('Storage upload failed:', storageErr); } }
     try {
       // Clean payload from any undefined values that Firestore rejects
       const cleanPayload = JSON.parse(JSON.stringify(payload));
@@ -972,11 +978,24 @@ async function submitProject() {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       
-      if (jsonUrl) {
+      if (jsonLinkUrl) {
+        docData.jsonUrl = jsonLinkUrl;
+      } else if (jsonUrl) {
         docData.jsonUrl = jsonUrl;
       } else {
-        // Fallback: Si JSONBin falló, guardamos en Firebase comprimido con LZString para que ocupe menos de 1MB
-        docData.elementsJson = LZString.compressToUTF16(JSON.stringify(cleanPayload.elements));
+        try {
+          // Fallback 1: Subir a Firebase Storage nativo (Soporta archivos masivos > 1MB)
+          const storageRef = firebase.storage().ref();
+          const fileName = `projects/flow_${Date.now()}_${Math.random().toString(36).substr(2,9)}.json`;
+          const fileRef = storageRef.child(fileName);
+          const jsonBlob = new Blob([JSON.stringify(cleanPayload.elements)], { type: 'application/json' });
+          await fileRef.put(jsonBlob);
+          docData.jsonUrl = await fileRef.getDownloadURL();
+        } catch (fbStorageErr) {
+          console.warn('Firebase Storage fallback failed:', fbStorageErr);
+          // Fallback 2: Guardar comprimido en el documento (límite estricto de 1MB)
+          docData.elementsJson = LZString.compressToUTF16(JSON.stringify(cleanPayload.elements));
+        }
       }
       
       const docRef = await db.collection('projects').add(docData);
