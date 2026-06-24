@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
 <!-- Firebase SDK Compat -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <!-- Puter.js -->
 <script src="https://js.puter.com/v2/"></script>
@@ -953,11 +953,11 @@ async function submitProject() {
 
   const publishKey = 'xxxx';
   
-  const doSubmit = async () => {
+  const doSubmit = async () => { let jsonUrl = ''; if (payload.elements && payload.elements.length > 0) { try { const jsonBlob = new Blob([JSON.stringify({elements: payload.elements, camera: payload.camera})], {type: 'application/json'}); const storageRef = firebase.storage().ref('projects/' + Date.now() + '_' + name.replace(/\s+/g,'_') + '.json'); const snapshot = await storageRef.put(jsonBlob); jsonUrl = await snapshot.ref.getDownloadURL(); } catch(storageErr) { console.warn('Storage upload failed:', storageErr); } }
     try {
       const docRef = await db.collection('projects').add({
         name: payload.name, author: payload.author || 'Invitado', folder: payload.folder || 'projects', camera: payload.camera || {x:0,y:0,zoom:1}, mediaUrl: payload.mediaUrl || '',
-                  elementsJson: JSON.stringify(payload.elements || []),
+                  jsonUrl: jsonUrl,
         topic: 'general',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
