@@ -956,7 +956,8 @@ async function submitProject() {
     try {
       const docRef = await db.collection('projects').add({
         ...payload,
-        uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+        topic: 'general',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       showToast('🎉 ¡Proyecto publicado con éxito en Firebase!');
       closePublishModal();
