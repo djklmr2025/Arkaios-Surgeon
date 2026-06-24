@@ -1194,13 +1194,18 @@ function renderProfileView() {
     const isPrivate = (item.scope === 'private');
     
     cell.innerHTML = `
-      <div class="w-full h-full relative">
-        <div class="w-full h-full" onclick="window.open('${viewUrl}', '_blank')">
+      <div class="w-full h-full relative group/card">
+        <div class="w-full h-full cursor-pointer" onclick="window.open('${viewUrl}', '_blank')">
           <svg class="w-full h-full" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
             <defs></defs>
             <g class="world-group"></g>
           </svg>
         </div>
+        
+        <!-- Botón de Eliminar (Hub) -->
+        <button onclick="deleteProject(this, '${viewUrl}', '${item.id}')" class="absolute top-2 left-2 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded z-20 opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-auto" title="Eliminar este diagrama">
+          <span class="material-symbols-outlined text-[14px]">delete</span>
+        </button>
         
         <!-- Status Badge -->
         <div class="absolute top-2 right-2 flex gap-1 z-10 pointer-events-none">
