@@ -635,11 +635,12 @@ function handleTitleClick() {
     const badge = document.getElementById('god-badge');
     if (godMode) {
       badge.classList.remove('hidden');
-      showToast('🛡️ MODO DIOS ACTIVADO');
+      showToast('🚀 MODO DIOS ACTIVADO');
     } else {
       badge.classList.add('hidden');
       showToast('Modo Dios desactivado');
     }
+    loadFeed();
   }
 }
 
@@ -1304,9 +1305,11 @@ function renderProjectCard(container, id, url, project, author) {
         </div>
       </div>
       <div class="flex items-center gap-2">
+        ${godMode ? `
         <button onclick="deleteProject(this, '${url}', '${id}')" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 p-2 rounded-[2px] transition-all" title="Eliminar Proyecto (God Mode)">
           <span class="material-symbols-outlined text-[14px]">delete</span>
         </button>
+        ` : ''}
         <a href="${viewUrl}" target="_blank" class="bg-[#a8e8ff]/5 hover:bg-[#a8e8ff]/20 border border-[#a8e8ff]/30 text-[#a8e8ff] px-4 py-2 text-[10px] font-bold tracking-widest transition-all active:scale-95 flex items-center gap-2">
           EXECUTE <span class="text-[10px]">›</span>
         </a>
