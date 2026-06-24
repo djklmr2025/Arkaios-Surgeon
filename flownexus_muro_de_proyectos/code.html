@@ -1029,10 +1029,59 @@ async function loadFeed() {
   `;
 
   try {
+    const telemetryPanelHTML = `
+<!-- Panel de Telemetría Quirúrgica -->
+<div class="glass-panel bg-[#121318]/50 border border-[#a8e8ff]/20 p-6 rounded-[4px] backdrop-blur-[8px] mb-8">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-lg font-bold text-[#a8e8ff] tracking-tighter">CORE_TELEMETRY</h3>
+    <span class="flex items-center gap-2 text-[#a8e8ff]/60 text-xs font-mono">
+      <span class="w-2 h-2 rounded-full bg-[#a8e8ff] animate-pulse"></span> SYSCALL.774.ACTIVE
+    </span>
+  </div>
+  
+  <div class="space-y-6">
+    <!-- CPU Utilization -->
+    <div class="bg-[#181b27] p-4 rounded-[4px] border border-[#a8e8ff]/5">
+      <div class="flex justify-between text-xs font-mono mb-4 text-[#a8e8ff]/70">
+        <span>CPU_UTILIZATION</span>
+        <span class="bg-[#a8e8ff]/10 px-2 py-0.5 rounded text-[#a8e8ff]">LIVE</span>
+      </div>
+      <div class="flex items-end gap-1 h-12 mb-4">
+        <div class="flex-1 bg-[#a8e8ff]/10 h-4"></div>
+        <div class="flex-1 bg-[#a8e8ff]/5 h-2"></div>
+        <div class="flex-1 bg-[#a8e8ff]/5 h-3"></div>
+        <div class="flex-1 bg-[#a8e8ff] h-12 shadow-[0_0_15px_#a8e8ff66]"></div>
+        <div class="flex-1 bg-[#a8e8ff]/40 h-5"></div>
+        <div class="flex-1 bg-[#a8e8ff]/20 h-4"></div>
+        <div class="flex-1 bg-[#a8e8ff]/10 h-2"></div>
+      </div>
+      <div class="flex justify-between items-baseline">
+        <span class="text-4xl font-bold text-white">42.0<span class="text-xl text-[#a8e8ff]/50 ml-1">%</span></span>
+        <div class="text-right text-[10px] font-mono text-[#a8e8ff]/40 uppercase">
+          Load: <span class="text-[#a8e8ff]">Optimal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latency Grid -->
+    <div class="grid grid-cols-1 gap-2 text-[10px] font-mono">
+      <div class="flex justify-between items-center p-2 bg-[#0b0e19] border border-white/5">
+        <span class="text-white/40">PRIMARY_NODE</span>
+        <span class="text-[#a8e8ff]">14ms</span>
+      </div>
+      <div class="flex justify-between items-center p-2 bg-[#0b0e19] border border-white/5">
+        <span class="text-white/40">SURGICAL_RELAY</span>
+        <span class="text-[#a8e8ff]">28ms</span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
     const snapshot = await db.collection('projects').orderBy('createdAt', 'desc').limit(25).get();
     
     if (snapshot.empty) {
-      viewFeed.innerHTML = `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
+      viewFeed.innerHTML = telemetryPanelHTML + `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
       return;
     }
 
@@ -1083,54 +1132,7 @@ async function loadFeed() {
       }
     });
 
-    viewFeed.innerHTML = `
-<!-- Panel de Telemetría Quirúrgica -->
-<div class="glass-panel bg-[#121318]/50 border border-[#a8e8ff]/20 p-6 rounded-[4px] backdrop-blur-[8px] mb-8">
-  <div class="flex justify-between items-center mb-6">
-    <h3 class="text-lg font-bold text-[#a8e8ff] tracking-tighter">CORE_TELEMETRY</h3>
-    <span class="flex items-center gap-2 text-[#a8e8ff]/60 text-xs font-mono">
-      <span class="w-2 h-2 rounded-full bg-[#a8e8ff] animate-pulse"></span> SYSCALL.774.ACTIVE
-    </span>
-  </div>
-  
-  <div class="space-y-6">
-    <!-- CPU Utilization -->
-    <div class="bg-[#181b27] p-4 rounded-[4px] border border-[#a8e8ff]/5">
-      <div class="flex justify-between text-xs font-mono mb-4 text-[#a8e8ff]/70">
-        <span>CPU_UTILIZATION</span>
-        <span class="bg-[#a8e8ff]/10 px-2 py-0.5 rounded text-[#a8e8ff]">LIVE</span>
-      </div>
-      <div class="flex items-end gap-1 h-12 mb-4">
-        <div class="flex-1 bg-[#a8e8ff]/10 h-4"></div>
-        <div class="flex-1 bg-[#a8e8ff]/5 h-2"></div>
-        <div class="flex-1 bg-[#a8e8ff]/5 h-3"></div>
-        <div class="flex-1 bg-[#a8e8ff] h-12 shadow-[0_0_15px_#a8e8ff66]"></div>
-        <div class="flex-1 bg-[#a8e8ff]/40 h-5"></div>
-        <div class="flex-1 bg-[#a8e8ff]/20 h-4"></div>
-        <div class="flex-1 bg-[#a8e8ff]/10 h-2"></div>
-      </div>
-      <div class="flex justify-between items-baseline">
-        <span class="text-4xl font-bold text-white">42.0<span class="text-xl text-[#a8e8ff]/50 ml-1">%</span></span>
-        <div class="text-right text-[10px] font-mono text-[#a8e8ff]/40 uppercase">
-          Load: <span class="text-[#a8e8ff]">Optimal</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Latency Grid -->
-    <div class="grid grid-cols-1 gap-2 text-[10px] font-mono">
-      <div class="flex justify-between items-center p-2 bg-[#0b0e19] border border-white/5">
-        <span class="text-white/40">PRIMARY_NODE</span>
-        <span class="text-[#a8e8ff]">14ms</span>
-      </div>
-      <div class="flex justify-between items-center p-2 bg-[#0b0e19] border border-white/5">
-        <span class="text-white/40">SURGICAL_RELAY</span>
-        <span class="text-[#a8e8ff]">28ms</span>
-      </div>
-    </div>
-  </div>
-</div>
-    `;
+    viewFeed.innerHTML = telemetryPanelHTML;
     kioskProjects = uniqueProjects;
 
     isEnterprise = (userRole === 'enterprise');
