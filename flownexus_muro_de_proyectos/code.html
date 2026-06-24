@@ -633,12 +633,10 @@ function handleTitleClick() {
     const badge = document.getElementById('god-badge');
     if (godMode) {
       badge.classList.remove('hidden');
-      showToast('⚠️ MODO DIOS ACTIVADO: Control de eliminación habilitado');
-      document.querySelectorAll('.btn-delete-project').forEach(btn => btn.classList.remove('hidden'));
+      showToast('🛡️ MODO DIOS ACTIVADO');
     } else {
       badge.classList.add('hidden');
       showToast('Modo Dios desactivado');
-      document.querySelectorAll('.btn-delete-project').forEach(btn => btn.classList.add('hidden'));
     }
   }
 }
@@ -1236,10 +1234,7 @@ function renderProjectCard(container, id, url, project, author) {
       </div>
       
       <div class="flex items-center gap-2">
-        <!-- God Mode Delete Button -->
-        <button onclick="deleteProject(this, '${url}', '${id}')" class="btn-delete-project ${godMode ? '' : 'hidden'} text-red-400 hover:text-red-300 p-1 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded-lg hover:bg-red-500/20 transition-all">
-          <span class="material-symbols-outlined text-[18px]">delete</span>
-        </button>
+        <!-- Delete button has been permanently removed from the system -->
         <button class="text-on-surface-variant hover:text-primary transition-colors">
           <span class="material-symbols-outlined text-[20px]">more_horiz</span>
         </button>
