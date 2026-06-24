@@ -2109,6 +2109,31 @@ window.vikiExecuteCommand = function(commandJsonString) {
   }
 };
 
+window.vikiCaptureScreen = function(callback) {
+  const svg = document.getElementById('kiosk-svg-stage');
+  if (!svg) {
+    if(callback) callback(null);
+    return;
+  }
+  try {
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(svg);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = svg.clientWidth || 800;
+      canvas.height = svg.clientHeight || 600;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      if(callback) callback(canvas.toDataURL('image/png'));
+    };
+    img.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(svgStr)));
+  } catch (e) {
+    console.error('[V.I.K.I] Error capturando visión:', e);
+    if(callback) callback(null);
+  }
+};
+
 function setupKioskCameraEvents(svg) {
   let isDragging = false;
   let startX = 0;
