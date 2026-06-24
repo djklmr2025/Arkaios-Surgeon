@@ -953,24 +953,36 @@ async function submitProject() {
 
   const publishKey = 'xxxx';
   
-  const doSubmit = async () => {
+  const doSubmit = async () => { let jsonUrl = ''; if (payload.elements && payload.elements.length > 0) { try { const jsonRes = await fetch('https://api.jsonbin.io/v3/b', {method:'POST', headers:{'Content-Type':'application/json','X-Bin-Private':'false'}, body: JSON.stringify({elements: payload.elements, camera: payload.camera})}); const jsonData = await jsonRes.json(); if(jsonData.metadata && jsonData.metadata.id) jsonUrl = 'https://api.jsonbin.io/v3/b/' + jsonData.metadata.id + '/latest'; } catch(storageErr) { console.warn('Storage upload failed:', storageErr); } }
     try {
       // Clean payload from any undefined values that Firestore rejects
       const cleanPayload = JSON.parse(JSON.stringify(payload));
       
-      const docRef = await db.collection('projects').add({
-        ...cleanPayload,
+      const docData = {
+        name: cleanPayload.name, 
+        author: cleanPayload.author || 'Invitado', 
+        folder: cleanPayload.folder || 'projects', 
+        camera: cleanPayload.camera || {x:0,y:0,zoom:1}, 
+        mediaUrl: cleanPayload.mediaUrl || '',
         topic: 'general',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      showToast('🚀 ¡Proyecto publicado con éxito en Firebase!');
+      };
+      
+      if (jsonUrl) {
+        docData.jsonUrl = jsonUrl;
+      } else {
+        // Fallback: Si JSONBin falló o no dio URL, guardamos en Firebase (sujeto a límite de 1MB)
+        docData.elements = cleanPayload.elements;
+      }
+      
+      const docRef = await db.collection('projects').add(docData);
+      showToast('🚀 ¡Proyecto publicado con éxito!');
       closePublishModal();
       loadFeed();
     } catch(e) {
-      console.error("FIREBASE UPLOAD ERROR:", e);
-      // Extraemos el mensaje real para mostrarlo en el toast
-      const errorMsg = e.message || 'Revisa tus reglas de seguridad';
-      showToast('⚠️ Error Firebase: ' + errorMsg);
+      console.error("UPLOAD ERROR:", e);
+      const errorMsg = e.message || e.code || JSON.stringify(e);
+      showToast('⚠️ Error: ' + errorMsg);
       btn.disabled = false;
       btn.textContent = 'Publicar Diagrama';
     }
