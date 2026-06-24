@@ -957,6 +957,7 @@ async function submitProject() {
     try {
       const docRef = await db.collection('projects').add({
         ...payload,
+                  elements: undefined, elementsJson: JSON.stringify(payload.elements || []),
         topic: 'general',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
