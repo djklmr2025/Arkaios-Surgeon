@@ -17,6 +17,7 @@
 <!-- Firebase SDK Compat -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <!-- Puter.js -->
 <script src="https://js.puter.com/v2/"></script>
 <script id="tailwind-config">
@@ -542,16 +543,16 @@ tailwind.config = {
 <script>
 // Inicializar Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAio5Uk1Kfx2C2N9DpcxXd_Hn4ppID2MIk",
-  authDomain: "genimi44-by-wix-app44.firebaseapp.com",
-  projectId: "genimi44-by-wix-app44",
-  storageBucket: "genimi44-by-wix-app44.firebasestorage.app",
-  messagingSenderId: "808116554970",
-  appId: "1:808116554970:web:ee4dee329924cdf25ee9e3",
-  measurementId: "G-REDK4N0N86"
+  apiKey: "AIzaSyCdDYQlB8_ic7cN22t4rwlT1m3f_KbjjvA",
+  authDomain: "planning-with-ai-afcf8.firebaseapp.com",
+  projectId: "planning-with-ai-afcf8",
+  storageBucket: "planning-with-ai-afcf8.firebasestorage.app",
+  messagingSenderId: "203081888645",
+  appId: "1:203081888645:web:acfab799e7e15a59e30aec"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 const API_BASE = 'https://flow-diagram-creator.vercel.app';
 let animators = [];
 let globalRaf = null;
@@ -951,41 +952,24 @@ async function submitProject() {
 
   const publishKey = 'xxxx';
   
-  const doSubmit = async (key) => {
+  const doSubmit = async () => {
     try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (key) {
-        const cleanKey = key.replace(/[^\x20-\x7E]/g, '').replace(/["']/g, '').trim();
-        headers['x-publish-key'] = cleanKey;
-      }
-      
-      const res = await fetch(`${API_BASE}/api/publish-project`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(payload)
+      const docRef = await db.collection('projects').add({
+        ...payload,
+        uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      const result = await res.json();
-      if (result.ok) {
-        showToast('🎉 ¡Proyecto publicado con éxito!');
-        closePublishModal();
-        loadFeed();
-      } else if (String(result.error) === 'Unauthorized') {
-        showToast('⚠️ Error: Llave de publicación "xxxx" incorrecta o no autorizada.');
-        btn.disabled = false;
-        btn.textContent = 'Publicar Diagrama';
-      } else {
-        showToast(`⚠️ Error: ${result.error || 'No se pudo subir'}`);
-        btn.disabled = false;
-        btn.textContent = 'Publicar Diagrama';
-      }
+      showToast('🎉 ¡Proyecto publicado con éxito en Firebase!');
+      closePublishModal();
+      loadFeed();
     } catch(e) {
-      showToast('⚠️ Error en la red');
+      console.error(e);
+      showToast('⚠️ Error al guardar en Firebase. Revisa tus reglas de seguridad.');
       btn.disabled = false;
       btn.textContent = 'Publicar Diagrama';
     }
   };
   
-  await doSubmit(publishKey);
+  await doSubmit();
 }
 
 // Delete project (God Mode)
@@ -1075,8 +1059,8 @@ async function loadFeed() {
         }
         
         rawProjects.push({
-          id: blob.pathname,
-          url: blob.url,
+          id: docId,
+          url: docId,
           project: project,
           author: author,
           email: email,
@@ -1086,7 +1070,7 @@ async function loadFeed() {
       } catch(err) {
         console.error(err);
       }
-    }
+    });
 
     allLoadedProjects = rawProjects;
 
