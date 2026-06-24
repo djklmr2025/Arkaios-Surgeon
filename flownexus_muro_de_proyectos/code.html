@@ -1018,30 +1018,28 @@ async function deleteProject(btn, url, cardId) {
 
 // FETCH AND RENDER THE FEED
 async function loadFeed() {
-  stopGlobalAnimation();
+    stopGlobalAnimation();
   const viewFeed = document.getElementById('view-feed');
   viewFeed.innerHTML = `
     <div id="feed-loader" class="flex flex-col items-center justify-center py-16 gap-3">
       <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
-      <p class="text-xs text-on-surface-variant font-mono">Conectando con Vercel Blob...</p>
+      <p class="text-xs text-on-surface-variant font-mono">Conectando con Firestore...</p>
     </div>
   `;
 
   try {
-    const res = await fetch(`${API_BASE}/api/library?scope=projects`);
-    const data = await res.json();
-    if (!data.ok || !data.blobs || !data.blobs.length) {
+    const snapshot = await db.collection('projects').orderBy('createdAt', 'desc').limit(25).get();
+    
+    if (snapshot.empty) {
       viewFeed.innerHTML = `<div class="text-center py-12 text-on-surface-variant text-sm">No hay proyectos publicados aún. ¡Sé el primero!</div>`;
       return;
     }
 
-    const sortedBlobs = data.blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    
     const rawProjects = [];
-    for (const blob of sortedBlobs.slice(0, 25)) {
+    snapshot.forEach(doc => {
       try {
-        const pRes = await fetch(`${API_BASE}/api/project?id=${encodeURIComponent(blob.pathname)}`);
-        const project = await pRes.json();
+        const project = doc.data();
+        const docId = doc.id;
         
         let author = 'Comunidad';
         let email = '';
