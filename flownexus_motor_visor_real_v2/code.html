@@ -104,6 +104,8 @@ tailwind.config = {
   #live-dot{width:8px;height:8px;border-radius:50%;background:#3ee272;}
   #live-dot.off{background:#ff4a4a;}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
 <body class="text-on-surface">
 
@@ -199,7 +201,19 @@ tailwind.config = {
 const API_BASE = 'https://flow-diagram-creator.vercel.app';
 const DEMO_ID  = '24a18b2cd7e3444b'; // Metro CDMX
 
-// ─── DOM ─────────────────────────────────────────────────────────────────────
+// Inicializar Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCdDYQlB8_ic7cN22t4rwlT1m3f_KbjjvA",
+  authDomain: "planning-with-ai-afcf8.firebaseapp.com",
+  projectId: "planning-with-ai-afcf8",
+  storageBucket: "planning-with-ai-afcf8.firebasestorage.app",
+  messagingSenderId: "203081888645",
+  appId: "1:203081888645:web:acfab799e7e15a59e30aec"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 🚀 DOM 🚀─────────────────────────────────────────────────────────────────────
 const svgStage = document.getElementById('svg-stage');
 const svgWorld = document.getElementById('svg-world');
 const svgDefs  = document.getElementById('svg-defs');
@@ -694,16 +708,42 @@ svgStage.addEventListener('wheel',e=>{
 },{passive:false});
 
 // ─── DATA LOADING ─────────────────────────────────────────────────────────────
-async function loadById(id){
-  S.currentId=id;
-  showToast(`⏳ Cargando ID: ${id}...`,8000);
-  const url=`${API_BASE}/api/project?id=${encodeURIComponent(id)}`;
-  const res=await fetch(url);
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+async function loadById(id) {
+  S.currentId = id;
+  showToast(`🚀 Cargando ID: ${id}...`,8000);
+  
+  try {
+    const doc = await db.collection('projects').doc(id).get();
+    if(!doc.exists) throw new Error(`HTTP 404`);
+    
+    const data = doc.data();
+    
+    // Si tiene jsonUrl (JSONBin), lo traemos de allá
+    if (data.jsonUrl) {
+      try {
+        const res = await fetch(data.jsonUrl);
+        if(res.ok) {
+          const jsonData = await res.json();
+          // Combinar elements del bin con los metadatos de Firebase
+          return {
+            ...data,
+            elements: jsonData.elements || [],
+            camera: jsonData.camera || data.camera || {x:0,y:0,zoom:1}
+          };
+        }
+      } catch(e) {
+        console.warn('Fallo al cargar de JSONBin, usando respaldo si existe', e);
+      }
+    }
+    
+    return data;
+  } catch(e) {
+    if(e.message === 'HTTP 404') throw new Error('HTTP 404');
+    throw new Error('Error al cargar de Firebase');
+  }
 }
 
-async function loadByUrl(url){
+async function loadByUrl(url) {
   showToast(`⏳ Cargando URL...`,8000);
   const res=await fetch(url);
   if(!res.ok) throw new Error(`HTTP ${res.status}`);
