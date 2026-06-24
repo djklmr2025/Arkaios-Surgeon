@@ -962,6 +962,7 @@ async function submitProject() {
       const docData = {
         name: cleanPayload.name, 
         author: cleanPayload.author || 'Invitado', 
+        email: currentUser ? currentUser.email : '',
         folder: cleanPayload.folder || 'projects', 
         camera: cleanPayload.camera || {x:0,y:0,zoom:1}, 
         mediaUrl: cleanPayload.mediaUrl || '',
@@ -1089,17 +1090,18 @@ async function loadFeed() {
         const project = doc.data();
         const docId = doc.id;
         
-        let author = 'Comunidad';
-        let email = '';
-        let scope = 'public';
+        let author = project.author || 'Comunidad';
+        let email = project.email || '';
+        let scope = project.scope || 'public';
+        
         const dummyText = project.elements?.find(e => e.type === 'text' && String(e.text).startsWith('Autor: '));
         if (dummyText) {
           const parts = dummyText.text.split('|');
-          author = parts[0].replace('Autor: ', '').trim();
-          if (parts[1]) {
+          if (!project.author) author = parts[0].replace('Autor: ', '').trim();
+          if (parts[1] && !project.email) {
             email = parts[1].replace('Email: ', '').trim();
           }
-          if (parts[2]) {
+          if (parts[2] && !project.scope) {
             scope = parts[2].replace('Scope: ', '').trim().toLowerCase();
           }
           project.elements = project.elements.filter(e => e !== dummyText);
