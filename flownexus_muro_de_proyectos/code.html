@@ -150,7 +150,7 @@ tailwind.config = {
   /* KIOSK / ENTERPRISE SPLIT SCREEN */
   .kiosk-wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
@@ -160,39 +160,23 @@ tailwind.config = {
     background: #050712;
   }
   .kiosk-canvas-col {
-    flex: 1;
-    height: 100%;
+    flex: none;
+    height: 60%;
     position: relative;
     background: radial-gradient(circle at 50% 50%, #0d1124 0%, #050712 100%);
     overflow: hidden;
   }
   .kiosk-deck-col {
-    width: 380px;
-    height: 100%;
-    border-left: 1px solid rgba(168, 232, 255, 0.15);
+    width: 100%;
+    height: 40%;
+    border-top: 1px solid rgba(168, 232, 255, 0.15);
     background: rgba(18, 20, 31, 0.85);
     backdrop-filter: blur(25px);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     z-index: 40;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-  }
-  @media (max-width: 768px) {
-    .kiosk-wrapper {
-      flex-direction: column;
-    }
-    .kiosk-canvas-col {
-      height: 60%;
-      flex: none;
-    }
-    .kiosk-deck-col {
-      width: 100%;
-      height: 40%;
-      border-left: none;
-      border-top: 1px solid rgba(168, 232, 255, 0.15);
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
-    }
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
   }
   .kiosk-svg {
     width: 100%;
@@ -1807,23 +1791,28 @@ function renderKioskProject(container, item) {
     }
   };
   
-  fetch(`${API_BASE}/api/ai-assistant`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.reply) {
-      triggerVikiSpeak(data.reply);
-    } else {
-      triggerVikiSpeak(`Bienvenido al Kiosko FlowNexus. Se ha cargado el diagrama "${project.name}". Presione cualquier elemento para analizarlo.`);
-    }
-  })
-  .catch(err => {
-    console.error('Error V.I.K.I AI Load:', err);
-    triggerVikiSpeak(`Bienvenido al sistema Kiosko. Por favor presione un elemento para interactuar.`);
-  });
+  if (typeof puter !== 'undefined') {
+    puter.ai.chat(payload.message)
+    .then(response => {
+      let replyText = '';
+      if (typeof response === 'string') replyText = response;
+      else if (response && response.message && typeof response.message.content === 'string') replyText = response.message.content;
+      else if (response && response.message && Array.isArray(response.message.content)) replyText = response.message.content.map(c => c.text || '').join('');
+      else if (response) replyText = response.toString();
+      
+      if (replyText) {
+        triggerVikiSpeak(replyText);
+      } else {
+        triggerVikiSpeak(`Bienvenido al Kiosko FlowNexus. Se ha cargado el diagrama "${project.name}". Presione cualquier elemento para analizarlo.`);
+      }
+    })
+    .catch(err => {
+      console.error('Error V.I.K.I AI Load:', err);
+      triggerVikiSpeak(`Bienvenido al sistema Kiosko. Por favor presione un elemento para interactuar.`);
+    });
+  } else {
+    triggerVikiSpeak(`Bienvenido al Kiosko FlowNexus. Se ha cargado el diagrama "${project.name}".`);
+  }
 }
 
 function renderKioskEl(elem, parent, defs, state) {
@@ -1948,23 +1937,28 @@ function handleKioskNodeClick(elem) {
     }
   };
   
-  fetch(`${API_BASE}/api/ai-assistant`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.reply) {
-      triggerVikiSpeak(data.reply);
-    } else {
-      triggerVikiSpeak(`Analizando elemento: ${nodeName}. Estado operacional nominal. Enlace de IA interrumpido.`);
-    }
-  })
-  .catch(err => {
-    console.error('Error V.I.K.I AI:', err);
-    triggerVikiSpeak(`Análisis de ${nodeName} completado. Sin respuesta del servidor central.`);
-  });
+  if (typeof puter !== 'undefined') {
+    puter.ai.chat(payload.message)
+    .then(response => {
+      let replyText = '';
+      if (typeof response === 'string') replyText = response;
+      else if (response && response.message && typeof response.message.content === 'string') replyText = response.message.content;
+      else if (response && response.message && Array.isArray(response.message.content)) replyText = response.message.content.map(c => c.text || '').join('');
+      else if (response) replyText = response.toString();
+      
+      if (replyText) {
+        triggerVikiSpeak(replyText);
+      } else {
+        triggerVikiSpeak(`Analizando elemento: ${nodeName}. Estado operacional nominal. Enlace de IA interrumpido.`);
+      }
+    })
+    .catch(err => {
+      console.error('Error V.I.K.I AI:', err);
+      triggerVikiSpeak(`Análisis de ${nodeName} completado. Sin respuesta del servidor central.`);
+    });
+  } else {
+    triggerVikiSpeak(`Análisis de ${nodeName} completado.`);
+  }
 }
 
 function smoothPanTo(targetX, targetY, targetZoom = 1.2) {
