@@ -1224,18 +1224,26 @@ function renderProfileView() {
     const isPrivate = (item.scope === 'private');
     
     cell.innerHTML = `
-      <div class="w-full h-full relative group/card">
-        <div class="w-full h-full cursor-pointer" onclick="window.open('${viewUrl}', '_blank')">
-          <svg class="w-full h-full" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
-            <defs></defs>
-            <g class="world-group"></g>
-          </svg>
-        </div>
-        
-        <!-- Botón de Eliminar (Hub) -->
-        <button onclick="deleteProject(this, '${viewUrl}', '${item.id}')" class="absolute top-2 left-2 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded z-20 opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-auto" title="Eliminar este diagrama">
-          <span class="material-symbols-outlined text-[14px]">delete</span>
-        </button>
+        <div class="w-full h-full relative group/card overflow-hidden">
+          <div class="w-full h-full cursor-pointer bg-black/40" onclick="window.open('${viewUrl}', '_blank')">
+            ${item.project.mediaUrl ? `
+              <img src="${item.project.mediaUrl}" class="w-full h-full object-cover absolute inset-0 z-0" alt="Portada"/>
+            ` : ''}
+            <svg class="w-full h-full relative z-10 ${item.project.mediaUrl ? 'opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 bg-black/60 backdrop-blur-sm' : ''}" id="svg-profile-${item.id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g class="world-group"></g>
+            </svg>
+          </div>
+          
+          <!-- Botones Superiores (Hub) -->
+          <div class="absolute top-2 left-2 flex gap-1 z-20 opacity-0 group-hover/card:opacity-100 transition-opacity">
+            <button onclick="deleteProject(this, '${viewUrl}', '${item.id}')" class="bg-red-500/80 hover:bg-red-500 text-white p-1 rounded pointer-events-auto" title="Eliminar este diagrama">
+              <span class="material-symbols-outlined text-[14px]">delete</span>
+            </button>
+            <button onclick="editProjectMedia('${item.id}', '${item.project.mediaUrl || ''}')" class="bg-blue-500/80 hover:bg-blue-500 text-white p-1 rounded pointer-events-auto" title="Añadir/Editar Portada (Link a Imagen/GIF)">
+              <span class="material-symbols-outlined text-[14px]">image</span>
+            </button>
+          </div>
         
         <!-- Status Badge -->
         <div class="absolute top-2 right-2 flex gap-1 z-10 pointer-events-none">
@@ -2643,6 +2651,21 @@ function dismissScreensaver() {
   resetInactivityTimer();
   
   triggerVikiSpeak("Sistemas reanudados. Toque un nodo del diagrama para desplegar información técnica.");
+}
+
+function editProjectMedia(docId, currentUrl) {
+  const newUrl = prompt('Ingresa la URL pública de la imagen o GIF que deseas usar como portada:\n(Ej: https://media.giphy.com/.../giphy.gif)', currentUrl || '');
+  if (newUrl !== null) {
+    db.collection('projects').doc(docId).update({
+      mediaUrl: newUrl.trim()
+    }).then(() => {
+      showToast('✅ Portada actualizada. Recargando perfil...');
+      setTimeout(() => location.reload(), 1500);
+    }).catch(e => {
+      console.error(e);
+      showToast('❌ Error al actualizar la portada.');
+    });
+  }
 }
 
 function publishToGlobalWall(event, id) {
