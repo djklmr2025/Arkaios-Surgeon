@@ -161,20 +161,22 @@ tailwind.config = {
   }
   .kiosk-canvas-col {
     flex: none;
-    height: 75%;
+    height: 90%;
     position: relative;
     background: radial-gradient(circle at 50% 50%, #0d1124 0%, #050712 100%);
     overflow: hidden;
   }
   .kiosk-deck-col {
     width: 100%;
-    height: 25%;
+    height: 10%;
     border-top: 1px solid rgba(168, 232, 255, 0.15);
     background: rgba(18, 20, 31, 0.85);
     backdrop-filter: blur(25px);
     display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+    flex-direction: row; /* changed to row to fit in 10% height */
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
     z-index: 40;
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
   }
@@ -195,26 +197,27 @@ tailwind.config = {
 
   /* V.I.K.I. Avatar inside Kiosk Mode */
   .viki-container {
-    padding: 16px;
-    background: rgba(168, 232, 255, 0.03);
-    border-top: 1px solid rgba(168, 232, 255, 0.1);
+    padding: 4px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     align-items: center;
+    flex: 1;
+    min-width: 0;
   }
   .viki-avatar {
-    width: 64px;
-    height: 64px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    border: 2px solid rgba(168, 232, 255, 0.3);
+    border: 1px solid rgba(168, 232, 255, 0.3);
     background: #0c0e17;
-    box-shadow: 0 0 15px rgba(168, 232, 255, 0.2);
+    box-shadow: 0 0 10px rgba(168, 232, 255, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    flex-shrink: 0;
   }
   .viki-avatar::before {
     content: '';
@@ -233,6 +236,27 @@ tailwind.config = {
     font-size: 11px;
     color: #a8e8ff;
     text-shadow: 0 0 5px rgba(168, 232, 255, 0.8);
+  }
+  .viki-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+    min-width: 0;
+  }
+  #viki-output-kiosk {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #e3e1f0;
+    max-height: 40px;
+    overflow-y: auto;
+    line-height: 1.2;
+    text-shadow: 0 0 5px rgba(227, 225, 240, 0.3);
+  }
+  .viki-controls {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .viki-talking .viki-mouth::after {
     animation: viki-talk 0.15s steps(1) infinite;
@@ -480,11 +504,22 @@ tailwind.config = {
       </div>
 
       <div>
-        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Archivo JSON del Proyecto</label>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">Archivo JSON del Proyecto (Opcional si hay Media)</label>
         <div id="drop-zone" class="border-2 border-dashed border-outline/40 hover:border-primary/60 rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors">
           <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
           <p class="text-xs text-on-surface-variant text-center" id="drop-text">Arrastra tu archivo .json aquí o haz click para seleccionar</p>
           <input type="file" id="file-input" accept=".json" class="hidden"/>
+        </div>
+      </div>
+      
+      <div>
+        <label class="text-[11px] font-bold text-primary uppercase tracking-wider block mb-1">URL de Video / Imagen (Opcional)</label>
+        <div class="flex gap-2">
+          <input type="text" id="pub-media-url" placeholder="https://arkaios.../video.mp4" class="w-full bg-background border border-outline/30 rounded-xl px-3 py-2 text-sm focus:border-primary outline-none transition-colors"/>
+          <button onclick="window.open('https://arkaios-image-hub-main.vercel.app/', '_blank')" class="px-3 py-2 bg-primary/10 text-primary border border-primary/30 rounded-xl hover:bg-primary/20 transition-all whitespace-nowrap text-xs flex items-center gap-1" title="Subir archivo y copiar URL">
+            <span class="material-symbols-outlined text-[16px]">cloud_upload</span>
+            Subir Media
+          </button>
         </div>
       </div>
     </div>
@@ -837,8 +872,9 @@ function handleFileSelect(file) {
 
 // Publish payload (INCLUDES email metadata for filtering)
 async function submitProject() {
-  if (!selectedProjectData) {
-    showToast('⚠️ Por favor selecciona un archivo .json');
+  const mediaUrl = document.getElementById('pub-media-url')?.value.trim() || '';
+  if (!selectedProjectData && !mediaUrl) {
+    showToast('⚠️ Por favor selecciona un archivo .json o añade una URL de Media');
     return;
   }
   const name = document.getElementById('pub-name').value.trim() || 'Proyecto sin nombre';
@@ -851,8 +887,9 @@ async function submitProject() {
   const payload = {
     name: name,
     folder: 'community',
-    elements: selectedProjectData.elements,
-    camera: selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }
+    elements: selectedProjectData ? selectedProjectData.elements : [],
+    camera: selectedProjectData ? (selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }) : { x: 0, y: 0, zoom: 1 },
+    mediaUrl: mediaUrl
   };
   
   const userEmailStr = currentUser ? currentUser.email : 'invitado@domain.com';
@@ -1174,8 +1211,13 @@ function renderProjectCard(container, id, url, project, author) {
     </div>
     
     <!-- Instagram 9:16 vertical view -->
-    <div class="card-stage">
-      <svg class="card-svg" id="svg-card-${id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
+    <div class="card-stage relative group cursor-pointer overflow-hidden">
+      ${project.mediaUrl ? (
+        project.mediaUrl.match(/\.(mp4|webm|ogg)$/i) || project.mediaUrl.includes('video') ? 
+        `<video src="${project.mediaUrl}" class="w-full h-full object-cover absolute inset-0 z-0" autoplay loop muted playsinline></video>` :
+        `<img src="${project.mediaUrl}" class="w-full h-full object-cover absolute inset-0 z-0" alt="Media"/>`
+      ) : ''}
+      <svg class="card-svg relative z-10 ${project.mediaUrl && (project.elements && project.elements.length > 0) ? 'opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/60 backdrop-blur-sm' : ''}" id="svg-card-${id.replace(/\//g, '-')}" xmlns="http://www.w3.org/2000/svg">
         <defs></defs>
         <g class="world-group"></g>
       </svg>
@@ -1645,7 +1687,7 @@ function setupEnterpriseMode() {
       <div class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant font-mono gap-4">
         <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
         <p>Esperando proyectos de la comunidad...</p>
-        <button onclick="exitEnterpriseView()" class="px-4 py-2 border border-primary/30 rounded-xl text-xs hover:bg-primary/10 text-primary">Salir de Kiosko</button>
+        <button onclick="selectUserRole('social')" class="px-4 py-2 border border-primary/30 rounded-xl text-xs hover:bg-primary/10 text-primary">Salir de Kiosko</button>
       </div>
     `;
     return;
@@ -1697,7 +1739,7 @@ function renderKioskProject(container, item) {
 
       <!-- PROJECT CYCLE / EXIT KIOSK FLOATING ACTIONS -->
       <div class="absolute top-6 left-6 z-20 flex items-center gap-3">
-        <button onclick="exitEnterpriseView()" class="px-3.5 py-2 bg-red-500/10 border border-red-500/20 hover:bg-red-500/25 text-red-400 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-md active:scale-95">
+        <button onclick="selectUserRole('social')" class="px-3.5 py-2 bg-red-500/10 border border-red-500/20 hover:bg-red-500/25 text-red-400 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-md active:scale-95">
           <span class="material-symbols-outlined text-[16px]">exit_to_app</span>
           Salir de Kiosko
         </button>
