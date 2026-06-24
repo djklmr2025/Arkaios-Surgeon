@@ -762,6 +762,50 @@ function exitEnterpriseView() {
   const container = document.getElementById('feed-container');
   container.className = 'max-w-[420px] mx-auto px-3 py-6 flex flex-col';
   
+  // Reconstruir la estructura base eliminada por renderKioskProject
+  container.innerHTML = `
+  <!-- VIEW 1: HOME FEED (SOCIAL) -->
+  <div id="view-feed" class="flex flex-col gap-8 hidden">
+  </div>
+
+  <!-- VIEW 2: PROFILE TAB (INSTAGRAM STYLE GRID) -->
+  <div id="view-profile" class="hidden flex flex-col gap-6 pt-2">
+    <!-- Profile Header Info -->
+    <div class="flex items-center gap-6 pb-6 border-b border-outline/20">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-secondary p-[2px]">
+        <div class="w-full h-full rounded-full bg-surface overflow-hidden flex items-center justify-center">
+          <img id="profile-header-avatar" class="w-full h-full object-cover hidden" src=""/>
+          <span id="profile-header-avatar-placeholder" class="material-symbols-outlined text-on-surface-variant text-[44px]">account_circle</span>
+        </div>
+      </div>
+      <div class="flex-1 space-y-1">
+        <h3 id="profile-header-name" class="font-bold text-lg text-on-surface leading-tight">Invitado</h3>
+        <p id="profile-header-email" class="text-xs text-on-surface-variant font-mono">sin-registro@domain.com</p>
+        <div class="flex gap-4 pt-1 text-xs">
+          <p><span id="profile-posts-count" class="font-bold text-primary font-mono">0</span> publicaciones</p>
+          <p><span class="font-bold text-secondary font-mono">Rol:</span> <span id="profile-role-badge" class="capitalize">Social</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Grid Section -->
+    <div>
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="text-[11px] font-bold text-primary uppercase tracking-wider block">Mis Diseños</h4>
+        <button onclick="openPublishModal()" class="bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 transition-all rounded-lg px-2.5 py-1 text-[10px] font-bold flex items-center gap-1 active:scale-95">
+          <span class="material-symbols-outlined text-[14px]">add</span>
+          Agregar
+        </button>
+      </div>
+      <div class="grid grid-cols-3 gap-2" id="profile-posts-grid">
+      </div>
+      <div id="profile-empty-message" class="hidden text-center py-16 text-xs text-on-surface-variant">
+        <span class="material-symbols-outlined text-[36px] text-primary/30 mb-2 block">collections</span>
+        Aún no has publicado ningún diagrama.
+      </div>
+    </div>
+  </div>`;
+  
   window.removeEventListener('click', resetInactivityTimer);
   window.removeEventListener('touchstart', resetInactivityTimer);
   clearTimeout(inactivityTimer);
@@ -1730,15 +1774,21 @@ function renderKioskProject(container, item) {
       </svg>
       
       <!-- CONTROLS OVERLAY -->
-      <div class="absolute bottom-6 left-6 z-20 flex gap-2">
-        <button onclick="zoomInKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95">
+      <div class="absolute bottom-32 left-6 z-20 flex gap-2">
+        <button onclick="zoomInKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Acercar">
           <span class="material-symbols-outlined">add</span>
         </button>
-        <button onclick="zoomOutKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95">
+        <button onclick="zoomOutKiosk()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Alejar">
           <span class="material-symbols-outlined">remove</span>
         </button>
-        <button onclick="fitKioskView()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Ajustar pantalla">
-          <span class="material-symbols-outlined">fit_screen</span>
+        <button onclick="fitKioskView()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Centrar">
+          <span class="material-symbols-outlined">center_focus_strong</span>
+        </button>
+        <button id="btn-kiosk-lock" onclick="toggleKioskLock()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Fijar Vista">
+          <span id="kiosk-lock-icon" class="material-symbols-outlined">lock_open</span>
+        </button>
+        <button onclick="toggleKioskPerspective()" class="w-10 h-10 rounded-xl bg-surface/80 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all shadow-lg active:scale-95" title="Cambiar Perspectiva">
+          <span class="material-symbols-outlined">screen_rotation</span>
         </button>
       </div>
 
@@ -1813,8 +1863,13 @@ function renderKioskProject(container, item) {
   const defs = document.getElementById('kiosk-defs');
   
   // Clone project and elements
+  let baseElements = JSON.parse(JSON.stringify(project.elements || []));
+  if (window.kioskPerspectiveVertical) {
+    baseElements = applyPerspectiveTransform(baseElements);
+  }
+
   const state = {
-    elements: JSON.parse(JSON.stringify(project.elements || [])),
+    elements: baseElements,
     lineNodes: [],
     moverNodes: [],
     flat: [],
@@ -1832,6 +1887,14 @@ function renderKioskProject(container, item) {
   
   // Fit view automatically at start
   fitKioskView(true);
+  
+  if (window.kioskIsLocked) {
+    svg.style.pointerEvents = 'none';
+  } else {
+    svg.style.pointerEvents = 'auto';
+  }
+  const lockIcon = document.getElementById('kiosk-lock-icon');
+  if (lockIcon) lockIcon.textContent = window.kioskIsLocked ? 'lock' : 'lock_open';
   
   // Animate loop hook
   animators = [state];
@@ -2614,6 +2677,75 @@ function publishToGlobalWall(event, id) {
   };
   
   doPublish(publishKey);
+}
+
+// ====== NUEVOS CONTROLES DE KIOSKO ======
+window.kioskIsLocked = false;
+window.kioskPerspectiveVertical = false;
+
+function toggleKioskLock() {
+  window.kioskIsLocked = !window.kioskIsLocked;
+  const icon = document.getElementById('kiosk-lock-icon');
+  if (icon) icon.textContent = window.kioskIsLocked ? 'lock' : 'lock_open';
+  
+  const svg = document.getElementById('kiosk-svg-stage');
+  if (svg) {
+    svg.style.pointerEvents = window.kioskIsLocked ? 'none' : 'auto';
+  }
+}
+
+function toggleKioskPerspective() {
+  window.kioskPerspectiveVertical = !window.kioskPerspectiveVertical;
+  const container = document.getElementById('feed-container');
+  if (window.kioskProjects && window.kioskProjects[currentKioskIndex]) {
+    renderKioskProject(container, window.kioskProjects[currentKioskIndex]);
+  }
+}
+
+function applyPerspectiveTransform(elements) {
+  return elements.map(function transform(e) {
+    const newE = { ...e };
+    if (newE.x !== undefined && newE.y !== undefined) {
+      newE.x = e.y;
+      newE.y = e.x;
+    }
+    if (newE.w !== undefined && newE.h !== undefined) {
+      newE.w = e.h;
+      newE.h = e.w;
+    }
+    if (newE.width !== undefined && newE.height !== undefined) {
+      newE.width = e.height;
+      newE.height = e.width;
+    }
+    if (newE.cx !== undefined && newE.cy !== undefined) {
+      newE.cx = e.cy;
+      newE.cy = e.cx;
+    }
+    if (newE.x1 !== undefined && newE.y1 !== undefined) {
+      newE.x1 = e.y1;
+      newE.y1 = e.x1;
+    }
+    if (newE.x2 !== undefined && newE.y2 !== undefined) {
+      newE.x2 = e.y2;
+      newE.y2 = e.x2;
+    }
+    if (newE.endX !== undefined && newE.endY !== undefined) {
+      newE.endX = e.endY;
+      newE.endY = e.endX;
+    }
+    if (newE.points && Array.isArray(newE.points)) {
+      newE.points = newE.points.map(p => ({ x: p.y, y: p.x }));
+    }
+    const map = { 'right': 'down', 'left': 'up', 'up': 'left', 'down': 'right' };
+    if (newE.direction) newE.direction = map[newE.direction] || newE.direction;
+    if (newE.routeDirection) newE.routeDirection = map[newE.routeDirection] || newE.routeDirection;
+    if (newE.flowDirection) newE.flowDirection = map[newE.flowDirection] || newE.flowDirection;
+    
+    if (newE.elements && Array.isArray(newE.elements)) {
+      newE.elements = newE.elements.map(transform);
+    }
+    return newE;
+  });
 }
 
 // INITIALIZE FEED STATE
