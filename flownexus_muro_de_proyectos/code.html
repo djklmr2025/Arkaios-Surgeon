@@ -955,17 +955,22 @@ async function submitProject() {
   
   const doSubmit = async () => {
     try {
+      // Clean payload from any undefined values that Firestore rejects
+      const cleanPayload = JSON.parse(JSON.stringify(payload));
+      
       const docRef = await db.collection('projects').add({
-        ...payload,
+        ...cleanPayload,
         topic: 'general',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      showToast('🎉 ¡Proyecto publicado con éxito en Firebase!');
+      showToast('🚀 ¡Proyecto publicado con éxito en Firebase!');
       closePublishModal();
       loadFeed();
     } catch(e) {
-      console.error(e);
-      showToast('⚠️ Error al guardar en Firebase. Revisa tus reglas de seguridad.');
+      console.error("FIREBASE UPLOAD ERROR:", e);
+      // Extraemos el mensaje real para mostrarlo en el toast
+      const errorMsg = e.message || 'Revisa tus reglas de seguridad';
+      showToast('⚠️ Error Firebase: ' + errorMsg);
       btn.disabled = false;
       btn.textContent = 'Publicar Diagrama';
     }
@@ -1298,9 +1303,14 @@ function renderProjectCard(container, id, url, project, author) {
           <p class="text-sm text-green-400 font-mono">${dateStr}</p>
         </div>
       </div>
-      <a href="${viewUrl}" target="_blank" class="bg-[#a8e8ff]/5 hover:bg-[#a8e8ff]/20 border border-[#a8e8ff]/30 text-[#a8e8ff] px-4 py-2 text-[10px] font-bold tracking-widest transition-all active:scale-95 flex items-center gap-2">
-        EXECUTE <span class="text-[10px]">›</span>
-      </a>
+      <div class="flex items-center gap-2">
+        <button onclick="deleteProject(this, '${url}', '${id}')" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 p-2 rounded-[2px] transition-all" title="Eliminar Proyecto (God Mode)">
+          <span class="material-symbols-outlined text-[14px]">delete</span>
+        </button>
+        <a href="${viewUrl}" target="_blank" class="bg-[#a8e8ff]/5 hover:bg-[#a8e8ff]/20 border border-[#a8e8ff]/30 text-[#a8e8ff] px-4 py-2 text-[10px] font-bold tracking-widest transition-all active:scale-95 flex items-center gap-2">
+          EXECUTE <span class="text-[10px]">›</span>
+        </a>
+      </div>
     </div>
   `;
   
