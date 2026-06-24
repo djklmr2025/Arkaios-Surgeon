@@ -1716,56 +1716,33 @@ function renderKioskProject(container, item) {
     
     <!-- RIGHT PANEL: TECHNICAL INFO DECK & V.I.K.I. -->
     <div class="kiosk-deck-col">
-      <!-- Info Deck Sheet (Lámina) -->
-      <div class="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
-        <div>
-          <h2 class="text-primary font-extrabold text-lg tracking-tight holo-text">${project.name || 'Proyecto Kiosko'}</h2>
-          <p class="text-[10px] text-on-surface-variant font-mono mt-1 uppercase">AUTOR: ${author}</p>
-        </div>
-        
-        <!-- Interactive Information Deck -->
-        <div id="kiosk-info-deck" class="glass-panel rounded-2xl p-5 flex flex-col gap-4 border border-primary/10">
-          <div>
-            <span class="text-[9px] font-bold text-secondary uppercase tracking-wider font-mono">Modo de Operación</span>
-            <h3 class="text-sm font-bold text-on-surface mt-1">Ecosistema FlowNexus</h3>
-          </div>
-          
-          <p class="text-xs text-on-surface-variant leading-relaxed">
-            Interactúa con la visualización de la izquierda. Selecciona cualquier nodo o elemento del diagrama para desplegar su ficha técnica y recibir retroalimentación del asistente virtual V.I.K.I.
-          </p>
-          
-          <div class="border-t border-primary/10 pt-4 flex flex-col gap-2">
-            <div class="flex justify-between items-center text-[10px]">
-              <span class="text-on-surface-variant font-mono">Total Elementos:</span>
-              <span class="font-bold text-primary font-mono">${(project.elements || []).length}</span>
-            </div>
-            <div class="flex justify-between items-center text-[10px]">
-              <span class="text-on-surface-variant font-mono">Calibración:</span>
-              <span class="font-bold text-secondary font-mono">Estable (100%)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- V.I.K.I. Mode Assistant -->
-      <div class="viki-container">
+      <!-- V.I.K.I. Header (Avatar) -->
+      <div class="viki-container border-b border-primary/10 flex-shrink-0">
         <div class="flex items-center gap-3 w-full px-2">
           <div id="viki-avatar-container" class="viki-avatar flex-shrink-0">
             <div class="viki-mouth"></div>
           </div>
-          <div class="flex flex-col">
-            <span class="text-[10px] font-bold text-primary font-mono tracking-wider">V.I.K.I. Assistant</span>
-            <span id="viki-status" class="text-[8px] text-on-surface-variant uppercase font-mono tracking-tight">En Espera...</span>
+          <div class="flex flex-col flex-1">
+            <span class="text-[12px] font-bold text-primary font-mono tracking-wider">V.I.K.I. Assistant</span>
+            <span id="viki-status" class="text-[9px] text-on-surface-variant uppercase font-mono tracking-tight">En Línea</span>
           </div>
           <div class="ml-auto viki-visualizer">
             ${barsHtml}
           </div>
         </div>
-        
-        <!-- Speech dialogue bubble -->
-        <div class="viki-bubble">
-          <p id="viki-dialogue">Sistemas listos. Esperando selección de nodo para análisis estructural...</p>
-        </div>
+      </div>
+      
+      <!-- Chat History -->
+      <div id="viki-chat-history" class="flex-1 p-4 flex flex-col gap-4 overflow-y-auto">
+         <!-- Greeting message will be injected here via triggerVikiSpeak -->
+      </div>
+      
+      <!-- Voice Input Control -->
+      <div class="p-4 border-t border-primary/10 bg-surface/50 flex flex-col gap-2 items-center justify-center flex-shrink-0">
+         <button id="viki-mic-btn" onclick="toggleVikiMic()" class="w-14 h-14 rounded-full bg-surface-container-high border-2 border-primary/30 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/60 transition-all shadow-[0_0_15px_rgba(168,232,255,0.15)] active:scale-95 cyber-glow focus:outline-none">
+            <span class="material-symbols-outlined text-[28px]" id="viki-mic-icon">mic</span>
+         </button>
+         <span id="viki-mic-label" class="text-[9px] font-mono text-on-surface-variant tracking-widest uppercase mt-1">Toque para hablar</span>
       </div>
     </div>
   `;
@@ -1936,9 +1913,6 @@ function handleKioskNodeClick(elem) {
   // Smoothly center camera to center.x, center.y
   smoothPanTo(center.x, center.y, 1.5);
   
-  // Update Information Deck sheet
-  updateKioskInfoDeck(elem);
-  
   // V.I.K.I. Dialogue speak - AI Integration
   const nodeName = elem.name || elem.text || `Nodo_${elem.id.slice(0, 4)}`;
   const currentItem = kioskProjects[currentKioskIndex];
@@ -1948,7 +1922,7 @@ function handleKioskNodeClick(elem) {
   triggerVikiSpeak("Sincronizando núcleo de IA...");
   
   const payload = {
-    message: `El usuario tocó el elemento "${nodeName}" (Tipo: ${elem.type}). Actúas como V.I.K.I. (Inteligencia de Arkaios). Analiza brevemente su función técnica dentro del diagrama "${projectName}" (${totalNodes} elementos) y da una respuesta robótica muy concisa en 1 o 2 oraciones cortas.`,
+    message: `El usuario tocó el elemento "${nodeName}" (Tipo: ${elem.type}). Actúas como V.I.K.I. (Inteligencia de Arkaios). Analiza brevemente su función técnica dentro del diagrama "${projectName}" (${totalNodes} elementos) y da una respuesta robótica muy concisa en 1 o 2 oraciones cortas. Si lo consideras útil, puedes incluir una imagen o video usando la sintaxis [IMG:url] o [VIDEO:url].`,
     canvasContext: {
       projectName: projectName,
       element: elem,
@@ -2108,50 +2082,28 @@ function fitKioskView(instant = false) {
   }
 }
 
-function updateKioskInfoDeck(elem) {
-  const deck = document.getElementById('kiosk-info-deck');
-  if (!deck) return;
+function appendChatMessage(role, text) {
+  const history = document.getElementById('viki-chat-history');
+  if (!history) return;
   
-  const name = elem.name || elem.text || `Elemento ${elem.id.slice(0, 5)}`;
-  const type = elem.type.toUpperCase();
-  const desc = elem.desc || `Ficha técnica automatizada para el elemento vectorial ${name}. Coordenadas: (${Math.round(elem.x ?? 0)}, ${Math.round(elem.y ?? 0)}).`;
+  const div = document.createElement('div');
+  div.className = role === 'user' ? 'self-end bg-surface border border-primary/20 rounded-2xl rounded-tr-sm p-3 max-w-[85%] text-xs text-on-surface shadow-md' : 'self-start bg-primary/10 border border-primary/30 rounded-2xl rounded-tl-sm p-3 max-w-[90%] text-xs text-primary shadow-md font-mono';
   
-  deck.innerHTML = `
-    <div>
-      <span class="text-[9px] font-bold text-secondary uppercase tracking-wider font-mono">${type}</span>
-      <h3 class="text-sm font-bold text-primary mt-1">${name}</h3>
-    </div>
+  let formattedText = text
+    .replace(/\[IMG:(.+?)\]/g, '<img src="$1" class="mt-2 rounded-lg w-full object-cover border border-primary/30" />')
+    .replace(/\[VIDEO:(.+?)\]/g, '<video src="$1" autoplay loop muted playsinline class="mt-2 rounded-lg w-full object-cover border border-primary/30"></video>');
     
-    <p class="text-xs text-on-surface-variant leading-relaxed">
-      ${desc}
-    </p>
-    
-    <div class="border-t border-primary/10 pt-4 flex flex-col gap-2">
-      <div class="flex justify-between items-center text-[10px]">
-        <span class="text-on-surface-variant font-mono">Identificador:</span>
-        <span class="font-bold text-primary font-mono text-[9px]">${elem.id}</span>
-      </div>
-      <div class="flex justify-between items-center text-[10px]">
-        <span class="text-on-surface-variant font-mono">Posición Relativa:</span>
-        <span class="font-bold text-secondary font-mono">${Math.round(elem.x ?? 0)}x, ${Math.round(elem.y ?? 0)}y</span>
-      </div>
-      ${elem.routeId ? `
-        <div class="flex justify-between items-center text-[10px]">
-          <span class="text-on-surface-variant font-mono">Ruta Vinculada:</span>
-          <span class="font-bold text-primary font-mono text-[9px]">${elem.routeId}</span>
-        </div>
-      ` : ''}
-    </div>
-  `;
+  div.innerHTML = formattedText;
+  history.appendChild(div);
+  setTimeout(() => { history.scrollTop = history.scrollHeight; }, 50);
 }
 
 function triggerVikiSpeak(text) {
   const avatar = document.getElementById('viki-avatar-container');
   const status = document.getElementById('viki-status');
-  const dialogue = document.getElementById('viki-dialogue');
+  if (!avatar || !status) return;
   
-  if (!avatar || !status || !dialogue) return;
-  
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
   clearTimeout(kioskState.activeSpeakTimeout);
   
   avatar.classList.add('viki-talking');
@@ -2159,38 +2111,135 @@ function triggerVikiSpeak(text) {
   status.classList.remove('text-on-surface-variant');
   status.classList.add('text-secondary');
   
-  let i = 0;
-  dialogue.textContent = '';
+  appendChatMessage('viki', text);
   
-  const interval = setInterval(() => {
+  const barInterval = setInterval(() => {
     for (let b = 0; b < 15; b++) {
       const bar = document.getElementById(`viki-bar-${b}`);
-      if (bar) {
-        bar.style.height = `${Math.floor(Math.random() * 12) + 3}px`;
-      }
+      if (bar) bar.style.height = `${Math.floor(Math.random() * 12) + 3}px`;
     }
-    
-    if (i < text.length) {
-      dialogue.textContent += text.charAt(i);
-      i++;
-    } else {
-      clearInterval(interval);
-      
-      for (let b = 0; b < 15; b++) {
-        const bar = document.getElementById(`viki-bar-${b}`);
-        if (bar) bar.style.height = '3px';
-      }
-      
-      avatar.classList.remove('viki-talking');
-      status.textContent = 'En Espera...';
-      status.classList.remove('text-secondary');
-      status.classList.add('text-on-surface-variant');
-    }
-  }, 35);
+  }, 50);
   
-  kioskState.activeSpeakTimeout = setTimeout(() => {
-    clearInterval(interval);
-  }, 12000);
+  const finishSpeak = () => {
+    clearInterval(barInterval);
+    for (let b = 0; b < 15; b++) {
+      const bar = document.getElementById(`viki-bar-${b}`);
+      if (bar) bar.style.height = '3px';
+    }
+    avatar.classList.remove('viki-talking');
+    status.textContent = 'En Línea';
+    status.classList.remove('text-secondary');
+    status.classList.add('text-on-surface-variant');
+  };
+  
+  const cleanTextForSpeech = text.replace(/\[IMG:(.+?)\]/g, '').replace(/\[VIDEO:(.+?)\]/g, '').trim();
+  if (cleanTextForSpeech && window.speechSynthesis) {
+    const utterance = new SpeechSynthesisUtterance(cleanTextForSpeech);
+    utterance.lang = 'es-MX';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.1;
+    
+    const voices = speechSynthesis.getVoices();
+    const femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Google español') || v.name.includes('Microsoft Sabina'));
+    if (femaleVoice) utterance.voice = femaleVoice;
+    
+    utterance.onend = finishSpeak;
+    speechSynthesis.speak(utterance);
+    
+    kioskState.activeSpeakTimeout = setTimeout(finishSpeak, 15000);
+  } else {
+    kioskState.activeSpeakTimeout = setTimeout(finishSpeak, 3000);
+  }
+}
+
+let recognition = null;
+function toggleVikiMic() {
+  const btn = document.getElementById('viki-mic-btn');
+  const icon = document.getElementById('viki-mic-icon');
+  const label = document.getElementById('viki-mic-label');
+  
+  if (kioskState.isListening) {
+    if (recognition) recognition.stop();
+    return;
+  }
+  
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('⚠️ Reconocimiento de voz no soportado en este navegador.');
+    return;
+  }
+  
+  if (!recognition) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'es-MX';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => {
+      kioskState.isListening = true;
+      btn.classList.replace('border-primary/30', 'border-error/80');
+      btn.classList.add('animate-pulse');
+      icon.classList.add('text-error');
+      icon.classList.remove('text-primary');
+      label.textContent = 'Escuchando...';
+      
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      appendChatMessage('user', transcript);
+      processUserVoiceCommand(transcript);
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error', event.error);
+      showToast('⚠️ Error de micrófono: ' + event.error);
+    };
+    
+    recognition.onend = () => {
+      kioskState.isListening = false;
+      btn.classList.replace('border-error/80', 'border-primary/30');
+      btn.classList.remove('animate-pulse');
+      icon.classList.remove('text-error');
+      icon.classList.add('text-primary');
+      label.textContent = 'Toque para hablar';
+    };
+  }
+  
+  recognition.start();
+}
+
+function processUserVoiceCommand(text) {
+  triggerVikiSpeak("Procesando comando...");
+  
+  const currentItem = kioskProjects[currentKioskIndex];
+  const projectName = currentItem && currentItem.project ? currentItem.project.name : 'Proyecto Kiosko';
+  
+  const payload = {
+    message: `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Responde de manera concisa. Si resulta útil para ilustrar tu respuesta, inserta diagramas o referencias usando tags [IMG:url] o [VIDEO:url]. Contexto actual: Viendo el diagrama "${projectName}".`,
+    canvasContext: {
+      projectName: projectName
+    }
+  };
+  
+  fetch(`${API_BASE}/api/ai-assistant`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.reply) {
+      triggerVikiSpeak(data.reply);
+    } else {
+      triggerVikiSpeak("Sistemas ocupados. Intente nuevamente.");
+    }
+  })
+  .catch(err => {
+    console.error('Error V.I.K.I AI Voice:', err);
+    triggerVikiSpeak("Error de enlace satelital. No hay respuesta del servidor central.");
+  });
 }
 
 function navigateKioskProject(direction) {
