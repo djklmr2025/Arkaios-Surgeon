@@ -934,7 +934,7 @@ async function submitProject() {
   
   const payload = {
     name: name,
-    folder: 'community',
+    folder: 'projects',
     elements: selectedProjectData ? selectedProjectData.elements : [],
     camera: selectedProjectData ? (selectedProjectData.camera || { x: 0, y: 0, zoom: 1 }) : { x: 0, y: 0, zoom: 1 },
     mediaUrl: mediaUrl
@@ -944,7 +944,7 @@ async function submitProject() {
   
   payload.elements.push({
     type: 'text',
-    text: `Autor: ${author} | Email: ${userEmailStr} | Scope: private`,
+    text: `Autor: ${author} | Email: ${userEmailStr} | Scope: public`,
     x: -99999,
     y: -99999,
     fontSize: 1,
@@ -2615,7 +2615,7 @@ function publishToGlobalWall(event, id) {
         
         const payload = {
           name: project.name || 'Proyecto',
-          folder: 'community',
+          folder: 'projects',
           elements: filteredElements,
           camera: project.camera || { x: 0, y: 0, zoom: 1 }
         };
