@@ -999,39 +999,19 @@ async function deleteProject(btn, url, cardId) {
   
   let publishKey = 'xxxx';
   
-  const doDelete = async (key) => {
+  const doDelete = async () => {
     try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (key) {
-        // Remove smart quotes, normal quotes, and non-ASCII to prevent fetch TypeError
-        const cleanKey = key.replace(/[^\x20-\x7E]/g, '').replace(/["']/g, '').trim();
-        headers['x-publish-key'] = cleanKey;
-      }
-      
-      const res = await fetch(`${API_BASE}/api/delete-project`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({ url })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        showToast('🗑️ Proyecto eliminado con éxito.');
-        loadFeed();
-      } else if (String(data.error) === 'Unauthorized') {
-        showToast('⚠️ Error al borrar: Llave de publicación "xxxx" no autorizada.');
-        btn.disabled = false;
-      } else {
-        showToast(`⚠️ Error al borrar: ${data.error || 'Intenta de nuevo'}`);
-        btn.disabled = false;
-      }
+      await db.collection('projects').doc(cardId).delete();
+      showToast('🗑️ Proyecto eliminado permanentemente');
+      loadFeed();
     } catch(e) {
       console.error('Error al borrar:', e);
-      showToast('⚠️ Error de conexión o JSON inválido');
+      showToast('⚠️ Error Firebase: No tienes permisos para borrar o revisa tus reglas de seguridad.');
       btn.disabled = false;
     }
   };
   
-  await doDelete(publishKey);
+  await doDelete();
 }
 
 // FETCH AND RENDER THE FEED
