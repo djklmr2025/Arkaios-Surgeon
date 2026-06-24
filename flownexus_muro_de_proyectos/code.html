@@ -2217,9 +2217,13 @@ function processUserVoiceCommand(text) {
   const projectName = currentItem && currentItem.project ? currentItem.project.name : 'Proyecto Kiosko';
   
   const payload = {
-    message: `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Responde de manera concisa. Si resulta útil para ilustrar tu respuesta, inserta diagramas o referencias usando tags [IMG:url] o [VIDEO:url]. Contexto actual: Viendo el diagrama "${projectName}".`,
+    message: `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Responde de manera concisa.
+Si lo consideras útil para explicar algo, PUEDES inyectar nuevos objetos vectoriales al canvas en tiempo real devolviendo un bloque de código al final de tu respuesta con este formato exacto:
+[INJECT_JSON: [{"type":"circle","cx":150,"cy":150,"radius":30,"fillColor":"#ff0000","id":"viki_c_1"}, {"type":"text","text":"Aviso","x":150,"y":190}]]
+Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.`,
     canvasContext: {
-      projectName: projectName
+      projectName: projectName,
+      camera: { x: kioskState.panX, y: kioskState.panY, zoom: kioskState.zoom }
     }
   };
   
@@ -2231,7 +2235,38 @@ function processUserVoiceCommand(text) {
   .then(res => res.json())
   .then(data => {
     if (data.reply) {
-      triggerVikiSpeak(data.reply);
+      let replyText = data.reply;
+      
+      const injectTagIndex = replyText.indexOf('[INJECT_JSON:');
+      if (injectTagIndex !== -1) {
+        const endTagIndex = replyText.lastIndexOf(']');
+        if (endTagIndex > injectTagIndex) {
+          let jsonStr = replyText.substring(injectTagIndex + 13, endTagIndex).trim();
+          jsonStr = jsonStr.replace(/^```json/i, '').replace(/```$/, '').trim();
+          try {
+            const elementsToInject = JSON.parse(jsonStr);
+            if (Array.isArray(elementsToInject)) {
+               const worldGroup = document.getElementById('kiosk-world-group');
+               const defs = document.getElementById('kiosk-defs');
+               if (animators.length > 0) {
+                 const state = animators[0];
+                 elementsToInject.forEach(el => {
+                   if (!el.id) el.id = 'viki_inj_' + Math.random().toString(36).substr(2, 6);
+                   state.elements.push(el);
+                   state.flat.push(el);
+                   state.byId.set(String(el.id), el);
+                   renderKioskEl(el, worldGroup, defs, state);
+                 });
+               }
+            }
+          } catch(e) {
+            console.error("Error parsing INJECT_JSON:", e, jsonStr);
+          }
+          replyText = replyText.substring(0, injectTagIndex).trim() + ' ' + replyText.substring(endTagIndex + 1).trim();
+        }
+      }
+      
+      triggerVikiSpeak(replyText);
     } else {
       triggerVikiSpeak("Sistemas ocupados. Intente nuevamente.");
     }
