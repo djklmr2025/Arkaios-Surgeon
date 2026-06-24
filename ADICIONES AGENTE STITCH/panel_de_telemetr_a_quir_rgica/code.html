@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEURAL_LINK_V8.4 | SURGICAL TELEMETRY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #00d4ff, transparent);
+            opacity: 0.15;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            animation: scan 4s linear infinite;
+            z-index: 60;
+        }
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0e19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #40484c;
+            border-radius: 4px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#40484c",
+                    "surface-variant": "#323441",
+                    "background": "#10131e",
+                    "muted-steel": "#bbc9cf",
+                    "surface": "#121318",
+                    "primary-fixed": "#b4ebff",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-primary-fixed": "#001f28",
+                    "deep-obsidian-teal": "#003642",
+                    "tertiary-fixed": "#ffdad5",
+                    "on-secondary-fixed-variant": "#005321",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#002109",
+                    "inverse-on-surface": "#2d303d",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e0e1f2",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-tertiary-fixed-variant": "#6c3832",
+                    "tertiary-container": "#ffd5d0",
+                    "surface-tint": "#90d0e6",
+                    "secondary-container": "#00c55a",
+                    "primary-container": "#a8e8ff",
+                    "on-tertiary": "#51221d",
+                    "outline": "#899296",
+                    "on-surface": "#e0e1f2",
+                    "surface-container-high": "#272936",
+                    "on-primary": "#003542",
+                    "secondary": "#3ee272",
+                    "surface-container": "#1e1f25",
+                    "tertiary-fixed-dim": "#ffb4ab",
+                    "silver-cryo": "#e3e1e9",
+                    "inverse-primary": "#1f667a",
+                    "inverse-surface": "#e0e1f2",
+                    "cyber-cyan": "#00d4ff",
+                    "on-tertiary-fixed": "#360e0a",
+                    "on-secondary-container": "#004a1d",
+                    "surface-bright": "#363846",
+                    "surface-dim": "#10131e",
+                    "secondary-fixed": "#66ff8d",
+                    "primary": "#f6fcff",
+                    "tertiary": "#fffaf9",
+                    "primary-fixed-dim": "#90d0e6",
+                    "on-primary-container": "#246a7e",
+                    "surface-container-highest": "#323441",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#181b27",
+                    "on-tertiary-container": "#8c524b",
+                    "surface-container-lowest": "#0b0e19",
+                    "on-surface-variant": "#bfc8cc",
+                    "on-secondary": "#003915"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "sidebar-width": "280px",
+                    "margin-desktop": "24px",
+                    "margin-mobile": "12px",
+                    "topbar-height": "52px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-base overflow-x-hidden min-h-screen">
+<div class="scanline"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 border-b border-outline-variant/30 backdrop-blur-xl shadow-[0_0_15px_rgba(0,212,255,0.1)] flex justify-between items-center px-margin-mobile h-topbar-height z-50">
+<div class="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-cyber-cyan">terminal</span>
+<span class="font-technical-sm text-technical-sm tracking-widest text-cyber-cyan">NEURAL_LINK_V8.4</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-cyber-cyan cursor-pointer active:scale-95">settings_input_component</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[calc(52px+16px)] pb-24 px-margin-mobile flex flex-col gap-4">
+<!-- Header Telemetry Info -->
+<section class="flex flex-col gap-1 mb-2">
+<div class="flex justify-between items-baseline">
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary uppercase">CORE_TELEMETRY</h1>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan opacity-70">SYSCALL.774.ACTIVE</span>
+</div>
+<p class="text-muted-steel font-body-base opacity-60">Surgical precision diagnostic interface v2.0.4</p>
+</section>
+<!-- Stats Bento Grid (Mobile Focus) -->
+<div class="grid grid-cols-1 gap-4">
+<!-- CPU Performance Panel -->
+<div class="bg-surface-container-low/90 backdrop-blur-xl border border-outline-variant/20 rounded-lg p-4 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-right from-cyber-cyan to-transparent opacity-30"></div>
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyber-cyan text-lg">memory</span>
+<span class="font-label-caps text-label-caps text-muted-steel">CPU_UTILIZATION</span>
+</div>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan bg-deep-obsidian-teal/30 px-2 py-0.5 rounded border border-cyber-cyan/20">LIVE</span>
+</div>
+<div class="flex items-end gap-4 mb-6">
+<span class="font-display-lg text-display-lg text-primary leading-none" id="cpu-value">42.8<span class="text-headline-md-mobile opacity-40">%</span></span>
+<div class="flex-1 flex gap-1 h-12 items-end">
+<div class="w-full bg-cyber-cyan/10 h-1/4 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+<div class="w-full bg-cyber-cyan/10 h-2/4 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+<div class="w-full bg-cyber-cyan/40 h-3/4 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+<div class="w-full bg-cyber-cyan h-full rounded-sm transition-all duration-500"></div>
+<div class="w-full bg-cyber-cyan/60 h-2/4 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+<div class="w-full bg-cyber-cyan/20 h-1/3 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+<div class="w-full bg-cyber-cyan/10 h-1/5 rounded-sm transition-all duration-500 hover:bg-cyber-cyan/40"></div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 border-t border-outline-variant/10 pt-4">
+<div class="flex flex-col">
+<span class="font-technical-sm text-[9px] text-muted-steel opacity-50">TEMP</span>
+<span class="font-technical-sm text-technical-sm text-primary">34.2°C</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-[9px] text-muted-steel opacity-50">FREQ</span>
+<span class="font-technical-sm text-technical-sm text-primary">4.2GHz</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical-sm text-[9px] text-muted-steel opacity-50">LOAD</span>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan">OPTIMAL</span>
+</div>
+</div>
+</div>
+<!-- Network Latency Panel -->
+<div class="bg-surface-container-low/90 backdrop-blur-xl border border-outline-variant/20 rounded-lg p-4 relative">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyber-cyan text-lg">router</span>
+<span class="font-label-caps text-label-caps text-muted-steel">LINK_LATENCY</span>
+</div>
+<span class="material-symbols-outlined text-muted-steel text-sm opacity-40">info</span>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-muted-steel">PRIMARY_NODE</span>
+<span class="text-cyber-cyan">14ms</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-cyber-cyan w-[14%] glow-cyan"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-muted-steel">SURGICAL_RELAY</span>
+<span class="text-cyber-cyan">28ms</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-cyber-cyan w-[28%] opacity-70"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-muted-steel">EXTERNAL_UPSTREAM</span>
+<span class="text-secondary">104ms</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Agent Status & System Logs -->
+<div class="bg-surface-container-low/90 backdrop-blur-xl border border-outline-variant/20 rounded-lg overflow-hidden">
+<div class="p-4 border-b border-outline-variant/10 flex justify-between items-center bg-white/5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyber-cyan text-lg">hub</span>
+<span class="font-label-caps text-label-caps text-primary">SYSTEM_NODES</span>
+</div>
+<span class="text-technical-sm font-technical-sm text-cyber-cyan animate-pulse">● SYNC</span>
+</div>
+<div class="p-0">
+<div class="flex items-center gap-3 p-3 border-b border-outline-variant/10 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded bg-deep-obsidian-teal/40 flex items-center justify-center border border-cyber-cyan/30">
+<span class="material-symbols-outlined text-cyber-cyan text-sm">precision_manufacturing</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-body-bold text-body-bold text-primary">ARM_CONTROL_v4</span>
+<span class="font-technical-sm text-[10px] text-cyber-cyan">READY</span>
+</div>
+<span class="font-technical-sm text-[9px] text-muted-steel opacity-60">KERNEL: 0x8892_f1</span>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 border-b border-outline-variant/10 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded bg-white/5 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-muted-steel text-sm">visibility</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-body-bold text-body-bold text-primary">OPTIC_FEED_01</span>
+<span class="font-technical-sm text-[10px] text-muted-steel">IDLE</span>
+</div>
+<span class="font-technical-sm text-[9px] text-muted-steel opacity-60">KERNEL: 0x1123_a9</span>
+</div>
+</div>
+<div class="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded bg-error/10 flex items-center justify-center border border-error/30">
+<span class="material-symbols-outlined text-error text-sm">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<span class="font-body-bold text-body-bold text-primary">HAPTIC_ARRAY</span>
+<span class="font-technical-sm text-[10px] text-error">FAIL</span>
+</div>
+<span class="font-technical-sm text-[9px] text-error/60">REASON: OVERHEAT_P_7</span>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Engine Visualization -->
+<div class="bg-surface-container-low/90 backdrop-blur-xl border border-outline-variant/20 rounded-lg p-4 relative h-48 flex items-center justify-center">
+<div class="absolute inset-0 opacity-20">
+
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-20 h-20 rounded-full border-2 border-cyber-cyan glow-cyan flex items-center justify-center bg-background/80 mb-2">
+<span class="material-symbols-outlined text-3xl text-cyber-cyan animate-pulse">psychology</span>
+</div>
+<span class="font-label-caps text-label-caps text-cyber-cyan">NEURAL_CORE_ACTIVE</span>
+<span class="font-technical-sm text-[10px] text-muted-steel mt-1">98.4% CONFIDENCE</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 border-t border-outline-variant/30 backdrop-blur-xl shadow-[0_-5px_20px_rgba(0,0,0,0.5)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-cyber-cyan bg-deep-obsidian-teal/40 rounded-xl p-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-caps text-label-caps">STATS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 active:scale-90 transition-transform hover:text-primary" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-label-caps text-label-caps">NODES</span>
+</a>
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 active:scale-90 transition-transform hover:text-primary" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-caps text-label-caps">LOGS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 active:scale-90 transition-transform hover:text-primary" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span class="font-label-caps text-label-caps">MAP</span>
+</a>
+</nav>
+<script>
+        // Fake telemetry updates for atmosphere
+        const cpuValue = document.getElementById('cpu-value');
+        
+        function updateTelemetry() {
+            const baseValue = 42.8;
+            const variance = (Math.random() - 0.5) * 5;
+            const newValue = (baseValue + variance).toFixed(1);
+            
+            if (cpuValue) {
+                cpuValue.innerHTML = `${newValue}<span class="text-headline-md-mobile opacity-40">%</span>`;
+            }
+
+            // Randomly update status colors for life
+            const bars = document.querySelectorAll('.h-12 > div');
+            bars.forEach(bar => {
+                const height = Math.random() * 100;
+                bar.style.height = `${height}%`;
+            });
+        }
+
+        setInterval(updateTelemetry, 1500);
+    </script>
+</body></html>

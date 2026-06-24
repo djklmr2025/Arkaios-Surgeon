@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEURAL_LINK_V8.4 | OPERATIONAL_DASHBOARD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#40484c",
+                    "surface-variant": "#323441",
+                    "background": "#10131e",
+                    "muted-steel": "#bbc9cf",
+                    "surface": "#121318",
+                    "primary-fixed": "#b4ebff",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#3ee272",
+                    "on-primary-fixed": "#001f28",
+                    "deep-obsidian-teal": "#003642",
+                    "tertiary-fixed": "#ffdad5",
+                    "on-secondary-fixed-variant": "#005321",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#002109",
+                    "inverse-on-surface": "#2d303d",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#e0e1f2",
+                    "on-primary-fixed-variant": "#004e5f",
+                    "on-tertiary-fixed-variant": "#6c3832",
+                    "tertiary-container": "#ffd5d0",
+                    "surface-tint": "#90d0e6",
+                    "secondary-container": "#00c55a",
+                    "primary-container": "#a8e8ff",
+                    "on-tertiary": "#51221d",
+                    "outline": "#899296",
+                    "on-surface": "#e0e1f2",
+                    "surface-container-high": "#272936",
+                    "on-primary": "#003542",
+                    "secondary": "#3ee272",
+                    "surface-container": "#1e1f25",
+                    "tertiary-fixed-dim": "#ffb4ab",
+                    "silver-cryo": "#e3e1e9",
+                    "inverse-primary": "#1f667a",
+                    "inverse-surface": "#e0e1f2",
+                    "cyber-cyan": "#00d4ff",
+                    "on-tertiary-fixed": "#360e0a",
+                    "on-secondary-container": "#004a1d",
+                    "surface-bright": "#363846",
+                    "surface-dim": "#10131e",
+                    "secondary-fixed": "#66ff8d",
+                    "primary": "#f6fcff",
+                    "tertiary": "#fffaf9",
+                    "primary-fixed-dim": "#90d0e6",
+                    "on-primary-container": "#246a7e",
+                    "surface-container-highest": "#323441",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#181b27",
+                    "on-tertiary-container": "#8c524b",
+                    "surface-container-lowest": "#0b0e19",
+                    "on-surface-variant": "#bfc8cc",
+                    "on-secondary": "#003915"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "sidebar-width": "280px",
+                    "margin-desktop": "24px",
+                    "margin-mobile": "12px",
+                    "topbar-height": "52px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-base": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md-mobile": ["Inter"],
+                    "technical-sm": ["JetBrains Mono"],
+                    "display-lg": ["Inter"],
+                    "body-bold": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "technical-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-bold": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #10131e;
+            color: #e0e1f2;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-panel {
+            background: rgba(18, 19, 24, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #00d4ff, transparent);
+            position: absolute;
+            top: -2px;
+            animation: scan 3s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            5% { opacity: 0.5; }
+            95% { opacity: 0.5; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .commit-cell {
+            width: 8px;
+            height: 8px;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .commit-cell:hover {
+            transform: scale(1.3);
+            z-index: 10;
+            box-shadow: 0 0 8px currentColor;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-base text-body-base overflow-x-hidden min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 text-cyber-cyan border-b border-outline-variant/30 backdrop-blur-xl shadow-[0_0_15px_rgba(0,212,255,0.1)] flex justify-between items-center px-margin-mobile h-topbar-height w-full z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-cyber-cyan" data-icon="terminal">terminal</span>
+<span class="font-technical-sm text-technical-sm tracking-widest text-cyber-cyan">NEURAL_LINK_V8.4</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer active:scale-95 text-muted-steel hover:text-cyber-cyan transition-colors" data-icon="settings_input_component">settings_input_component</span>
+</div>
+</header>
+<main class="pt-[72px] pb-[80px] px-margin-mobile">
+<!-- Welcome Header -->
+<div class="mb-6">
+<h1 class="font-headline-md-mobile text-headline-md-mobile text-primary mb-1">PROJECT_NODES</h1>
+<p class="font-technical-sm text-technical-sm text-muted-steel opacity-70">OPERATOR_01 / SYSTEM_ROOT_ACTIVE</p>
+</div>
+<!-- Main Project Card Container -->
+<div class="space-y-4">
+<!-- THE ADVANCED CYBERPUNK PROJECT CARD -->
+<article class="glass-panel relative overflow-hidden p-gutter group">
+<!-- Scanline Effect -->
+<div class="scanline"></div>
+<!-- Card Header -->
+<div class="flex justify-between items-start mb-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-primary tracking-tight">CYBER_CORE_X</h2>
+</div>
+<p class="font-technical-sm text-technical-sm text-muted-steel/80">ID: NODE-2049-Ω</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="material-symbols-outlined text-cyber-cyan/50 text-sm" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan/40">V2.0.4</span>
+</div>
+</div>
+<!-- Description -->
+<div class="mb-5 py-3 border-y border-white/5">
+<p class="font-body-base text-body-base text-on-surface-variant leading-relaxed">
+                        Descentralized neural routing protocol optimized for sub-ms latency in high-density urban grids. Features automated kernel-level failover and encrypted telemetry streams.
+                    </p>
+</div>
+<!-- Status Tags -->
+<div class="flex flex-wrap gap-2 mb-6">
+<!-- Active Status -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 border border-secondary/30 bg-secondary/10 rounded-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-caps text-label-caps text-secondary">ACTIVE</span>
+</div>
+<!-- Stable Status -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 border border-cyber-cyan/30 bg-cyber-cyan/10 rounded-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-cyber-cyan"></span>
+<span class="font-label-caps text-label-caps text-cyber-cyan">STABLE</span>
+</div>
+<!-- Deploying Status -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 border border-muted-steel/30 bg-white/5 rounded-sm opacity-50">
+<span class="w-1.5 h-1.5 rounded-full bg-muted-steel"></span>
+<span class="font-label-caps text-label-caps text-muted-steel uppercase">Deploying</span>
+</div>
+</div>
+<!-- Activity Graph (Commit Style) -->
+<div class="activity-monitor">
+<div class="flex justify-between items-center mb-2">
+<span class="font-technical-sm text-technical-sm text-muted-steel opacity-60 uppercase">Node_Activity_Heatmap</span>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan">84% Load</span>
+</div>
+<div class="grid grid-cols-12 gap-1.5">
+<!-- Simulated Heatmap Cells -->
+<div class="commit-cell bg-secondary/80 text-secondary"></div>
+<div class="commit-cell bg-secondary/40 text-secondary"></div>
+<div class="commit-cell bg-secondary/90 text-secondary"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-secondary/60 text-secondary"></div>
+<div class="commit-cell bg-secondary/100 text-secondary"></div>
+<div class="commit-cell bg-secondary/30 text-secondary"></div>
+<div class="commit-cell bg-secondary/50 text-secondary"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-secondary/70 text-secondary"></div>
+<div class="commit-cell bg-secondary/90 text-secondary"></div>
+<div class="commit-cell bg-secondary/20 text-secondary"></div>
+<div class="commit-cell bg-secondary/20 text-secondary"></div>
+<div class="commit-cell bg-secondary/80 text-secondary"></div>
+<div class="commit-cell bg-secondary/40 text-secondary"></div>
+<div class="commit-cell bg-secondary/10 text-secondary"></div>
+<div class="commit-cell bg-secondary/90 text-secondary"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-secondary/60 text-secondary"></div>
+<div class="commit-cell bg-secondary/100 text-secondary"></div>
+<div class="commit-cell bg-secondary/30 text-secondary"></div>
+<div class="commit-cell bg-secondary/50 text-secondary"></div>
+<div class="commit-cell bg-secondary/10 text-secondary"></div>
+<div class="commit-cell bg-secondary/70 text-secondary"></div>
+</div>
+</div>
+<!-- Footer Stats -->
+<div class="mt-6 pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="font-label-caps text-[9px] text-muted-steel opacity-50">LATENCY</span>
+<span class="font-technical-sm text-technical-sm text-cyber-cyan">14ms</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-[9px] text-muted-steel opacity-50">UPTIME</span>
+<span class="font-technical-sm text-technical-sm text-secondary">99.9%</span>
+</div>
+</div>
+<button class="bg-cyber-cyan/10 hover:bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/30 px-4 py-1.5 rounded-sm transition-all active:scale-95 flex items-center gap-2">
+<span class="font-label-caps text-label-caps">EXECUTE</span>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- Secondary Project Node -->
+<article class="glass-panel relative overflow-hidden p-gutter opacity-70">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="font-headline-md-mobile text-headline-md-mobile text-primary tracking-tight">GHOST_SHELL_V2</h2>
+<p class="font-technical-sm text-technical-sm text-muted-steel/80">ID: NODE-1011-Σ</p>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 border border-error/30 bg-error/10 rounded-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span class="font-label-caps text-label-caps text-error">STANDBY</span>
+</div>
+</div>
+<div class="activity-monitor">
+<div class="grid grid-cols-12 gap-1.5 opacity-20">
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+<div class="commit-cell bg-surface-container-highest"></div>
+</div>
+</div>
+</article>
+</div>
+<!-- Telemetry Data Strip -->
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="glass-panel p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-cyber-cyan mb-2" data-icon="hub">hub</span>
+<span class="font-label-caps text-label-caps text-muted-steel">TOTAL NODES</span>
+<span class="font-display-lg text-[24px] text-primary">12,409</span>
+</div>
+<div class="glass-panel p-4 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-secondary mb-2" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-label-caps text-label-caps text-muted-steel">THROUGHPUT</span>
+<span class="font-display-lg text-[24px] text-primary">4.2 GB/S</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 border-t border-outline-variant/30 backdrop-blur-xl shadow-[0_-5px_20px_rgba(0,0,0,0.5)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 hover:text-primary active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="font-label-caps text-label-caps mt-1">STATS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-cyber-cyan bg-deep-obsidian-teal/40 rounded-xl p-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span class="font-label-caps text-label-caps mt-1">NODES</span>
+</a>
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 hover:text-primary active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-caps text-label-caps mt-1">LOGS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-muted-steel p-2 hover:text-primary active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+<span class="font-label-caps text-label-caps mt-1">MAP</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for the activity cells
+        document.querySelectorAll('.commit-cell').forEach(cell => {
+            cell.addEventListener('mouseenter', () => {
+                // Subtle feedback handled by CSS hover
+            });
+        });
+
+        // Background atmosphere: very subtle pulsing effect on glass panels
+        const panels = document.querySelectorAll('.glass-panel');
+        setInterval(() => {
+            panels.forEach(panel => {
+                const opacity = 0.08 + (Math.random() * 0.04);
+                panel.style.borderColor = `rgba(255, 255, 255, ${opacity})`;
+            });
+        }, 2000);
+    </script>
+</body></html>
