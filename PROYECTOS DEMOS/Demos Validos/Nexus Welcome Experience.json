@@ -1,0 +1,36 @@
+{
+  "name": "Bienvenida al Futuro",
+  "camera": { "x": 0, "y": 0, "zoom": 1 },
+  "elements": [
+    {
+      "id": "welcome_core",
+      "type": "circle",
+      "x": 400, "y": 300, "radius": 50,
+      "color": "#00d4ff",
+      "meta": {
+        "controlPoint": true,
+        "order": 1,
+        "slide": {
+          "title": "🚀 Bienvenido a Flow Diagram Creator",
+          "text": "Estás en el Visual Nexus. Aquí puedes crear diagramas animados, planos interactivos y experiencias 3D superpuestas.",
+          "imageUrl": "https://github.com/djklmr2025/flow-diagram-creator/blob/main/FHLL.gif?raw=true"
+        }
+      }
+    },
+    {
+      "id": "tool_guide",
+      "type": "rect",
+      "x": 600, "y": 200, "width": 40, "height": 40,
+      "color": "#48ea79",
+      "meta": {
+        "controlPoint": true,
+        "order": 2,
+        "slide": {
+          "title": "🛠️ Herramientas de Precisión",
+          "text": "Usa el lápiz para dibujar a mano alzada o los polígonos inteligentes para crear regiones clickeables con metadatos.",
+          "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
+        }
+      }
+    }
+  ]
+}

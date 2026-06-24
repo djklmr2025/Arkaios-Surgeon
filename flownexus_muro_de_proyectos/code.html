@@ -277,8 +277,8 @@ tailwind.config = {
 
 <!-- SCREENSAVER (SOLO MODO EMPRESARIAL) -->
 <div id="screensaver" class="hidden" onclick="dismissScreensaver()">
-  <video class="video-bg" autoplay loop muted playsinline>
-    <source src="https://assets.mixkit.co/videos/preview/mixkit-cyberpunk-neon-city-street-with-people-and-lights-40081-large.mp4" type="video/mp4">
+  <video id="kiosk-bg-video" class="video-bg" autoplay loop muted playsinline>
+    <source id="kiosk-bg-source" src="https://assets.mixkit.co/videos/preview/mixkit-cyberpunk-neon-city-street-with-people-and-lights-40081-large.mp4" type="video/mp4">
   </video>
   <div class="relative z-10 text-center flex flex-col items-center gap-6 px-6">
     <div class="w-20 h-20 rounded-full border border-primary/30 flex items-center justify-center bg-background/50 backdrop-blur-md animate-pulse">
@@ -424,6 +424,21 @@ tailwind.config = {
         Aún no has publicado ningún diagrama.
       </div>
     </div>
+
+    <!-- Configuración de Kiosko -->
+    <div class="mt-2 border-t border-outline/20 pt-4 hidden" id="kiosk-settings">
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="text-[11px] font-bold text-secondary uppercase tracking-wider block">Configuración de Espectacular / Kiosko</h4>
+      </div>
+      <div class="glass-panel p-4 rounded-2xl flex flex-col gap-3">
+        <label class="text-xs text-primary font-bold">Video de Fondo (URL MP4)</label>
+        <div class="flex gap-2">
+          <input type="text" id="kiosk-video-url" placeholder="https://ejemplo.com/video.mp4" class="flex-1 bg-background border border-outline/30 rounded-lg px-3 py-2 text-xs focus:border-primary outline-none transition-colors" />
+          <button onclick="saveKioskVideo()" class="bg-secondary/20 text-secondary border border-secondary/30 rounded-lg px-4 py-2 text-xs font-bold hover:bg-secondary/30 transition-all active:scale-95">Guardar</button>
+        </div>
+        <p class="text-[10px] text-on-surface-variant leading-relaxed">Este video se reproducirá automáticamente en bucle y sin sonido cuando el kiosko esté en reposo (pantalla de "Toca para interactuar"). Puedes usar cualquier enlace directo a un archivo .mp4.</p>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -533,6 +548,33 @@ function copyShareLink(url) {
   });
 }
 
+// Kiosk Video Settings
+function loadKioskVideo() {
+  const savedUrl = localStorage.getItem('flownexus_kiosk_video');
+  if (savedUrl) {
+    const video = document.getElementById('kiosk-bg-video');
+    const source = document.getElementById('kiosk-bg-source');
+    if (video && source) {
+      source.src = savedUrl;
+      video.load();
+    }
+  }
+}
+function saveKioskVideo() {
+  const input = document.getElementById('kiosk-video-url');
+  const url = input.value.trim();
+  if (url) {
+    localStorage.setItem('flownexus_kiosk_video', url);
+    loadKioskVideo();
+    showToast('✅ Video de fondo actualizado');
+  } else {
+    showToast('⚠️ Ingresa una URL válida');
+  }
+}
+
+// Inicializar el video al cargar
+document.addEventListener('DOMContentLoaded', loadKioskVideo);
+
 // God Mode activation via triple click (RESTRICTED TO admin/god accounts)
 function handleTitleClick() {
   if (!currentUser || (currentUser.email !== 'arkaios2026@gmail.com' && currentUser.email !== 'admin@arkaios.dpdns.org')) {
@@ -585,6 +627,18 @@ function switchTab(tab) {
     profileBtn.className = 'flex flex-col items-center gap-1 text-primary';
     viewFeed.classList.add('hidden');
     viewProfile.classList.remove('hidden');
+    
+    // Configuración de kiosko visible solo si el usuario está en modo kiosko
+    const kioskSettings = document.getElementById('kiosk-settings');
+    if (kioskSettings) {
+      if (userRole === 'enterprise') {
+        kioskSettings.classList.remove('hidden');
+        const savedUrl = localStorage.getItem('flownexus_kiosk_video');
+        if (savedUrl) document.getElementById('kiosk-video-url').value = savedUrl;
+      } else {
+        kioskSettings.classList.add('hidden');
+      }
+    }
     
     // Detener animaciones del feed y renderizar el perfil
     stopGlobalAnimation();

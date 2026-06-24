@@ -1,0 +1,243 @@
+{
+  "name": "proyecto-exportado",
+  "date": "2026-02-10T05:47:22.695Z",
+  "elements": [
+    {
+      "id": 1770702439943.8694,
+      "type": "group",
+      "elements": [
+        {
+          "id": 1770701411281.4111,
+          "x": 611.9752732516268,
+          "y": 362.2239283511085,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 59.21955036255258,
+          "height": 14.353002108634712
+        },
+        {
+          "id": 1770701423143.6238,
+          "x": 613.714681227899,
+          "y": 376.57693045974315,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 9.666307542549816,
+          "height": 76.45170510925817
+        },
+        {
+          "id": 1770701431458.995,
+          "x": 629.339007558204,
+          "y": 376.6584785538828,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 9.666307542549816,
+          "height": 76.45170510925817
+        },
+        {
+          "id": 1770701438654.974,
+          "x": 643.7735577609783,
+          "y": 376.7400266480224,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 9.666307542549816,
+          "height": 76.45170510925817
+        },
+        {
+          "id": 1770701442710.0117,
+          "x": 659.6727000156541,
+          "y": 376.52865633178175,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 9.666307542549816,
+          "height": 76.45170510925817
+        },
+        {
+          "id": 1770701460527.7246,
+          "x": 605.4767607652315,
+          "y": 467.67455608801635,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 8.201715490648326,
+          "height": 38.07939334943893
+        },
+        {
+          "id": 1770701469593.4119,
+          "x": 669.6802000965458,
+          "y": 467.96747449839665,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 8.494633901028692,
+          "height": 36.90771970791775
+        },
+        {
+          "id": 1770701484939.4497,
+          "x": 621.934499204557,
+          "y": 485.9539494374552,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 8.787552311408945,
+          "height": 18.042489537718325
+        },
+        {
+          "id": 1770701490535.2927,
+          "x": 653.6488296394367,
+          "y": 486.18163767763605,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 8.787552311408945,
+          "height": 17.282186212437693
+        },
+        {
+          "id": 1770701537807.424,
+          "x": 611.0965180204859,
+          "y": 452.1498803378605,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": false,
+          "connectionStatus": "none",
+          "type": "polygon",
+          "points": [
+            {
+              "x": 621.1486623837965,
+              "y": 485.63621070564255
+            },
+            {
+              "x": 631.6087460820507,
+              "y": 485.7539494374552
+            },
+            {
+              "x": 639.8954406481356,
+              "y": 452.735717158621
+            },
+            {
+              "x": 611.1894364308662,
+              "y": 452.735717158621
+            }
+          ],
+          "closed": true,
+          "shapeType": "trapezoid"
+        },
+        {
+          "id": 1770701635294.7441,
+          "x": 611.0965180204859,
+          "y": 452.1498803378605,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": false,
+          "connectionStatus": "none",
+          "type": "polygon",
+          "points": [
+            {
+              "x": 653.1037668657458,
+              "y": 485.8362107056425
+            },
+            {
+              "x": 663.5638505640001,
+              "y": 485.95394943745515
+            },
+            {
+              "x": 671.8505451300849,
+              "y": 452.93571715862095
+            },
+            {
+              "x": 643.1445409128155,
+              "y": 452.93571715862095
+            }
+          ],
+          "closed": true,
+          "shapeType": "trapezoid"
+        },
+        {
+          "id": 1770701417489.387,
+          "x": 605.5129657372506,
+          "y": 459.7657590077483,
+          "name": "",
+          "fillColor": "#d0d0d0",
+          "strokeColor": "#000000",
+          "lineWidth": 5,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "rectangle",
+          "width": 72.64376577431426,
+          "height": 7.908797080268073
+        }
+      ],
+      "locked": false,
+      "active": true,
+      "connectionStatus": "none",
+      "fillColor": "#0f3460",
+      "strokeColor": "#e94560",
+      "name": "Grupo",
+      "x": 605.4767607652315,
+      "y": 362.2239283511085,
+      "width": 72.69807323234306,
+      "height": 143.53002108634678
+    }
+  ],
+  "camera": {
+    "x": -1303.2946565142277,
+    "y": -1122.1168727477457,
+    "zoom": 3.3125230972687905
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "elements": [
+    {
+      "type": "circle",
+      "x": 200, "y": 200, "radius": 15,
+      "color": "#00ffcc", "name": "Estación Indios Verdes",
+      "isAnim": false
+    },
+    {
+      "type": "circle",
+      "x": 600, "y": 200, "radius": 15,
+      "color": "#ff0066", "name": "Estación Observatorio",
+      "isAnim": false
+    },
+    {
+      "type": "line",
+      "x1": 215, "y1": 200,
+      "x2": 585, "y2": 200,
+      "color": "#00d4ff",
+      "isAnim": true,
+      "speed": 2
+    }
+  ],
+  "view": { "zoom": 1, "panX": 0, "panY": 0 }
+}

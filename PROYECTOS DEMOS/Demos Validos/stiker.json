@@ -1,0 +1,21 @@
+{
+  "name": "Tomorrowland-Gemini-Gate",
+  "elements": [
+    {
+      "type": "circle",
+      "x": 400, "y": 300, "radius": 25,
+      "color": "#00d4ff", "name": "NÚCLEO IA GEMINI",
+      "isAnim": true
+    },
+    {
+      "type": "line",
+      "x1": 400, "y1": 325,
+      "x2": 400, "y2": 500,
+      "color": "#48ea79",
+      "isAnim": true,
+      "speed": 3,
+      "animColor": "#ffffff"
+    }
+  ],
+  "camera": { "x": 400, "y": 400, "zoom": 1 }
+}

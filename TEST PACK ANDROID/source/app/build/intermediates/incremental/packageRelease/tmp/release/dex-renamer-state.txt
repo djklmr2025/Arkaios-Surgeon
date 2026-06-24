@@ -1,0 +1,4 @@
+#Mon Jun 22 16:26:46 PDT 2026
+base.0=/tmp/pwabuilder-cloudapk--19-sfWoPLMTJu2L/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

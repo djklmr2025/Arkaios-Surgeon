@@ -1,0 +1,103 @@
+{
+  "name": "proyecto-exportado",
+  "date": "2026-02-10T19:29:24.361Z",
+  "elements": [
+    {
+      "id": 1770751761294.0269,
+      "type": "group",
+      "elements": [
+        {
+          "id": 1770751364898.8076,
+          "x": 237.51528119560277,
+          "y": 52.17172956868918,
+          "name": "",
+          "fillColor": "transparent",
+          "strokeColor": "transparent",
+          "lineWidth": 20,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "line",
+          "endX": 208.57667632701862,
+          "endY": 89.63688765748114,
+          "animColor": "#ffffff",
+          "flowDirection": "right",
+          "animOffset": 24,
+          "controlPoints": []
+        },
+        {
+          "id": 1770751495791.2617,
+          "x": 281.288471590428,
+          "y": 52.48233492818454,
+          "name": "",
+          "fillColor": "transparent",
+          "strokeColor": "transparent",
+          "lineWidth": 20,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "line",
+          "endX": 208.0599155257939,
+          "endY": 132.26965375852026,
+          "animColor": "#ffffff",
+          "flowDirection": "right",
+          "animOffset": 16,
+          "controlPoints": []
+        },
+        {
+          "id": 1770751512008.7622,
+          "x": 179.22601981005818,
+          "y": 52.018058320925235,
+          "name": "",
+          "fillColor": "transparent",
+          "strokeColor": "transparent",
+          "lineWidth": 20,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "line",
+          "endX": 208.16462467864238,
+          "endY": 89.48321640971719,
+          "animColor": "#ffffff",
+          "flowDirection": "right",
+          "animOffset": 24,
+          "controlPoints": []
+        },
+        {
+          "id": 1770751530309.1008,
+          "x": 134.5262105041203,
+          "y": 51.84483113958822,
+          "name": "",
+          "fillColor": "transparent",
+          "strokeColor": "transparent",
+          "lineWidth": 20,
+          "locked": false,
+          "active": true,
+          "connectionStatus": "none",
+          "type": "line",
+          "endX": 207.75476656875438,
+          "endY": 131.6321499699239,
+          "animColor": "#ffffff",
+          "flowDirection": "right",
+          "animOffset": 16,
+          "controlPoints": []
+        }
+      ],
+      "locked": false,
+      "active": true,
+      "connectionStatus": "none",
+      "fillColor": "#0f3460",
+      "strokeColor": "#e94560",
+      "name": "Grupo",
+      "x": 134.5262105041203,
+      "y": 51.84483113958822,
+      "width": 146.76226108630772,
+      "height": 80.42482261893204
+    }
+  ],
+  "camera": {
+    "x": 6.0775557847048844,
+    "y": 83.70584673004538,
+    "zoom": 2.0668308053022146
+  }
+}

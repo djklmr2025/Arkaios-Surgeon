@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="enableNotification">false</bool>
+    <bool name="enableSiteSettingsShortcut">true</bool>
+    <color name="backgroundColor">#0D1117</color>
+    <color name="colorPrimary">#00F0FF</color>
+    <color name="colorPrimaryDark">#00F0FF</color>
+    <color name="navigationColor">#00F0FF</color>
+    <color name="navigationColorDark">#00F0FF</color>
+    <color name="navigationDividerColor">#00F0FF</color>
+    <color name="navigationDividerColorDark">#00F0FF</color>
+    <color name="shortcut_background">#F5F5F5</color>
+    <integer name="splashScreenFadeOutDuration">300</integer>
+    <string name="appName" translatable="false">FlowNexus</string>
+    <string name="assetStatements">
+    [{
+        \"relation\": [\"delegate_permission/common.handle_all_urls\"],
+        \"target\": {
+            \"namespace\": \"web\",
+            \"site\": \"https://arkaios-surgeon.vercel.app\"
+        }
+    }]
+    
+  </string>
+    <string name="fallbackType" translatable="false">customtabs</string>
+    <string name="fullScopeUrl" translatable="false">https://arkaios-surgeon.vercel.app/</string>
+    <string name="generatorApp" translatable="false">PWABuilder</string>
+    <string name="hostName" translatable="false">arkaios-surgeon.vercel.app</string>
+    <string name="launchUrl" translatable="false">https://arkaios-surgeon.vercel.app/flownexus_muro_de_proyectos/code.html</string>
+    <string name="launcherName" translatable="false">FlowNexus</string>
+    <string name="orientation" translatable="false">any</string>
+    <string name="providerAuthority" translatable="false">app.vercel.arkaios_surgeon.twa.fileprovider</string>
+    <string name="webManifestUrl" translatable="false">https://arkaios-surgeon.vercel.app/manifest.json</string>
+</resources>
