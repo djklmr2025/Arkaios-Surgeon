@@ -965,7 +965,7 @@ async function submitProject() {
       loadFeed();
     } catch(e) {
       console.error(e);
-      showToast('⚠️ Error al guardar en Firebase. Revisa tus reglas de seguridad.');
+      showToast('⚠️ Error: ' + (e.message || e.code || JSON.stringify(e)));
       btn.disabled = false;
       btn.textContent = 'Publicar Diagrama';
     }
