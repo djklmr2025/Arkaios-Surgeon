@@ -1828,40 +1828,8 @@ function renderKioskProject(container, item) {
   animators = [state];
   startGlobalAnimation();
   
-  // Welcome Speech - AI Integration
-  triggerVikiSpeak(`Cargando proyecto "${project.name || 'Desconocido'}". Solicitando análisis estructural al Arkaios Core...`);
-  
-  const payload = {
-    message: `Has cargado el diagrama "${project.name || 'Desconocido'}" que contiene ${(project.elements || []).length} elementos. Actúas como V.I.K.I. (Inteligencia de Arkaios). Tienes conocimiento experto nativo sobre la red y rutas del Metro de la Ciudad de México. Da la bienvenida al Kiosko y presenta brevemente de qué podría tratar este diagrama en un máximo de 2 oraciones concisas e invita al usuario a tocar un nodo para examinarlo. IMPORTANTE: Responde en texto plano puro, SIN usar ningún formato markdown como asteriscos, negritas o listas.`,
-    canvasContext: {
-      projectName: project.name || 'Proyecto Kiosko',
-      totalElements: (project.elements || []).length,
-      author: author
-    }
-  };
-  
-  if (typeof puter !== 'undefined') {
-    puter.ai.chat(payload.message)
-    .then(response => {
-      let replyText = '';
-      if (typeof response === 'string') replyText = response;
-      else if (response && response.message && typeof response.message.content === 'string') replyText = response.message.content;
-      else if (response && response.message && Array.isArray(response.message.content)) replyText = response.message.content.map(c => c.text || '').join('');
-      else if (response) replyText = response.toString();
-      
-      if (replyText) {
-        triggerVikiSpeak(replyText);
-      } else {
-        triggerVikiSpeak(`Bienvenido al Kiosko FlowNexus. Se ha cargado el diagrama "${project.name}". Presione cualquier elemento para analizarlo.`);
-      }
-    })
-    .catch(err => {
-      console.error('Error V.I.K.I AI Load:', err);
-      triggerVikiSpeak(`Bienvenido al sistema Kiosko. Por favor presione un elemento para interactuar.`);
-    });
-  } else {
-    triggerVikiSpeak(`Bienvenido al Kiosko FlowNexus. Se ha cargado el diagrama "${project.name}".`);
-  }
+  // Welcome Speech - Static
+  triggerVikiSpeak(`Bienvenido al Kiosko. Soy V.I.K.I. (Inteligencia de Arkaios). Sistemas en línea y esperando instrucciones.`);
 }
 
 function renderKioskEl(elem, parent, defs, state) {
@@ -2271,9 +2239,9 @@ function fitKioskView(instant = false) {
   
   const W = svg.clientWidth || window.innerWidth;
   const H = svg.clientHeight || window.innerHeight;
-  const pad = 48;
   const cw = maxX - minX || 1, ch = maxY - minY || 1;
-  const targetZoom = clamp(Math.min((W - pad*2)/cw, (H - pad*2)/ch), 0.05, 5);
+  // Stretch to 90% of screen width to eliminate large side gaps on vertical maps
+  const targetZoom = clamp((W * 0.90) / cw, 0.05, 5);
   const targetPanX = W/2 - ((minX + cw/2) * targetZoom);
   const targetPanY = H/2 - ((minY + ch/2) * targetZoom);
   
