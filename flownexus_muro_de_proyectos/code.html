@@ -304,6 +304,7 @@ tailwind.config = {
     position: relative;
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 </head>
 <body class="min-h-screen pb-24 pt-[56px] text-on-surface">
 
@@ -974,8 +975,8 @@ async function submitProject() {
       if (jsonUrl) {
         docData.jsonUrl = jsonUrl;
       } else {
-        // Fallback: Si JSONBin falló, guardamos en Firebase como String para evitar errores de arreglos anidados
-        docData.elementsJson = JSON.stringify(cleanPayload.elements);
+        // Fallback: Si JSONBin falló, guardamos en Firebase comprimido con LZString para que ocupe menos de 1MB
+        docData.elementsJson = LZString.compressToUTF16(JSON.stringify(cleanPayload.elements));
       }
       
       const docRef = await db.collection('projects').add(docData);
@@ -1090,7 +1091,13 @@ async function loadFeed() {
       try {
         const project = doc.data();
         if (project.elementsJson) {
-          try { project.elements = JSON.parse(project.elementsJson); } catch(e) { project.elements = []; }
+          try {
+            let decompressed = LZString.decompressFromUTF16(project.elementsJson);
+            if (!decompressed) decompressed = project.elementsJson; // Si no estaba comprimido
+            project.elements = JSON.parse(decompressed);
+          } catch(e) {
+            try { project.elements = JSON.parse(project.elementsJson); } catch(e2) { project.elements = []; }
+          }
         }
         const docId = doc.id;
         

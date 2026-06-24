@@ -106,6 +106,7 @@ tailwind.config = {
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 </head>
 <body class="text-on-surface">
 
@@ -715,7 +716,13 @@ async function loadById(id) {
     
     const data = doc.data();
     if (data.elementsJson) {
-      try { data.elements = JSON.parse(data.elementsJson); } catch(e) { data.elements = []; }
+      try {
+        let decompressed = LZString.decompressFromUTF16(data.elementsJson);
+        if (!decompressed) decompressed = data.elementsJson; // Si no estaba comprimido
+        data.elements = JSON.parse(decompressed);
+      } catch(e) {
+        try { data.elements = JSON.parse(data.elementsJson); } catch(e2) { data.elements = []; }
+      }
     }
     
     // Si tiene jsonUrl (JSONBin), lo traemos de allá
