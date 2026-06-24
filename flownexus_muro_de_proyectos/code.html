@@ -974,8 +974,8 @@ async function submitProject() {
       if (jsonUrl) {
         docData.jsonUrl = jsonUrl;
       } else {
-        // Fallback: Si JSONBin falló o no dio URL, guardamos en Firebase (sujeto a límite de 1MB)
-        docData.elements = cleanPayload.elements;
+        // Fallback: Si JSONBin falló, guardamos en Firebase como String para evitar errores de arreglos anidados
+        docData.elementsJson = JSON.stringify(cleanPayload.elements);
       }
       
       const docRef = await db.collection('projects').add(docData);
@@ -1089,6 +1089,9 @@ async function loadFeed() {
     snapshot.forEach(doc => {
       try {
         const project = doc.data();
+        if (project.elementsJson) {
+          try { project.elements = JSON.parse(project.elementsJson); } catch(e) { project.elements = []; }
+        }
         const docId = doc.id;
         
         let author = project.author || 'Comunidad';
@@ -1464,17 +1467,17 @@ function fitCardView(svg, world, elements) {
     maxX = Math.max(maxX, bounds.x2); maxY = Math.max(maxY, bounds.y2);
   });
   if (!Number.isFinite(minX)) return;
-  const cw = maxX - minX || 1, ch = maxY - minY || 1;
+  const cw = maxX - minX || 1;
+  const ch = maxY - minY || 1;
   
-  const sizeW = 396; 
-  const sizeH = 520; 
   const pad = 24;
   
-  const z = Math.max(0.01, Math.min((sizeW - pad*2)/cw, (sizeH - pad*2)/ch));
-  const px = sizeW/2 - ((minX + cw/2)*z);
-  const py = sizeH/2 - ((minY + ch/2)*z);
+  // Usar viewBox nativo de SVG para un "enfoque + stretch centrado" perfecto
+  svg.setAttribute('viewBox', `${minX - pad} ${minY - pad} ${cw + pad*2} ${ch + pad*2}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   
-  world.setAttribute('transform', `translate(${px} ${py}) scale(${z})`);
+  // Limpiar transform anterior por si acaso
+  world.removeAttribute('transform');
 }
 
 // CARD ANIMATION TICK LOOP

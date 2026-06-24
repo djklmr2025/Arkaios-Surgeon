@@ -714,6 +714,9 @@ async function loadById(id) {
     if(!doc.exists) throw new Error(`HTTP 404`);
     
     const data = doc.data();
+    if (data.elementsJson) {
+      try { data.elements = JSON.parse(data.elementsJson); } catch(e) { data.elements = []; }
+    }
     
     // Si tiene jsonUrl (JSONBin), lo traemos de allá
     if (data.jsonUrl) {
