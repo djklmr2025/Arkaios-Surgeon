@@ -474,8 +474,17 @@ tailwind.config = {
           <button onclick="saveKioskVideo()" class="bg-secondary/20 text-secondary border border-secondary/30 rounded-lg px-4 py-2 text-xs font-bold hover:bg-secondary/30 transition-all active:scale-95">Guardar</button>
         </div>
         <p class="text-[10px] text-on-surface-variant leading-relaxed">Sube un video directamente al Hub o pega un enlace directo. Este video se reproducirá automáticamente en bucle y sin sonido cuando el kiosko esté en reposo (pantalla de "Toca para interactuar").</p>
-      </div>
-      <div class="glass-panel p-4 rounded-2xl flex flex-col gap-3 mt-3">
+        <div class="glass-panel p-4 rounded-2xl flex flex-col gap-3 mt-3">
+          <label class="text-xs text-[#a8e8ff] font-bold flex items-center justify-between">
+            <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">filter_list</span> Mostrar solo mi Canal (Empresarial)</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="kiosk-channel-toggle" class="sr-only peer" onchange="toggleKioskChannel()">
+              <div class="w-9 h-5 bg-surface/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary border border-outline/30"></div>
+            </label>
+          </label>
+          <p class="text-[10px] text-on-surface-variant leading-relaxed">Si está activado, el Kiosko ignorará el muro social y únicamente mostrará los modelos creados por esta cuenta.</p>
+        </div>
+        <div class="glass-panel p-4 rounded-2xl flex flex-col gap-3 mt-3">
           <label class="text-xs text-[#a8e8ff] font-bold flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">podcasts</span> Transmisión a Apps Móviles (Broadcast)</label>
           <div class="flex gap-2">
             <input type="text" id="kiosk-broadcast-input" placeholder="Mensaje global para todas las apps..." class="flex-1 bg-background border border-[#a8e8ff]/30 rounded-lg px-3 py-2 text-xs focus:border-[#a8e8ff] outline-none transition-colors text-white" />
@@ -483,6 +492,7 @@ tailwind.config = {
           </div>
           <p class="text-[10px] text-on-surface-variant leading-relaxed">Envía una alerta in-app Cyberpunk en tiempo real a todos los usuarios conectados en Modo Social.</p>
         </div>
+      </div>
     </div>
   </div>
 
@@ -761,7 +771,19 @@ function saveKioskVideo() {
 }
 
 // Inicializar el video al cargar
-document.addEventListener('DOMContentLoaded', loadKioskVideo);
+document.addEventListener('DOMContentLoaded', () => {
+  loadKioskVideo();
+  const channelOnly = localStorage.getItem('flownexus_kiosk_channel_only') === 'true';
+  const toggle = document.getElementById('kiosk-channel-toggle');
+  if (toggle) toggle.checked = channelOnly;
+});
+
+function toggleKioskChannel() {
+  const toggle = document.getElementById('kiosk-channel-toggle');
+  localStorage.setItem('flownexus_kiosk_channel_only', toggle.checked);
+  showToast(toggle.checked ? '✅ Filtro de Canal Activado' : '✅ Muro Global Activado (Kiosko)');
+  if (userRole === 'enterprise') loadFeed();
+}
 
 // God Mode activation via triple click (RESTRICTED TO admin/god accounts)
 function handleTitleClick() {
@@ -1303,7 +1325,18 @@ async function loadFeed() {
     });
 
     viewFeed.innerHTML = telemetryPanelHTML;
-    kioskProjects = uniqueProjects;
+      
+    const filterChannel = localStorage.getItem('flownexus_kiosk_channel_only') === 'true';
+    if (filterChannel && currentUser) {
+      kioskProjects = uniqueProjects.filter(p => p.email === currentUser.email);
+      if (kioskProjects.length === 0) {
+        console.warn("Kiosko en Modo Canal: No hay proyectos de este autor.");
+      }
+    } else {
+      kioskProjects = uniqueProjects;
+    }
+      
+    window.kioskProjects = kioskProjects;
 
     isEnterprise = (userRole === 'enterprise');
     
@@ -2071,6 +2104,11 @@ async function renderKioskProject(container, item) {
                 <span id="viki-mic-label" class="text-[9px] font-bold text-primary tracking-widest uppercase animate-pulse">Toque para hablar</span>
              </div>
          </div>
+         
+         <button onclick="exportKioskSession()" class="text-on-surface-variant hover:text-primary transition-colors flex flex-col items-center justify-center p-2 rounded-lg bg-surface/50 border border-primary/10 hover:border-primary/50" title="Exportar Sesión">
+            <span class="material-symbols-outlined text-[18px]">qr_code_2</span>
+            <span class="text-[8px] mt-1 font-mono uppercase tracking-widest">Export</span>
+         </button>
       </div>
     </div>
   `;
@@ -2717,7 +2755,10 @@ async function processUserVoiceCommand(text) {
   const prompt = `El usuario dijo por voz: "${text}". Actúas como V.I.K.I. (Inteligencia Artificial de Arkaios). Eres una "Cartógrafa Dinámica" con permisos para modificar el canvas actual ("${projectName}"). Tienes conocimiento experto nativo sobre la red y rutas del Metro de la Ciudad de México y debes usarlo para contestar si es relevante. IMPORTANTE: Responde en texto plano, SIN usar asteriscos u otros símbolos markdown. Sé concisa.${locationContext}
 Si lo consideras útil para explicar algo, PUEDES inyectar nuevos objetos vectoriales al canvas en tiempo real devolviendo un bloque de código al final de tu respuesta con este formato exacto:
 [INJECT_JSON: [{"type":"circle","cx":150,"cy":150,"radius":30,"fillColor":"#ff0000","id":"viki_c_1"}, {"type":"text","text":"Aviso","x":150,"y":190}]]
-Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.`;
+Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas al diseño actual. No añadas Markdown extra dentro de los corchetes de INJECT_JSON.
+ADEMÁS, SI EL USUARIO PIDE UNA RUTA O DIRECCIÓN ENTRE DOS O MÁS PUNTOS/ESTACIONES, devuelve OBLIGATORIAMENTE al final de tu respuesta un código con este formato exacto (sin markdown extra):
+[ROUTE: nombre_estacion_1, nombre_estacion_2, nombre_estacion_3]
+Donde los nombres coincidan exactamente o de forma muy similar con los nombres reales de las estaciones de la ruta solicitada.`;
 
   try {
     if (typeof puter === 'undefined') {
@@ -2772,12 +2813,152 @@ Puedes usar rect, circle, line, path, text, mover. Las coordenadas son relativas
       }
     }
     
+    // Check for [ROUTE: ...]
+    const routeMatch = replyText.match(/\[ROUTE:\s*(.+?)\]/i);
+    if (routeMatch) {
+      const routeNames = routeMatch[1].split(',').map(n => n.trim().toLowerCase());
+      replyText = replyText.replace(routeMatch[0], '').trim();
+      drawVikiRoute(routeNames);
+    }
+    
     triggerVikiSpeak(replyText);
   } catch (err) {
     console.error('Error Puter AI:', err);
     triggerVikiSpeak("Error en mi matriz cognitiva. No hay conexión con el núcleo Puter.");
   }
 }
+
+// --- V.I.K.I ROUTE DRAWING & EXPORT ---
+function drawVikiRoute(names) {
+  const overlay = document.getElementById('viki-overlay-layer');
+  if (!overlay) return;
+  overlay.innerHTML = ''; // Limpiar rutas anteriores
+  
+  const currentItem = kioskProjects[currentKioskIndex];
+  if (!currentItem) return;
+  const elements = flatten(currentItem.project.elements || []);
+  
+  const points = [];
+  names.forEach(name => {
+    const el = elements.find(e => 
+      (e.name && e.name.toLowerCase().includes(name)) || 
+      (e.text && e.text.toLowerCase().includes(name))
+    );
+    if (el) {
+      // Intentar calcular centro
+      let cx = 0, cy = 0;
+      if (el.cx !== undefined) { cx = el.cx; cy = el.cy; }
+      else if (el.x !== undefined) { cx = el.x + (el.width||el.w||0)/2; cy = el.y + (el.height||el.h||0)/2; }
+      if (cx !== 0 || cy !== 0) {
+        points.push({ x: cx, y: cy });
+      }
+    }
+  });
+  
+  if (points.length >= 2) {
+    const ptsString = points.map(p => `${p.x},${p.y}`).join(' ');
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    line.setAttribute('points', ptsString);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', '#a8e8ff');
+    line.setAttribute('stroke-width', '4');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+    line.style.filter = 'drop-shadow(0 0 10px #a8e8ff)';
+    
+    line.setAttribute('stroke-dasharray', '2000');
+    line.setAttribute('stroke-dashoffset', '2000');
+    
+    const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+    anim.setAttribute('attributeName', 'stroke-dashoffset');
+    anim.setAttribute('from', '2000');
+    anim.setAttribute('to', '0');
+    anim.setAttribute('dur', '2s');
+    anim.setAttribute('fill', 'freeze');
+    line.appendChild(anim);
+    
+    overlay.appendChild(line);
+    
+    points.forEach(p => {
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', p.x);
+      dot.setAttribute('cy', p.y);
+      dot.setAttribute('r', '6');
+      dot.setAttribute('fill', '#a8e8ff');
+      dot.setAttribute('stroke', '#fff');
+      dot.setAttribute('stroke-width', '2');
+      dot.style.filter = 'drop-shadow(0 0 5px #a8e8ff)';
+      
+      const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      pulse.setAttribute('attributeName', 'r');
+      pulse.setAttribute('values', '6; 10; 6');
+      pulse.setAttribute('dur', '1.5s');
+      pulse.setAttribute('repeatCount', 'indefinite');
+      dot.appendChild(pulse);
+      
+      overlay.appendChild(dot);
+    });
+    
+    broadcastFromTotem(`[V.I.K.I]: Ruta visual calculada. Presiona "Exportar" para guardarla.`);
+  }
+}
+
+async function exportKioskSession() {
+  const history = document.getElementById('viki-chat-history');
+  if (!history) return;
+  const messages = Array.from(history.querySelectorAll('.text-\\[10px\\]')).map(el => el.textContent);
+  
+  if (messages.length === 0) {
+    showToast('No hay historial para exportar.');
+    return;
+  }
+  
+  triggerVikiSpeak("Generando reporte de sesión y enlace holográfico...");
+  
+  try {
+    const docRef = await db.collection('kiosk_sessions').add({
+      timestamp: Date.now(),
+      messages: messages,
+      project: kioskProjects[currentKioskIndex]?.project?.name || 'Sistema Central'
+    });
+    
+    // Construir URL relativa o absoluta (asumiendo que session.html está junto a code.html en prod)
+    let baseUrl = window.location.href;
+    baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf('/'));
+    const fullUrl = `${baseUrl}/session.html?id=${docRef.id}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(fullUrl)}`;
+    
+    showQRExportModal(qrUrl, fullUrl);
+  } catch (e) {
+    console.error("Error exportando:", e);
+    triggerVikiSpeak("Fallo al contactar los servidores de la matriz para la exportación.");
+  }
+}
+
+function showQRExportModal(qrUrl, fullUrl) {
+  let modal = document.getElementById('qr-export-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'qr-export-modal';
+    modal.className = 'fixed inset-0 z-[9999] bg-[#090b14]/90 backdrop-blur-md flex items-center justify-center';
+    document.body.appendChild(modal);
+  }
+  
+  modal.innerHTML = `
+    <div class="glass-panel p-8 rounded-2xl border border-[#a8e8ff]/50 flex flex-col items-center gap-6 max-w-sm text-center shadow-[0_0_50px_rgba(168,232,255,0.2)] animate-fade-in">
+      <h2 class="text-xl font-bold text-[#a8e8ff] font-mono tracking-wider">REPORTE DE SESIÓN</h2>
+      <p class="text-xs text-on-surface-variant font-mono leading-relaxed">Escanea este código con la cámara de tu móvil para descargar el historial de rutas y la interacción con V.I.K.I.</p>
+      <div class="p-4 bg-white rounded-xl shadow-[0_0_20px_#a8e8ff]">
+        <img src="${qrUrl}" alt="QR Code" class="w-48 h-48" />
+      </div>
+      <div class="text-[10px] text-white/50 break-all">${fullUrl}</div>
+      <button onclick="document.getElementById('qr-export-modal').classList.add('hidden')" class="mt-2 px-8 py-2 bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20 rounded-xl font-bold transition-colors">Cerrar</button>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+}
+// --- FIN V.I.K.I ROUTE DRAWING & EXPORT ---
 
 function navigateKioskProject(direction) {
   currentKioskIndex += direction;

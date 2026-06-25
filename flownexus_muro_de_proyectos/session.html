@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Arkaios - Reporte de Sesión V.I.K.I</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <style>
+    body { background-color: #090b14; color: white; font-family: 'Courier New', Courier, monospace; }
+    .glass { background: rgba(168,232,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(168,232,255,0.2); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col p-6 items-center">
+  <header class="w-full max-w-md mb-8 text-center">
+    <h1 class="text-2xl font-bold text-[#a8e8ff] tracking-widest uppercase">Reporte de Sesión</h1>
+    <p class="text-xs text-[#a8e8ff]/70 mt-1">Sistemas de Inteligencia Arkaios (V.I.K.I)</p>
+  </header>
+  
+  <main id="content" class="w-full max-w-md glass p-6 rounded-2xl shadow-[0_0_30px_rgba(168,232,255,0.1)]">
+    <div class="animate-pulse text-center text-[#a8e8ff]">Descargando datos de la matriz...</div>
+  </main>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdDYQlB8_ic7cN22t4rwlT1m3f_KbjjvA",
+      authDomain: "planning-with-ai-afcf8.firebaseapp.com",
+      projectId: "planning-with-ai-afcf8",
+      storageBucket: "planning-with-ai-afcf8.firebasestorage.app",
+      messagingSenderId: "203081888645",
+      appId: "1:203081888645:web:acfab799e7e15a59e30aec"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('id');
+    const content = document.getElementById('content');
+
+    if (!sessionId) {
+      content.innerHTML = '<div class="text-red-400">Error: No se proporcionó ID de sesión.</div>';
+    } else {
+      db.collection('kiosk_sessions').doc(sessionId).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const date = new Date(data.timestamp).toLocaleString();
+          let html = `
+            <div class="border-b border-[#a8e8ff]/20 pb-4 mb-4">
+              <div class="text-[10px] text-[#a8e8ff]/50">PROYECTO</div>
+              <div class="font-bold text-[#a8e8ff]">${data.project}</div>
+              <div class="text-[10px] text-[#a8e8ff]/50 mt-2">FECHA</div>
+              <div class="text-sm">${date}</div>
+            </div>
+            <h3 class="text-xs font-bold text-[#a8e8ff] mb-3">HISTORIAL DE CHAT</h3>
+            <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2">
+          `;
+          
+          data.messages.forEach(msg => {
+            const isUser = msg.startsWith('Tú:');
+            html += `
+              <div class="p-3 rounded-lg text-xs leading-relaxed ${isUser ? 'bg-white/10 ml-4' : 'bg-[#a8e8ff]/10 border border-[#a8e8ff]/20 mr-4 text-[#a8e8ff]'}">
+                ${msg}
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+          content.innerHTML = html;
+        } else {
+          content.innerHTML = '<div class="text-red-400">Error: Sesión no encontrada o expirada.</div>';
+        }
+      }).catch(e => {
+        content.innerHTML = '<div class="text-red-400">Error de conexión con la matriz.</div>';
+      });
+    }
+  </script>
+</body>
+</html>
