@@ -475,6 +475,14 @@ tailwind.config = {
         </div>
         <p class="text-[10px] text-on-surface-variant leading-relaxed">Sube un video directamente al Hub o pega un enlace directo. Este video se reproducirá automáticamente en bucle y sin sonido cuando el kiosko esté en reposo (pantalla de "Toca para interactuar").</p>
       </div>
+      <div class="glass-panel p-4 rounded-2xl flex flex-col gap-3 mt-3">
+          <label class="text-xs text-[#a8e8ff] font-bold flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">podcasts</span> Transmisión a Apps Móviles (Broadcast)</label>
+          <div class="flex gap-2">
+            <input type="text" id="kiosk-broadcast-input" placeholder="Mensaje global para todas las apps..." class="flex-1 bg-background border border-[#a8e8ff]/30 rounded-lg px-3 py-2 text-xs focus:border-[#a8e8ff] outline-none transition-colors text-white" />
+            <button onclick="sendManualBroadcast()" class="bg-[#a8e8ff]/20 text-[#a8e8ff] border border-[#a8e8ff]/30 rounded-lg px-4 py-2 text-xs font-bold hover:bg-[#a8e8ff]/30 transition-all active:scale-95 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">send</span> Emitir</button>
+          </div>
+          <p class="text-[10px] text-on-surface-variant leading-relaxed">Envía una alerta in-app Cyberpunk en tiempo real a todos los usuarios conectados en Modo Social.</p>
+        </div>
     </div>
   </div>
 
@@ -547,6 +555,20 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- TOTEM BROADCAST NOTIFICATION (MODO SOCIAL) -->
+<div id="totem-broadcast-alert" class="fixed top-16 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[400px] z-[9999] bg-[#090b14]/95 backdrop-blur-xl border border-[#a8e8ff]/50 rounded-lg p-4 shadow-[0_10px_40px_rgba(168,232,255,0.15)] flex flex-col gap-2 transition-all duration-500 translate-y-[-150%] opacity-0 pointer-events-none">
+  <div class="flex items-center justify-between border-b border-[#a8e8ff]/20 pb-2">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#a8e8ff] text-[18px] animate-pulse">cell_tower</span>
+      <span class="text-[10px] font-bold text-[#a8e8ff] tracking-widest uppercase font-mono">Transmisión de Tótem Central</span>
+    </div>
+    <button onclick="closeTotemBroadcast()" class="text-[#a8e8ff]/50 hover:text-[#a8e8ff] transition-colors pointer-events-auto">
+      <span class="material-symbols-outlined text-[16px]">close</span>
+    </button>
+  </div>
+  <div class="text-xs text-white/90 leading-relaxed font-mono" id="totem-broadcast-msg"></div>
+</div>
+
 <!-- LIVE TOAST -->
 <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-surface border border-primary/30 text-primary text-xs font-mono px-4 py-2.5 rounded-full shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
 
@@ -590,6 +612,79 @@ function showToast(msg) {
   clearTimeout(t._tid);
   t._tid = setTimeout(() => t.style.opacity = '0', 3000);
 }
+
+// --- TOTEM COMMUNICATION LOGIC ---
+let totemBroadcastListener = null;
+
+function setupTotemBroadcastListener() {
+  // Si somos el Totem, nos desconectamos de escuchar (el emisor no necesita escucharse a sí mismo)
+  if (userRole === 'enterprise') {
+    if (totemBroadcastListener) {
+      totemBroadcastListener();
+      totemBroadcastListener = null;
+    }
+    return;
+  }
+  
+  // Si ya estamos escuchando, no duplicar el onSnapshot
+  if (totemBroadcastListener) return; 
+  
+  const now = Date.now();
+  totemBroadcastListener = db.collection('totem_broadcasts')
+    .orderBy('timestamp', 'desc')
+    .limit(1)
+    .onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          const data = change.doc.data();
+          // Mostrar si el mensaje fue enviado apenas ahora (dentro de los últimos 5 segundos)
+          if (data.timestamp > now - 5000) { 
+            showTotemBroadcast(data.message);
+          }
+        }
+      });
+    });
+}
+
+function showTotemBroadcast(msg) {
+  const alertEl = document.getElementById('totem-broadcast-alert');
+  if (!alertEl) return;
+  document.getElementById('totem-broadcast-msg').innerText = msg;
+  
+  alertEl.classList.remove('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
+  alertEl.classList.add('translate-y-0', 'opacity-100');
+  
+  // Auto ocultar en 8 segundos
+  setTimeout(() => {
+    closeTotemBroadcast();
+  }, 8000);
+}
+
+function closeTotemBroadcast() {
+  const alertEl = document.getElementById('totem-broadcast-alert');
+  if (!alertEl) return;
+  alertEl.classList.add('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
+  alertEl.classList.remove('translate-y-0', 'opacity-100');
+}
+
+function broadcastFromTotem(msg) {
+  if (userRole !== 'enterprise') return; // Solo tótems pueden emitir
+  db.collection('totem_broadcasts').add({
+    message: msg,
+    timestamp: Date.now()
+  }).catch(e => console.error("Error enviando broadcast desde Totem:", e));
+}
+
+function sendManualBroadcast() {
+  const input = document.getElementById('kiosk-broadcast-input');
+  const msg = input.value.trim();
+  if (msg) {
+    broadcastFromTotem(`[ADMIN]: ${msg}`);
+    input.value = '';
+    showToast('✅ Transmisión global enviada a todas las Apps');
+  }
+}
+// --- FIN TOTEM COMMUNICATION ---
 
 // Global copy to clipboard function
 function copyShareLink(url) {
@@ -792,6 +887,7 @@ function selectUserRole(role) {
   }
   
   checkOnboarding();
+  setupTotemBroadcastListener();
 }
 
 function togglePerspectiveFromMenu() {
@@ -2159,6 +2255,7 @@ function handleKioskNodeClick(elem) {
       
       if (replyText) {
         triggerVikiSpeak(replyText);
+        broadcastFromTotem(`[V.I.K.I]: Actividad detectada en el Tótem central. Un usuario se encuentra consultando el nodo "${nodeName}".`);
       } else {
         triggerVikiSpeak(`Analizando elemento: ${nodeName}. Estado operacional nominal. Enlace de IA interrumpido.`);
       }
