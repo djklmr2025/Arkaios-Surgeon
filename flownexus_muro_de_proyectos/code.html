@@ -2669,7 +2669,7 @@ function editProjectMedia(docId, currentUrl) {
       <div style="margin-bottom: 20px;">
         <label style="display: block; font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Opción 1: Subir Archivo (.webm, .gif, .png)</label>
         <input type="file" id="media-file" accept="video/webm,video/mp4,image/gif,image/jpeg,image/png" style="width: 100%; padding: 10px; background: #0f172a; border-radius: 8px; color: white; border: 1px dashed #475569; cursor: pointer;">
-        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Se subirá automáticamente a Firebase Storage.</p>
+        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Se subirá automáticamente a tu Image Hub.</p>
       </div>
       
       <div style="text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 12px; font-weight: bold;">--- O ---</div>
@@ -2703,29 +2703,40 @@ function editProjectMedia(docId, currentUrl) {
       btnSave.innerText = 'Subiendo... 0%';
       btnSave.disabled = true;
       try {
-        const storageRef = firebase.storage().ref();
-        const ext = file.name.split('.').pop() || 'media';
-        const fileName = `covers/cover_${docId}_${Date.now()}.${ext}`;
-        const fileRef = storageRef.child(fileName);
-        
-        const uploadTask = fileRef.put(file);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'arkaios_unsigned');
+        formData.append('folder', 'arkaios/image-hub/flownexus');
         
         await new Promise((resolve, reject) => {
-          uploadTask.on('state_changed', 
-            (snapshot) => {
-              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              btnSave.innerText = `Subiendo... ${Math.round(progress)}%`;
-            },
-            (error) => reject(error),
-            () => resolve()
-          );
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.cloudinary.com/v1_1/dzppimwcc/auto/upload');
+          
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const progress = (e.loaded / e.total) * 100;
+              btnSave.innerText = `Subiendo a Hub... ${Math.round(progress)}%`;
+            }
+          };
+          
+          xhr.onload = () => {
+            if (xhr.status === 200) {
+              const res = JSON.parse(xhr.responseText);
+              finalUrl = res.secure_url;
+              resolve();
+            } else {
+              reject(new Error(xhr.responseText));
+            }
+          };
+          
+          xhr.onerror = () => reject(new Error('Error de red en XHR'));
+          xhr.send(formData);
         });
         
-        btnSave.innerText = 'Procesando...';
-        finalUrl = await fileRef.getDownloadURL();
+        btnSave.innerText = 'Procesando enlace...';
       } catch (err) {
         console.error(err);
-        showToast('❌ Error al subir archivo a Firebase Storage.');
+        showToast('❌ Error al subir archivo al Image Hub.');
         btnSave.innerText = 'Guardar Portada';
         btnSave.disabled = false;
         return;
