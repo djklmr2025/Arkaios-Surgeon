@@ -1243,6 +1243,9 @@ function renderProfileView() {
             <button onclick="editProjectMedia('${item.id}', '${item.project.mediaUrl || ''}')" class="bg-blue-500/80 hover:bg-blue-500 text-white p-1 rounded pointer-events-auto" title="Añadir/Editar Portada (Link a Imagen/GIF)">
               <span class="material-symbols-outlined text-[14px]">image</span>
             </button>
+            <button onclick="editProjectDescription('${item.id}', '${(item.project.description || '').replace(/'/g, "\\'")}')" class="bg-indigo-500/80 hover:bg-indigo-500 text-white p-1 rounded pointer-events-auto" title="Editar Descripción / Texto">
+              <span class="material-symbols-outlined text-[14px]">edit_note</span>
+            </button>
           </div>
         
         <!-- Status Badge -->
@@ -1343,6 +1346,9 @@ function renderProjectCard(container, id, url, project, author) {
       </div>
       <div class="flex items-center gap-2">
         ${godMode ? `
+        <button onclick="editProjectDescription('${id}', '${(project.description || '').replace(/'/g, "\\'")}')" class="bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 p-2 rounded-[2px] transition-all" title="Editar Descripción (God Mode)">
+          <span class="material-symbols-outlined text-[14px]">edit_note</span>
+        </button>
         <button onclick="deleteProject(this, '${url}', '${id}')" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 p-2 rounded-[2px] transition-all" title="Eliminar Proyecto (God Mode)">
           <span class="material-symbols-outlined text-[14px]">delete</span>
         </button>
@@ -2764,6 +2770,21 @@ function editProjectMedia(docId, currentUrl) {
       btnSave.disabled = false;
     }
   };
+}
+
+function editProjectDescription(docId, currentDesc) {
+  const newDesc = prompt('Ingresa la nueva descripción para este proyecto (Máx ~150 caracteres para un diseño óptimo):', currentDesc || '');
+  if (newDesc !== null) {
+    db.collection('projects').doc(docId).update({
+      description: newDesc.trim()
+    }).then(() => {
+      showToast('✅ Descripción actualizada. Recargando...');
+      setTimeout(() => location.reload(), 1500);
+    }).catch(e => {
+      console.error(e);
+      showToast('❌ Error al actualizar la descripción.');
+    });
+  }
 }
 
 function publishToGlobalWall(event, id) {
