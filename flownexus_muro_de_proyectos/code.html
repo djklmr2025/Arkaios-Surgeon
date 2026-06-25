@@ -2144,11 +2144,7 @@ async function renderKioskProject(container, item) {
   // Fit view automatically at start
   fitKioskView(true);
   
-  if (window.kioskIsLocked) {
-    svg.style.pointerEvents = 'none';
-  } else {
-    svg.style.pointerEvents = 'auto';
-  }
+  // pointer-events is handled now via JS early returns in setupKioskCameraEvents
   const lockIcon = document.getElementById('kiosk-lock-icon');
   if (lockIcon) lockIcon.textContent = window.kioskIsLocked ? 'lock' : 'lock_open';
   
@@ -2442,7 +2438,7 @@ function setupKioskCameraEvents(svg) {
   let initialPanY = 0;
   
   svg.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType === 'touch' || window.kioskIsLocked) return;
     svg.setPointerCapture(e.pointerId);
     isDragging = true;
     startX = e.clientX - kioskState.panX;
@@ -2462,6 +2458,7 @@ function setupKioskCameraEvents(svg) {
   });
 
   svg.addEventListener('touchstart', (e) => {
+    if (window.kioskIsLocked) return;
     if (e.touches.length === 1) {
       isDragging = true;
       startX = e.touches[0].clientX - kioskState.panX;
@@ -2517,6 +2514,7 @@ function setupKioskCameraEvents(svg) {
   
   svg.addEventListener('wheel', (e) => {
     e.preventDefault();
+    if (window.kioskIsLocked) return;
     const factor = e.deltaY > 0 ? 0.85 : 1.18;
     const rect = svg.getBoundingClientRect();
     const mx = e.clientX - rect.left;
@@ -3210,9 +3208,8 @@ function toggleKioskLock() {
   const icon = document.getElementById('kiosk-lock-icon');
   if (icon) icon.textContent = window.kioskIsLocked ? 'lock' : 'lock_open';
   
-  const svg = document.getElementById('kiosk-svg-stage');
-  if (svg) {
-    svg.style.pointerEvents = window.kioskIsLocked ? 'none' : 'auto';
+  if (window.kioskIsLocked) {
+    fitKioskView(true); // Regresar a la vista ajustada al bloquear
   }
 }
 
