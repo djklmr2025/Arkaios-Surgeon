@@ -1721,7 +1721,7 @@ function startGlobalAnimation() {
     
     animators.forEach(state => {
       state.lineNodes.forEach(ln => {
-        ln.offset -= dt * 45 * ln.speed;
+        ln.offset -= dt * 10 * ln.speed;
         ln.node.setAttribute('stroke-dashoffset', String(ln.offset));
       });
       state.moverNodes.forEach(m => {
@@ -1891,7 +1891,7 @@ function resolveRoute(elem, dt, flat, byId) {
   if (elem.active !== false) {
     const rawSpd = Number(isMover ? elem.speed : (elem.routeSpeed || elem.speed));
     const speed = Number.isFinite(rawSpd) ? clamp(rawSpd, 1, 300) : 40;
-    let rem = dir * 2.5 * speed * dt;
+    let rem = dir * 0.4 * speed * dt;
     let guard = 0;
     while (Math.abs(rem) > 1e-6 && guard < 16) {
       guard++;
