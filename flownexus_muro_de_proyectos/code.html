@@ -2654,18 +2654,91 @@ function dismissScreensaver() {
 }
 
 function editProjectMedia(docId, currentUrl) {
-  const newUrl = prompt('Ingresa la URL pública de la imagen o GIF que deseas usar como portada:\n(Ej: https://media.giphy.com/.../giphy.gif)', currentUrl || '');
-  if (newUrl !== null) {
-    db.collection('projects').doc(docId).update({
-      mediaUrl: newUrl.trim()
-    }).then(() => {
-      showToast('✅ Portada actualizada. Recargando perfil...');
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.top = '0'; modal.style.left = '0'; modal.style.width = '100%'; modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+  modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center';
+  modal.style.zIndex = '99999';
+  modal.style.backdropFilter = 'blur(4px)';
+  
+  modal.innerHTML = `
+    <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 400px; max-width: 90%; color: white; border: 1px solid #475569; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+      <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #60a5fa; text-align: center;">🎨 Actualizar Portada / Demo</h3>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Opción 1: Subir Archivo (.webm, .gif, .png)</label>
+        <input type="file" id="media-file" accept="video/webm,video/mp4,image/gif,image/jpeg,image/png" style="width: 100%; padding: 10px; background: #0f172a; border-radius: 8px; color: white; border: 1px dashed #475569; cursor: pointer;">
+        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Se subirá automáticamente a Firebase Storage.</p>
+      </div>
+      
+      <div style="text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 12px; font-weight: bold;">--- O ---</div>
+      
+      <div style="margin-bottom: 25px;">
+        <label style="display: block; font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Opción 2: Pegar Enlace Directo</label>
+        <input type="text" id="media-url" placeholder="https://..." value="${currentUrl || ''}" style="width: 100%; padding: 10px; background: #0f172a; border-radius: 8px; color: white; border: 1px solid #475569;">
+      </div>
+      
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button id="media-cancel" style="padding: 10px 18px; border-radius: 8px; background: #475569; color: white; border: none; cursor: pointer; transition: 0.2s;">Cancelar</button>
+        <button id="media-save" style="padding: 10px 18px; border-radius: 8px; background: #3b82f6; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s;">Guardar Portada</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  document.getElementById('media-cancel').onclick = () => modal.remove();
+  
+  document.getElementById('media-save').onclick = async () => {
+    const fileInput = document.getElementById('media-file');
+    const urlInput = document.getElementById('media-url');
+    const btnSave = document.getElementById('media-save');
+    
+    let finalUrl = urlInput.value.trim();
+    
+    // Si el usuario seleccionó un archivo, lo subimos
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      btnSave.innerText = 'Subiendo...';
+      btnSave.disabled = true;
+      try {
+        const storageRef = firebase.storage().ref();
+        const ext = file.name.split('.').pop() || 'media';
+        const fileName = \`covers/cover_\${docId}_\${Date.now()}.\${ext}\`;
+        const fileRef = storageRef.child(fileName);
+        await fileRef.put(file);
+        finalUrl = await fileRef.getDownloadURL();
+      } catch (err) {
+        console.error(err);
+        showToast('❌ Error al subir archivo a Firebase Storage.');
+        btnSave.innerText = 'Guardar Portada';
+        btnSave.disabled = false;
+        return;
+      }
+    }
+    
+    // Si no hay URL final ni subió nada, y borró el texto
+    if (!finalUrl && !currentUrl) {
+      modal.remove();
+      return;
+    }
+    
+    btnSave.innerText = 'Actualizando BD...';
+    try {
+      await db.collection('projects').doc(docId).update({
+        mediaUrl: finalUrl
+      });
+      showToast('✅ Portada actualizada con éxito. Recargando...');
+      modal.remove();
       setTimeout(() => location.reload(), 1500);
-    }).catch(e => {
+    } catch (e) {
       console.error(e);
-      showToast('❌ Error al actualizar la portada.');
-    });
-  }
+      showToast('❌ Error al actualizar la portada en la Base de Datos.');
+      btnSave.innerText = 'Guardar Portada';
+      btnSave.disabled = false;
+    }
+  };
 }
 
 function publishToGlobalWall(event, id) {
