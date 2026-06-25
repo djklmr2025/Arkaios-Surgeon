@@ -2705,7 +2705,7 @@ function editProjectMedia(docId, currentUrl) {
       try {
         const storageRef = firebase.storage().ref();
         const ext = file.name.split('.').pop() || 'media';
-        const fileName = \`covers/cover_\${docId}_\${Date.now()}.\${ext}\`;
+        const fileName = `covers/cover_${docId}_${Date.now()}.${ext}`;
         const fileRef = storageRef.child(fileName);
         await fileRef.put(file);
         finalUrl = await fileRef.getDownloadURL();
